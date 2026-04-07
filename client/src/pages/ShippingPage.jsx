@@ -53,7 +53,7 @@ const ShippingPage = () => {
                     <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name *</label>
                     <input type="text" name="fullName" required value={formData.fullName} onChange={handleChange} className="w-full border p-3 rounded-lg outline-none focus:border-[#fed700] transition" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Email *</label>
                         <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full border p-3 rounded-lg outline-none focus:border-[#fed700] transition" />
@@ -67,7 +67,7 @@ const ShippingPage = () => {
                     <label className="block text-sm font-semibold text-gray-700 mb-1">Full Address *</label>
                     <input type="text" name="address" required placeholder="House, Road, Area" value={formData.address} onChange={handleChange} className="w-full border p-3 rounded-lg outline-none focus:border-[#fed700] transition" />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">City *</label>
                         <input type="text" name="city" required value={formData.city} onChange={handleChange} className="w-full border p-3 rounded-lg outline-none focus:border-[#fed700] transition" />

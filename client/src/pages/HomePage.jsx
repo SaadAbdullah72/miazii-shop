@@ -31,25 +31,28 @@ const HomePage = () => {
         <div className="font-sans text-[#333e48] min-h-screen">
             {/* Hero Banner */}
             {!keyword && (
-                <div className="bg-gradient-to-r from-[#fed700] to-[#f5c800] py-12 lg:py-20 mb-8">
+                <div className="bg-gradient-to-r from-[#fed700] to-[#f5c800] py-8 md:py-12 lg:py-20 mb-8 overflow-hidden">
                     <div className="container-custom flex flex-col lg:flex-row items-center justify-between gap-8">
-                        <div className="max-w-lg">
-                            <p className="text-sm font-bold uppercase tracking-widest text-[#333e48] mb-2">MIAZI SHOP — Premium Electronics</p>
-                            <h1 className="text-4xl lg:text-6xl font-black text-[#333e48] leading-tight mb-4">
-                                Best Deals on <br />Electronics
+                        <div className="max-w-lg text-center lg:text-left">
+                            <p className="text-[10px] md:text-sm font-bold uppercase tracking-[0.2em] text-[#333e48] mb-3 opacity-90">MIAZI SHOP — Premium Electronics</p>
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#333e48] leading-tight mb-5 px-4 lg:px-0">
+                                Best Deals on <br className="hidden sm:block" />Your Favorite Tech
                             </h1>
-                            <p className="text-[#333e48] text-lg mb-6 opacity-80">
-                                Shop the latest smartphones, laptops, cameras and more at unbeatable prices.
+                            <p className="text-[#333e48] text-base md:text-lg mb-8 opacity-80 px-6 lg:px-0">
+                                Shop the latest smartphones, laptops, cameras and more at unbeatable prices with official warranty.
                             </p>
-                            <Link to="/?keyword=" className="inline-block bg-[#333e48] text-white px-8 py-3 rounded-full font-bold hover:bg-black transition shadow-lg">
+                            <Link to="/?keyword=" className="inline-block bg-[#333e48] text-white px-10 py-4 rounded-full font-bold hover:bg-black transition shadow-xl hover:-translate-y-1 transform duration-300">
                                 Shop Now
                             </Link>
                         </div>
-                        <img 
-                            src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=600&q=80" 
-                            alt="Electronics" 
-                            className="w-full max-w-md rounded-2xl shadow-2xl object-cover h-[300px]"
-                        />
+                        <div className="w-full lg:w-1/2 px-4 lg:px-0 relative">
+                            <div className="absolute -inset-4 bg-white/20 blur-3xl rounded-full" />
+                            <img 
+                                src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=800&q=80" 
+                                alt="Electronics" 
+                                className="relative w-full max-w-lg mx-auto rounded-3xl shadow-2xl object-cover aspect-[4/3] md:aspect-video lg:aspect-auto"
+                            />
+                        </div>
                     </div>
                 </div>
             )}
@@ -84,7 +87,7 @@ const HomePage = () => {
                         {keyword && <Link to="/" className="text-blue-600 hover:underline mt-4 inline-block">Back to All Products</Link>}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                         {products.map((product) => (
                             <div key={product._id} className="bg-white border rounded-xl overflow-hidden group hover:shadow-lg transition-shadow duration-300">
                                 {/* Product Image */}

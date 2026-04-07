@@ -37,27 +37,29 @@ const CartPage = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2 flex flex-col gap-3">
+                    <div className="lg:col-span-2 flex flex-col gap-4">
                         {cartItems.map((item) => (
-                            <div key={item._id} className="flex gap-4 border rounded-xl p-4 items-center bg-white">
-                                <Link to={`/product/${item._id}`}>
-                                    <img src={item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}` || 'https://via.placeholder.com/100'} alt={item.name} className="w-20 h-20 object-contain rounded-lg border p-1" />
+                            <div key={item._id} className="flex flex-col sm:flex-row gap-4 border rounded-xl p-4 items-center bg-white shadow-sm hover:shadow-md transition-shadow">
+                                <Link to={`/product/${item._id}`} className="shrink-0">
+                                    <img src={item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}` || 'https://via.placeholder.com/100'} alt={item.name} className="w-24 h-24 object-contain rounded-lg border p-1" />
                                 </Link>
-                                <div className="flex-1 min-w-0">
-                                    <Link to={`/product/${item._id}`} className="font-bold text-sm hover:text-blue-600 transition line-clamp-2">{item.name}</Link>
-                                    <div className="text-lg font-bold text-[#333e48] mt-1">৳{(item.discountPrice > 0 ? item.discountPrice : item.price).toLocaleString()}</div>
+                                <div className="flex-1 min-w-0 text-center sm:text-left">
+                                    <Link to={`/product/${item._id}`} className="font-bold text-base hover:text-blue-600 transition line-clamp-2 mb-1">{item.name}</Link>
+                                    <div className="text-xl font-black text-[#333e48]">৳{(item.discountPrice > 0 ? item.discountPrice : item.price).toLocaleString()}</div>
                                 </div>
-                                <div className="flex items-center gap-2 border rounded-lg">
-                                    <button onClick={() => item.qty > 1 && updateQtyHandler(item, item.qty - 1)} className="p-2 hover:bg-gray-100 transition rounded-l-lg"><Minus size={14} /></button>
-                                    <span className="px-3 font-bold">{item.qty}</span>
-                                    <button onClick={() => item.qty < item.countInStock && updateQtyHandler(item, item.qty + 1)} className="p-2 hover:bg-gray-100 transition rounded-r-lg"><Plus size={14} /></button>
+                                <div className="flex items-center gap-4 w-full sm:w-auto justify-center sm:justify-end">
+                                    <div className="flex items-center gap-2 border rounded-full bg-gray-50 p-1">
+                                        <button onClick={() => item.qty > 1 && updateQtyHandler(item, item.qty - 1)} className="w-8 h-8 flex items-center justify-center hover:bg-white transition rounded-full shadow-sm"><Minus size={14} /></button>
+                                        <span className="px-2 font-bold min-w-[20px] text-center">{item.qty}</span>
+                                        <button onClick={() => item.qty < item.countInStock && updateQtyHandler(item, item.qty + 1)} className="w-8 h-8 flex items-center justify-center hover:bg-white transition rounded-full shadow-sm"><Plus size={14} /></button>
+                                    </div>
+                                    <div className="text-xl font-black text-[#333e48] hidden md:block w-28 text-right">
+                                        ৳{((item.discountPrice > 0 ? item.discountPrice : item.price) * item.qty).toLocaleString()}
+                                    </div>
+                                    <button onClick={() => removeHandler(item._id)} className="text-gray-400 hover:text-red-500 p-2 rounded-full transition hover:bg-red-50">
+                                        <Trash2 size={20} />
+                                    </button>
                                 </div>
-                                <div className="text-lg font-extrabold text-[#333e48] w-24 text-right">
-                                    ৳{((item.discountPrice > 0 ? item.discountPrice : item.price) * item.qty).toLocaleString()}
-                                </div>
-                                <button onClick={() => removeHandler(item._id)} className="text-gray-400 hover:text-red-500 p-2 rounded-full transition">
-                                    <Trash2 size={18} />
-                                </button>
                             </div>
                         ))}
                         <Link to="/" className="text-sm text-gray-500 hover:text-[#333e48] transition inline-flex items-center gap-2 mt-2">

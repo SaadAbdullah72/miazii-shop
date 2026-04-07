@@ -21,12 +21,12 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-                    <div>
-                        <Link to="/">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+                    <div className="text-center sm:text-left">
+                        <Link to="/" className="inline-block">
                             <img src="/logo.png" alt="MIAZI SHOP" className="h-12 object-contain mb-4 brightness-200" />
                         </Link>
-                        <div className="flex items-center gap-3 mb-4">
+                        <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
                             <PhoneCall size={28} className="text-[#fed700]" />
                             <div>
                                 <p className="text-xs text-gray-400">Got Questions? Call us 24/7!</p>
@@ -39,7 +39,7 @@ const Footer = () => {
                             <p>saad489254@gmail.com</p>
                         </div>
                     </div>
-                    <div>
+                    <div className="text-center sm:text-left">
                         <h4 className="text-white font-bold mb-4">Find It Fast</h4>
                         <ul className="flex flex-col gap-2 text-sm text-gray-400">
                             <li><Link to="/" className="hover:text-[#fed700] transition">Laptops & Computers</Link></li>
@@ -49,7 +49,7 @@ const Footer = () => {
                             <li><Link to="/" className="hover:text-[#fed700] transition">TV & Audio</Link></li>
                         </ul>
                     </div>
-                    <div>
+                    <div className="text-center sm:text-left">
                         <h4 className="text-white font-bold mb-4">Customer Care</h4>
                         <ul className="flex flex-col gap-2 text-sm text-gray-400">
                             <li><Link to="/login" className="hover:text-[#fed700] transition">My Account</Link></li>
@@ -58,7 +58,7 @@ const Footer = () => {
                             <li><Link to="/" className="hover:text-[#fed700] transition">Returns & Refunds</Link></li>
                         </ul>
                     </div>
-                    <div>
+                    <div className="text-center sm:text-left">
                         <h4 className="text-white font-bold mb-4">About Us</h4>
                         <p className="text-sm text-gray-400 leading-relaxed">
                             MIAZI SHOP is your trusted online electronics store in Bangladesh. We provide genuine products with warranty and fast delivery across the country.
@@ -66,11 +66,11 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-[#2a3038] py-4">
-                <div className="container-custom flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-2">
+            <div className="bg-[#2a3038] py-6">
+                <div className="container-custom flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4 text-center md:text-left">
                     <p>&copy; 2026 MIAZI SHOP. All Rights Reserved.</p>
-                    <div className="flex gap-3 items-center text-gray-400">
-                        <CreditCard size={20} /> <span>Secure Payment</span>
+                    <div className="flex gap-3 items-center text-gray-400 justify-center">
+                        <CreditCard size={20} /> <span>Secure Payment via SSLCommerz</span>
                     </div>
                 </div>
             </div>

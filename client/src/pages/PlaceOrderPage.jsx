@@ -104,29 +104,50 @@ const PlaceOrderPage = () => {
 
             <h1 className="text-2xl font-extrabold mb-6 text-center">Review & Pay</h1>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 <div className="lg:col-span-2 flex flex-col gap-6">
                     {/* Shipping Info */}
-                    <div className="border rounded-xl p-5 bg-white">
-                        <h2 className="font-extrabold text-lg mb-3 border-b pb-2">Shipping Details</h2>
-                        <p className="text-gray-700"><strong>Name:</strong> {cart.shippingAddress.fullName}</p>
-                        <p className="text-gray-700"><strong>Email:</strong> {cart.shippingAddress.email}</p>
-                        <p className="text-gray-700"><strong>Phone:</strong> {cart.shippingAddress.phone}</p>
-                        <p className="text-gray-700"><strong>Address:</strong> {cart.shippingAddress.address}, {cart.shippingAddress.city} {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}</p>
+                    <div className="border-2 border-gray-100 rounded-2xl p-5 sm:p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <h2 className="font-black text-lg mb-4 border-b border-gray-100 pb-3 flex items-center justify-between">
+                            Shipping Details
+                            <Link to="/shipping" className="text-xs text-blue-600 hover:underline">Edit</Link>
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
+                            <p className="text-gray-500 font-bold uppercase tracking-wider text-[10px]">Recipient</p>
+                            <p className="text-[#333e48] font-bold">{cart.shippingAddress.fullName}</p>
+                            
+                            <p className="text-gray-500 font-bold uppercase tracking-wider text-[10px]">Email</p>
+                            <p className="text-[#333e48] font-bold">{cart.shippingAddress.email}</p>
+                            
+                            <p className="text-gray-500 font-bold uppercase tracking-wider text-[10px]">Phone</p>
+                            <p className="text-[#333e48] font-bold">{cart.shippingAddress.phone}</p>
+                            
+                            <p className="text-gray-500 font-bold uppercase tracking-wider text-[10px]">Address</p>
+                            <p className="text-[#333e48] font-bold leading-relaxed">{cart.shippingAddress.address}, {cart.shippingAddress.city} {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}</p>
+                        </div>
                     </div>
 
                     {/* Order Items */}
-                    <div className="border rounded-xl p-5 bg-white">
-                        <h2 className="font-extrabold text-lg mb-3 border-b pb-2">Order Items</h2>
-                        {cart.cartItems.map((item, i) => (
-                            <div key={i} className="flex items-center gap-4 py-3 border-b last:border-b-0">
-                                <img src={item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}`} alt={item.name} className="w-14 h-14 object-contain rounded border p-1" />
-                                <Link to={`/product/${item._id}`} className="flex-1 font-semibold text-sm hover:text-blue-600 transition">{item.name}</Link>
-                                <span className="text-gray-600 text-sm">
-                                    {item.qty} × ৳{(item.discountPrice > 0 ? item.discountPrice : item.price).toLocaleString()} = <strong className="text-[#333e48]">৳{((item.discountPrice > 0 ? item.discountPrice : item.price) * item.qty).toLocaleString()}</strong>
-                                </span>
-                            </div>
-                        ))}
+                    <div className="border-2 border-gray-100 rounded-2xl p-5 sm:p-6 bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <h2 className="font-black text-lg mb-4 border-b border-gray-100 pb-3">Review Items</h2>
+                        <div className="flex flex-col">
+                            {cart.cartItems.map((item, i) => (
+                                <div key={i} className="flex items-center gap-4 py-4 border-b last:border-b-0 border-gray-50">
+                                    <div className="shrink-0">
+                                        <img src={item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}`} alt={item.name} className="w-16 h-16 object-contain rounded-xl border-2 border-gray-100 p-1 bg-white shadow-sm" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <Link to={`/product/${item._id}`} className="font-bold text-sm hover:text-blue-600 transition block truncate">{item.name}</Link>
+                                        <div className="text-gray-500 text-xs font-bold mt-1">
+                                            {item.qty} × ৳{(item.discountPrice > 0 ? item.discountPrice : item.price).toLocaleString()} 
+                                        </div>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                        <strong className="text-[#333e48] font-black text-base italic">৳{((item.discountPrice > 0 ? item.discountPrice : item.price) * item.qty).toLocaleString()}</strong>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 

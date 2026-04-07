@@ -124,20 +124,21 @@ const ProductDetailsPage = () => {
 
                     {/* Quantity + Add to Cart */}
                     {product.countInStock > 0 && (
-                        <div className="flex items-center gap-4 mb-6">
-                            <label className="font-semibold text-gray-700">Qty:</label>
-                            <select className="border rounded-lg px-4 py-2 outline-none" value={qty} onChange={(e) => setQty(Number(e.target.value))}>
-                                {[...Array(Math.min(product.countInStock, 10)).keys()].map((x) => (
-                                    <option key={x + 1} value={x + 1}>{x + 1}</option>
-                                ))}
-                            </select>
+                        <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                            <div className="flex items-center gap-3 w-full sm:w-auto bg-gray-100 p-2 rounded-xl">
+                                <label className="font-bold text-gray-700 ml-2">Qty:</label>
+                                <select className="bg-transparent border-none rounded-lg px-4 py-2 outline-none font-bold flex-1" value={qty} onChange={(e) => setQty(Number(e.target.value))}>
+                                    {[...Array(Math.min(product.countInStock, 10)).keys()].map((x) => (
+                                        <option key={x + 1} value={x + 1}>{x + 1}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <button onClick={addToCartHandler} disabled={product.countInStock === 0}
+                                className="w-full bg-[#fed700] text-[#333e48] font-black py-4 rounded-xl hover:bg-yellow-500 transition disabled:opacity-40 disabled:cursor-not-allowed shadow-lg text-lg flex items-center justify-center gap-3">
+                                <ShoppingBag size={22} /> Add to Cart
+                            </button>
                         </div>
                     )}
-
-                    <button onClick={addToCartHandler} disabled={product.countInStock === 0}
-                        className="w-full bg-[#fed700] text-[#333e48] font-extrabold py-4 rounded-full hover:bg-yellow-500 transition disabled:opacity-40 disabled:cursor-not-allowed shadow-md text-lg flex items-center justify-center gap-2">
-                        <ShoppingBag size={20} /> Add to Cart
-                    </button>
                 </div>
             </div>
 
