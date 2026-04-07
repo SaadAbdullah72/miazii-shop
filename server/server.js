@@ -13,6 +13,7 @@ import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
@@ -55,7 +56,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Static Folders
-const __dirname = path.resolve();
+const __dirname = process.cwd();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Routes
@@ -64,13 +65,14 @@ app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Serve Frontend in Production
 if (process.env.NODE_ENV === 'production') {
     const rootPath = process.cwd();
     app.use(express.static(path.join(rootPath, 'client', 'dist')));
 
-    app.get('/*', (req, res) =>
+    app.get('*', (req, res) =>
         res.sendFile(path.resolve(rootPath, 'client', 'dist', 'index.html'))
     );
 } else {
