@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../slices/authSlice';
-import { ShoppingBag, Search, Menu, User, MapPin, Truck, RefreshCw, Heart, ChevronDown } from 'lucide-react';
+import {
+    ShoppingBag, Search, Menu, User, MapPin,
+    Truck, RefreshCw, Heart, ChevronDown
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const Header = () => {
     const [keyword, setKeyword] = useState('');
     const [isDeptOpen, setIsDeptOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -31,229 +34,164 @@ const Header = () => {
         toast.info('Signed out successfully.');
     };
 
-    const departments = ['Smartphones & Tablets', 'Computers & Laptops', 'Cameras & Photo', 'Audio & Music', 'Smartwatches', 'Accessories'];
+    const departments = [
+        'Value of the Day', 'Top 100 Offers', 'New Arrivals', 'Computers & Accessories',
+        'Cameras, Audio & Video', 'Mobiles & Tablets', 'Movies, Music & Video Games',
+        'TV & Audio', 'Watches & Eyewear', 'Car, Motorbike & Industrial', 'Accessories'
+    ];
 
     return (
         <header className="w-full bg-white font-sans">
-            {/* TIER 1: TOP BAR */}
-            <div className="border-b border-electro-border hidden md:block">
-                <div className="container-custom flex justify-between items-center py-2 text-[12px] text-electro-text-light">
-                    <div>Welcome to Worldwide Electronics Store</div>
-                    <div className="flex items-center gap-5">
-                        <Link to="#" className="flex items-center gap-1 hover:text-electro-yellow transition-colors"><MapPin size={12} /> Store Locator</Link>
-                        <div className="w-[1px] h-3 bg-electro-border"></div>
-                        <Link to="/orders" className="flex items-center gap-1 hover:text-electro-yellow transition-colors"><Truck size={12} /> Track Your Order</Link>
-                        <div className="w-[1px] h-3 bg-electro-border"></div>
-                        <Link to="/" className="flex items-center gap-1 hover:text-electro-yellow transition-colors"><ShoppingBag size={12} /> Shop</Link>
-                        <div className="w-[1px] h-3 bg-electro-border"></div>
-                        <Link to="/profile" className="flex items-center gap-1 hover:text-electro-yellow transition-colors"><User size={12} /> My Account</Link>
-                    </div>
-                </div>
-            </div>
+            {/* TIER 1: TOP BAR (Matches Image Top Right) */}
+           {/* TIER 1: TOP BAR (Hidden on mobile, visible on md and up) */}
+<div className="border-b border-gray-100 hidden md:block">
+    <div className="max-w-7xl mx-auto px-4 flex justify-between items-center py-2 text-[12px] text-gray-500">
+        <div>Welcome to Worldwide Electronics Store</div>
+        <div className="flex items-center gap-4">
+            <Link to="#" className="flex items-center gap-1 hover:text-yellow-500"><MapPin size={14} /> Store Locator</Link>
+            <span className="text-gray-200">|</span>
+            <Link to="/orders" className="flex items-center gap-1 hover:text-yellow-500"><Truck size={14} /> Track Your Order</Link>
+            <span className="text-gray-200">|</span>
+            <div className="flex items-center gap-1">Dollar (US) <ChevronDown size={10} /></div>
+            <span className="text-gray-200">|</span>
+            {userInfo ? (
+                <button onClick={logoutHandler} className="hover:text-yellow-500">Logout</button>
+            ) : (
+                <Link to="/login" className="hover:text-yellow-500">Register or Sign in</Link>
+            )}
+        </div>
+    </div>
+</div>
 
-            {/* TIER 2: MAIN SEARCH BAR */}
-            <div className="bg-emerald-50/50 backdrop-blur-md border-b border-gray-200 shadow-sm relative z-20">
-                <div className="container-custom py-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                
-                {/* Logo */}
-                <Link to="/" className="flex items-center w-auto group">
-                    <div className="bg-white h-20 w-20 rounded-full shadow-lg flex flex-col items-center justify-center border border-gray-100 group-hover:scale-105 transition-transform">
-                        <div className="flex items-baseline tracking-tighter">
-                            <span className="text-3xl font-black text-orange-500 drop-shadow-sm">M</span>
-                            <span className="text-2xl font-extrabold text-blue-700 drop-shadow-sm">iazi</span>
-                        </div>
-                        <div className="bg-red-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-inner -mt-1 tracking-widest z-10">
-                            SHOP
-                        </div>
+            {/* TIER 2: LOGO & SEARCH (Main Header) */}
+            <div className="max-w-7xl mx-auto px-4 py-3 md:py-5 flex items-center justify-between gap-4 md:gap-10">
+                {/* Logo Area */}
+                <Link to="/" className="flex items-center flex-shrink-0 group">
+                    {/* 1. Increased background circle size to h-16 w-16 */}
+                    <div className=" h-16 w-16 rounded-full flex items-center justify-center shadow-md">
+                        {/* 2. Increased image size to h-12 w-12 and kept blend mode */}
+                        <img src="logo.png" alt="Logo" className="h-12 w-12 object-contain mix-blend-multiply" />
                     </div>
-                    {/* Mobile Menu Trigger */}
-                    <button 
-                        onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(true); }}
-                        className="md:hidden text-electro-dark ml-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
-                        <Menu size={28} />
-                    </button>
+                    {/* 3. Text name removed as requested */}
                 </Link>
 
-                {/* Massive Electro Search */}
-                <div className="flex-1 w-full max-w-3xl hidden md:block">
-                    <form onSubmit={handleSearch} className="flex border-2 border-electro-yellow rounded-full overflow-hidden">
-                        <input 
-                            type="text" 
-                            className="bg-white w-full py-3 px-5 text-sm text-electro-text focus:outline-none"
-                            placeholder="Enter keyword or product name..."
+                {/* Mobile Menu Trigger */}
+                <button
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    className="md:hidden text-gray-800 p-2"
+                >
+                    <Menu size={24} />
+                </button>
+
+                {/* Search Bar (Matches Electro Style) */}
+                <div className="flex-1 max-w-2xl hidden md:block">
+                    <form onSubmit={handleSearch} className="flex border-2 border-yellow-400 rounded-full h-11">
+                        <input
+                            type="text"
+                            className="flex-1 bg-transparent px-5 text-sm focus:outline-none"
+                            placeholder="Search for Products"
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
                         />
-                        <button type="submit" className="bg-electro-yellow px-6 flex items-center justify-center hover:bg-black hover:text-white transition-colors">
-                            <Search size={22} className="text-current" />
+                        <div className="border-l border-gray-200 px-4 flex items-center text-sm text-gray-500 cursor-pointer">
+                            All Categories <ChevronDown size={14} className="ml-1" />
+                        </div>
+                        <button type="submit" className="bg-yellow-400 px-6 rounded-r-full flex items-center justify-center hover:bg-gray-800 hover:text-white transition-colors">
+                            <Search size={20} />
                         </button>
                     </form>
                 </div>
 
-                {/* Right Actions (Compare, Wishlist, Cart) */}
-                <div className="hidden md:flex items-center justify-end gap-8">
-                    <div className="flex items-center gap-1 cursor-pointer group">
-                        <RefreshCw size={26} strokeWidth={1.5} className="text-electro-dark group-hover:text-electro-yellow transition-colors" />
-                    </div>
-                    <div className="flex items-center gap-1 cursor-pointer group">
-                        <Heart size={26} strokeWidth={1.5} className="text-electro-dark group-hover:text-electro-yellow transition-colors" />
-                    </div>
-                    
-                    {/* User Auth Dropdown */}
+                {/* Icons */}
+                <div className="hidden md:flex items-center gap-5 text-gray-700">
+                    <RefreshCw size={22} className="cursor-pointer hover:text-yellow-500" />
+                    <Heart size={22} className="cursor-pointer hover:text-yellow-500" />
                     <div className="relative group">
-                        {userInfo ? (
-                            <div className="flex items-center gap-2 cursor-pointer text-electro-dark group-hover:text-electro-yellow transition-colors">
-                                <User size={26} strokeWidth={1.5} />
-                                <div className="flex flex-col text-left">
-                                    <span className="text-[10px] text-electro-text-light leading-none">Welcome</span>
-                                    <span className="text-[13px] font-bold leading-none">{userInfo.name.split(' ')[0]}</span>
-                                </div>
-                            </div>
-                        ) : (
-                            <Link to="/login" className="flex items-center gap-2 text-electro-dark hover:text-electro-yellow transition-colors">
-                                <User size={26} strokeWidth={1.5} />
-                                <div className="flex flex-col text-left">
-                                    <span className="text-[10px] text-electro-text-light leading-none">Sign In</span>
-                                    <span className="text-[13px] font-bold leading-none">Register</span>
-                                </div>
-                            </Link>
-                        )}
-
-                        {userInfo && (
-                             <div className="absolute top-full right-0 mt-4 w-48 bg-white border border-electro-border shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[110]">
-                                <Link to="/profile" className="block px-4 py-3 text-sm text-electro-text hover:bg-gray-50 border-b border-electro-border">My Account</Link>
-                                <Link to="/orders" className="block px-4 py-3 text-sm text-electro-text hover:bg-gray-50 border-b border-electro-border">Orders</Link>
-                                {userInfo.isAdmin && (
-                                    <Link to="/admin/dashboard" className="block px-4 py-3 text-sm font-bold text-electro-blue hover:bg-gray-50 border-b border-electro-border">Admin Config</Link>
-                                )}
-                                <button onClick={logoutHandler} className="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-gray-50">Sign Out</button>
-                            </div>
-                        )}
+                        <User size={22} className="cursor-pointer hover:text-yellow-500" />
                     </div>
-
-                    {/* Cart Info */}
-                    <Link to="/cart" className="flex items-center gap-3 group">
+                    <Link to="/cart" className="flex items-center gap-2 group">
                         <div className="relative">
-                            <ShoppingBag size={28} strokeWidth={1.5} className="text-electro-dark group-hover:text-electro-yellow transition-colors" />
-                            <span className="absolute -top-1 -right-2 bg-electro-yellow text-electro-dark text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm">
+                            <ShoppingBag size={24} className="group-hover:text-yellow-500" />
+                            <span className="absolute -top-1 -right-2 bg-yellow-400 text-gray-900 text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                                 {cartItems.reduce((a, c) => a + c.qty, 0)}
                             </span>
                         </div>
-                        <div className="flex flex-col text-left hidden lg:flex">
-                            <span className="text-[13px] font-bold text-electro-dark group-hover:text-electro-yellow transition-colors">
-                                ৳{cartItems.reduce((a, c) => a + c.price * c.qty, 0).toLocaleString()}
-                            </span>
-                        </div>
+                        <span className="font-bold text-sm text-gray-800 hidden lg:block">
+                            ৳{cartItems.reduce((a, c) => a + c.price * c.qty, 0).toLocaleString()}
+                        </span>
                     </Link>
                 </div>
             </div>
-            </div>
 
-            {/* TIER 3: ELECTRO NAVIGATION BAR */}
-            <div className="border-t border-electro-border relative hidden md:block">
-                <div className="container-custom flex">
-                    
-                    {/* Vertical Department Menu */}
-                    <div className="relative w-64 xl:w-72" onMouseEnter={() => setIsDeptOpen(true)} onMouseLeave={() => setIsDeptOpen(false)}>
-                        <button className="w-full bg-electro-yellow text-electro-dark font-bold text-[14px] flex items-center gap-3 py-4 px-5 h-full rounded-t-sm">
-                            <Menu size={20} /> All Departments
+            {/* TIER 3: NAV BAR (Matches Image Lower Nav) */}
+            <div className="border-t border-gray-100 hidden md:block">
+                <div className="max-w-7xl mx-auto px-4 flex items-center h-12">
+                    {/* Dept Menu - Matches Home Page Sidebar Alignment */}
+                    <div className="relative w-64 h-full" onMouseEnter={() => setIsDeptOpen(true)} onMouseLeave={() => setIsDeptOpen(false)}>
+                        <button className="bg-yellow-400 w-full h-full flex items-center gap-3 px-5 font-bold text-sm text-gray-800 rounded-t-md">
+                            <Menu size={18} /> All Departments
                         </button>
-                        
-                        {/* Dropdown Menu */}
-                        <div className={`absolute top-full left-0 w-full bg-white border-l border-r border-b border-electro-border shadow-md z-[200] transition-all duration-300 ${isDeptOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+
+                        {/* Dropdown Content */}
+                        <div className={`absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl z-50 transition-all ${isDeptOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
                             <ul className="py-2">
                                 {departments.map(dept => (
                                     <li key={dept}>
-                                        <Link to={`/?category=${dept}`} className="block px-5 py-2.5 text-[14px] text-electro-text hover:text-electro-blue hover:bg-gray-50 flex justify-between items-center">
-                                            {dept} 
+                                        <Link to={`/?category=${dept.toLowerCase()}`} className="block px-5 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-600">
+                                            {dept}
                                         </Link>
                                     </li>
                                 ))}
-                                <li className="border-t border-electro-border mt-2 pt-2">
-                                    <Link to="/" className="block px-5 py-2.5 text-[14px] font-bold text-electro-text hover:text-electro-blue">Value of the Day</Link>
-                                </li>
-                                <li>
-                                    <Link to="/" className="block px-5 py-2.5 text-[14px] font-bold text-electro-text hover:text-electro-blue">Top 100 Offers</Link>
-                                </li>
                             </ul>
                         </div>
                     </div>
 
-                    {/* Horizontal Nav Links */}
-                    <div className="flex-1 flex justify-between items-center pl-8">
-                        <nav className="flex items-center gap-8">
-                            <Link to="/" className="text-[14px] font-bold text-red-500 flex items-center gap-1"><span className="text-xl leading-none">🔥</span> Super Deals</Link>
-                            <Link to="/" className="text-[14px] font-bold text-electro-text hover:text-electro-blue transition-colors">Featured Brands</Link>
-                            <Link to="/" className="text-[14px] font-bold text-electro-text hover:text-electro-blue transition-colors">Trending Styles</Link>
-                            <Link to="/" className="text-[14px] font-bold text-electro-text hover:text-electro-blue transition-colors">Gift Cards</Link>
-                        </nav>
-                        
-                        <div className="hidden lg:block text-[14px] font-bold text-electro-text">
-                            Free Shipping on Orders <span className="text-red-500">৳50,000+</span>
-                        </div>
-                    </div>
+                    {/* Horizontal Links */}
+                    <nav className="flex-1 flex items-center gap-8 px-8 h-full">
+                        <Link to="/" className="text-sm font-bold text-red-500">Super Deals</Link>
+                        <Link to="/" className="text-sm font-bold text-gray-700 hover:text-yellow-500">Featured Brands</Link>
+                        <Link to="/" className="text-sm font-bold text-gray-700 hover:text-yellow-500">Trending Styles</Link>
+                        <Link to="/" className="text-sm font-bold text-gray-700 hover:text-yellow-500">Gift Cards</Link>
+                    </nav>
 
+                    <div className="text-sm font-bold text-gray-700">
+                        Free Shipping on Orders <span className="text-red-500">৳50,000+</span>
+                    </div>
                 </div>
             </div>
-            
+
             {/* MOBILE NAVIGATION DRAWER */}
-            <div 
-                className={`fixed inset-0 bg-black/50 z-[300] transition-opacity duration-300 md:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-                onClick={() => setIsMobileMenuOpen(false)}
-            >
-                <div 
-                    className={`fixed top-0 left-0 h-full w-[280px] bg-white shadow-2xl transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-electro-yellow">
-                        <span className="font-bold text-electro-dark uppercase tracking-widest text-xs">Categories</span>
-                        <button onClick={() => setIsMobileMenuOpen(false)} className="text-electro-dark p-2 hover:bg-white/20 rounded-full">
-                            <Menu size={20} className="rotate-90" />
-                        </button>
-                    </div>
-                    
-                    <div className="overflow-y-auto h-[calc(100%-80px)]">
-                        <ul className="py-4">
-                            {departments.map((dept) => (
+            {isMobileMenuOpen && (
+                <div className="fixed inset-0 z-[100] md:hidden">
+                    <div className="absolute inset-0 bg-black/50" onClick={() => setIsMobileMenuOpen(false)} />
+                    <div className="absolute top-0 left-0 h-full w-72 bg-white shadow-2xl animate-slide-in">
+                        <div className="p-5 border-b border-gray-100 bg-yellow-400 flex justify-between items-center">
+                            <span className="font-bold text-sm">MENU</span>
+                            <button onClick={() => setIsMobileMenuOpen(false)}>X</button>
+                        </div>
+                        <ul className="p-4 space-y-4">
+                            {departments.slice(0, 8).map(dept => (
                                 <li key={dept}>
-                                    <Link 
-                                        to={`/?category=${dept}`} 
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="block px-8 py-4 text-sm font-bold text-electro-dark border-b border-gray-50 active:bg-gray-50 flex justify-between items-center"
-                                    >
-                                        {dept} <ChevronDown size={14} className="-rotate-90 opacity-20" />
-                                    </Link>
+                                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/" className="text-sm font-medium block">{dept}</Link>
                                 </li>
                             ))}
-                            <li className="mt-8 px-8 space-y-4">
-                                <Link to="/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 text-sm font-bold text-electro-text hover:text-electro-blue transition-colors">
-                                    <Truck size={18} /> Track Your Order
-                                </Link>
-                                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 text-sm font-bold text-electro-text hover:text-electro-blue transition-colors">
-                                    <User size={18} /> My Account
-                                </Link>
-                                <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 text-sm font-bold text-red-500 hover:text-electro-blue transition-colors">
-                                    <RefreshCw size={18} /> Super Deals
-                                </Link>
-                            </li>
                         </ul>
                     </div>
                 </div>
-            </div>
+            )}
 
-            {/* MOBILE SEARCH BAR */}
-            <div className="md:hidden px-4 pb-6">
-                 <form onSubmit={handleSearch} className="flex border-2 border-electro-yellow rounded-full overflow-hidden">
-                    <input 
-                        type="text" 
-                        className="bg-white w-full py-2.5 px-4 text-sm text-electro-text focus:outline-none"
-                        placeholder="Search for products"
+            {/* MOBILE SEARCH (Visible only on mobile) */}
+            <div className="md:hidden px-4 pb-4">
+                <form onSubmit={handleSearch} className="flex border-2 border-yellow-400 rounded-full h-10">
+                    <input
+                        type="text"
+                        className="flex-1 bg-transparent px-4 text-xs focus:outline-none"
+                        placeholder="Search..."
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                     />
-                    <button type="submit" className="bg-electro-yellow px-5 flex items-center justify-center">
-                        <Search size={18} className="text-electro-dark" />
+                    <button type="submit" className="bg-yellow-400 px-4 rounded-r-full">
+                        <Search size={16} />
                     </button>
                 </form>
             </div>
