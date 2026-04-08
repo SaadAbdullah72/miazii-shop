@@ -1,4 +1,4 @@
-import asyncHandler from '../middleware/asyncHandler.js';
+import asyncHandler from 'express-async-handler';
 import Notification from '../models/notificationModel.js';
 
 // @desc    Get all active notifications
