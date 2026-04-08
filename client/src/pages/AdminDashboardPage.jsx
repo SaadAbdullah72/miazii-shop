@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts, deleteProduct, createProduct, updateProduct } from '../slices/productSlice';
 import { listCategories, createCategory, deleteCategory } from '../slices/categorySlice';
+import { fetchNotifications, createNotification as pushNotification, deleteNotification as removeNotification } from '../slices/notificationSlice';
 import api, { BASE_URL } from '../utils/axiosConfig';
 import { toast } from 'react-toastify';
 import { 
@@ -9,7 +10,8 @@ import {
     Plus, Edit, Trash2, X, Loader, 
     FolderPlus, Tag, Upload, Image,
     LayoutDashboard, TrendingUp, Users, DollarSign,
-    Search, Filter, ChevronRight, MoreHorizontal, Zap
+    Search, Filter, ChevronRight, MoreHorizontal, Zap,
+    Bell, Send, Info, AlertTriangle, CheckCircle
 } from 'lucide-react';
 
 const AdminDashboardPage = () => {
@@ -24,6 +26,10 @@ const AdminDashboardPage = () => {
     const [uploadedImages, setUploadedImages] = useState([]);
     const [uploading, setUploading] = useState(false);
     
+    // Notification Form States
+    const [notifData, setNotifData] = useState({ title: '', message: '', type: 'info', link: '' });
+    const [isSendingNotif, setIsSendingNotif] = useState(false);
+
     // Filtering States
     const [productSearch, setProductSearch] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
@@ -38,10 +44,12 @@ const AdminDashboardPage = () => {
 
     const { products, loading: productsLoading } = useSelector((state) => state.product);
     const { categories } = useSelector((state) => state.category);
+    const { notifications } = useSelector((state) => state.notifications);
 
     useEffect(() => {
         dispatch(listProducts({}));
         dispatch(listCategories());
+        dispatch(fetchNotifications());
         fetchOrders();
         fetchUsers();
     }, [dispatch]);
@@ -220,6 +228,32 @@ const AdminDashboardPage = () => {
         }
     };
 
+    const handleSendNotification = async (e) => {
+        e.preventDefault();
+        if (!notifData.title || !notifData.message) return toast.error('Fill in title and message');
+        
+        try {
+            setIsSendingNotif(true);
+            await dispatch(pushNotification(notifData)).unwrap();
+            toast.success('Broadcast transmitted successfully!');
+            setNotifData({ title: '', message: '', type: 'info', link: '' });
+        } catch (err) {
+            toast.error(err.message || 'Broadcast failed');
+        } finally {
+            setIsSendingNotif(false);
+        }
+    };
+
+    const handleDeleteNotification = async (id) => {
+        if (!window.confirm('Kill this broadcast?')) return;
+        try {
+            await dispatch(removeNotification(id)).unwrap();
+            toast.success('Broadcast terminated');
+        } catch (err) {
+            toast.error(err.message || 'Termination failed');
+        }
+    };
+
     // Derived Data
     const totalRevenue = orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0);
     const filteredProducts = products.filter(p => {
@@ -232,6 +266,7 @@ const AdminDashboardPage = () => {
         { id: 'overview', name: 'Overview', icon: LayoutDashboard },
         { id: 'payment approval', name: 'Payment Requests', icon: Zap },
         { id: 'paid manifest', name: 'Shipment Manifest', icon: TrendingUp },
+        { id: 'notifications', name: 'Notifications', icon: Bell },
         { id: 'products', name: 'Products', icon: Package },
         { id: 'categories', name: 'Categories', icon: List },
         { id: 'orders history', name: 'Orders History', icon: ShoppingCart },
@@ -583,6 +618,110 @@ const AdminDashboardPage = () => {
                                         <p className="text-sm font-black uppercase tracking-widest text-slate-400">No pending payment verifications</p>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========== NOTIFICATIONS HUB ========== */}
+                    {activeTab === 'notifications' && (
+                        <div className="space-y-8 animate-in slide-in-from-top-4 duration-500">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Broadcast Control</h2>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Live Global Notifications System</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                                {/* Creator Form */}
+                                <div className="lg:col-span-4 bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-xl shadow-slate-200/50 h-fit sticky top-28">
+                                    <div className="flex items-center gap-3 mb-8">
+                                        <div className="w-10 h-10 bg-yellow-400 text-slate-900 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-100">
+                                            <Send size={20} />
+                                        </div>
+                                        <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">Create Blast</h4>
+                                    </div>
+
+                                    <form onSubmit={handleSendNotification} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Broadcast Title</label>
+                                            <input 
+                                                type="text" 
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold outline-none focus:border-yellow-400 transition-all"
+                                                placeholder="e.g. Flash Sale Alert!"
+                                                value={notifData.title}
+                                                onChange={(e) => setNotifData({...notifData, title: e.target.value})}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Message Content</label>
+                                            <textarea 
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-bold outline-none focus:border-yellow-400 transition-all min-h-[120px] resize-none"
+                                                placeholder="Write your broadcast message here..."
+                                                value={notifData.message}
+                                                onChange={(e) => setNotifData({...notifData, message: e.target.value})}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alert Level</label>
+                                            <select 
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase tracking-widest outline-none focus:border-yellow-400 transition-all"
+                                                value={notifData.type}
+                                                onChange={(e) => setNotifData({...notifData, type: e.target.value})}
+                                            >
+                                                <option value="info">Information (Blue)</option>
+                                                <option value="success">Success (Green)</option>
+                                                <option value="warning">Important (Amber)</option>
+                                            </select>
+                                        </div>
+                                        <button 
+                                            disabled={isSendingNotif}
+                                            className="w-full bg-slate-900 text-white rounded-2xl py-5 text-xs font-black uppercase tracking-[0.2em] hover:bg-yellow-500 transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-3"
+                                        >
+                                            {isSendingNotif ? <Loader className="animate-spin" /> : <><Bell size={16}/> Blast Message</>}
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {/* Live Feed */}
+                                <div className="lg:col-span-8 space-y-6">
+                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4 px-2">
+                                        <CheckCircle size={14} className="text-emerald-500" /> Active Broadcast Manifest
+                                    </h4>
+                                    
+                                    {notifications.length > 0 ? (
+                                        notifications.map((n) => (
+                                            <div key={n._id} className="bg-white rounded-[2.5rem] border border-slate-200 p-8 flex items-start gap-6 hover:border-slate-800 transition-all group overflow-hidden relative">
+                                                <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-lg ${n.type === 'warning' ? 'bg-amber-100 text-amber-600' : n.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                    {n.type === 'warning' ? <AlertTriangle size={24} /> : n.type === 'success' ? <CheckCircle size={24} /> : <Info size={24} />}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <h5 className="text-sm font-black text-slate-800 uppercase tracking-tight">{n.title}</h5>
+                                                            <p className="text-[10px] text-slate-400 font-bold tracking-tight mb-4">{new Date(n.createdAt).toLocaleString()}</p>
+                                                        </div>
+                                                        <button 
+                                                            onClick={() => handleDeleteNotification(n._id)}
+                                                            className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                                        >
+                                                            <Trash2 size={18} />
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-xs text-slate-600 leading-relaxed font-medium bg-slate-50 p-6 rounded-3xl border border-slate-100">{n.message}</p>
+                                                </div>
+                                                <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <div className="bg-slate-900 text-white text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Active</div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="bg-slate-50/50 border-2 border-dashed border-slate-100 rounded-[3rem] p-32 text-center opacity-40">
+                                            <Bell size={48} className="mx-auto mb-6 text-slate-200" />
+                                            <p className="text-sm font-black uppercase tracking-widest text-slate-400 italic">No broadcast logs found</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     )}

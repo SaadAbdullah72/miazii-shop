@@ -6,8 +6,10 @@ import { listCategories } from '../slices/categorySlice';
 import api from '../utils/axiosConfig';
 import {
     ShoppingBag, Search, Menu, User, MapPin,
-    Truck, RefreshCw, Heart, ChevronDown, LayoutDashboard
+    Truck, RefreshCw, Heart, ChevronDown, LayoutDashboard,
+    Bell, Check, X as CloseIcon, Info, AlertTriangle
 } from 'lucide-react';
+import { fetchNotifications, resetCount } from '../slices/notificationSlice';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../utils/axiosConfig';
 
@@ -17,6 +19,7 @@ const Header = () => {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [isDeptOpen, setIsDeptOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -24,9 +27,18 @@ const Header = () => {
     const { cartItems } = useSelector((state) => state.cart);
     const { userInfo } = useSelector((state) => state.auth);
     const { categories } = useSelector((state) => state.category);
+    const { notifications, count } = useSelector((state) => state.notifications);
 
     useEffect(() => {
         dispatch(listCategories());
+        dispatch(fetchNotifications());
+
+        // Background poller for notifications every 2 mins
+        const interval = setInterval(() => {
+            dispatch(fetchNotifications());
+        }, 120000);
+
+        return () => clearInterval(interval);
     }, [dispatch]);
 
     // Debounced Search Suggestions
@@ -166,6 +178,56 @@ const Header = () => {
                 </div>
 
                 <div className="hidden md:flex items-center gap-5 text-gray-700">
+                    {/* Notification Bell */}
+                    <div className="relative" onMouseEnter={() => { setIsNotifOpen(true); dispatch(resetCount()); }} onMouseLeave={() => setIsNotifOpen(false)}>
+                        <button className="relative p-2 text-gray-700 hover:text-yellow-500 transition-colors group/bell">
+                            <Bell size={22} className="group-hover/bell:animate-ring" />
+                            {count > 0 && (
+                                <span className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[8px] font-black w-3.5 h-3.5 flex items-center justify-center rounded-full border-2 border-white animate-bounce">
+                                    {count}
+                                </span>
+                            )}
+                        </button>
+                        
+                        {/* Dropdown Menu */}
+                        {isNotifOpen && (
+                            <div className="absolute top-full right-0 w-80 bg-white border border-gray-100 shadow-2xl rounded-2xl z-[100] mt-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                                <div className="p-4 border-b border-gray-50 bg-gray-50/50 flex items-center justify-between">
+                                    <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Broadcast Center</h5>
+                                    <span className="text-[10px] bg-yellow-400 text-gray-900 px-2 py-0.5 rounded-full font-black">NEW</span>
+                                </div>
+                                <div className="max-h-80 overflow-y-auto">
+                                    {notifications.length > 0 ? (
+                                        notifications.map((n) => (
+                                            <div key={n._id} className="p-4 hover:bg-slate-50 border-b border-gray-50 transition-colors last:border-0">
+                                                <div className="flex gap-4">
+                                                    <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${n.type === 'warning' ? 'bg-amber-100 text-amber-600' : n.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                        {n.type === 'warning' ? <AlertTriangle size={14} /> : n.type === 'success' ? <Check size={14} /> : <Info size={14} />}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-xs font-black text-slate-800 uppercase tracking-tight">{n.title}</p>
+                                                        <p className="text-[10px] text-slate-500 mt-1 leading-relaxed line-clamp-2">{n.message}</p>
+                                                        <p className="text-[8px] text-gray-300 font-bold mt-2 uppercase tracking-widest">{new Date(n.createdAt).toLocaleDateString()}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="p-10 text-center opacity-40">
+                                            <Bell size={32} className="mx-auto mb-4 text-slate-200" />
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">System quiet</p>
+                                        </div>
+                                    )}
+                                </div>
+                                {notifications.length > 0 && (
+                                    <div className="p-3 bg-slate-50 text-center border-t border-gray-50">
+                                        <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-yellow-500 transition-colors">Clear Manifest</button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
                     <RefreshCw size={22} className="cursor-pointer hover:text-yellow-500" />
                     <div className="relative group flex items-center gap-4">
                         {userInfo && userInfo.isAdmin && (
