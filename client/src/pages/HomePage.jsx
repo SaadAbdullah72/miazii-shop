@@ -112,7 +112,7 @@ const HomePage = () => {
         <section className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Hero Slider */}
-            <div className={`flex-1 rounded-3xl overflow-hidden relative min-h-[460px] transition-colors duration-1000 ${slides[currentSlide].bg}`}>
+            <div className={`flex-1 rounded-3xl overflow-hidden relative min-h-[520px] md:min-h-[460px] transition-colors duration-1000 ${slides[currentSlide].bg}`}>
               {/* Slides Container */}
               <div className="relative h-full flex items-center transition-all duration-700 ease-in-out">
                 {slides.map((slide, idx) => (
@@ -130,11 +130,11 @@ const HomePage = () => {
                         Discovery Now
                       </button>
                     </div>
-                    <div className="flex-1 flex justify-center py-8 relative group">
+                    <div className="flex-1 flex justify-center py-4 md:py-8 relative group w-full">
                       <img 
                         src={slide.img} 
                         alt={slide.highlight} 
-                        className="max-w-full h-[320px] object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 animate-in zoom-in-95 duration-700 pointer-events-none" 
+                        className="max-w-full h-[220px] md:h-[320px] object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 animate-in zoom-in-95 duration-700 pointer-events-none" 
                       />
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-80 h-80 bg-slate-50 rounded-full blur-[120px] opacity-40"></div>
                     </div>
