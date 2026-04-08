@@ -6,12 +6,25 @@ dotenv.config();
 const connectDB = async () => {
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI, {
-            serverSelectionTimeoutMS: 30000,
-            connectTimeoutMS: 30000,
+            serverSelectionTimeoutMS: 20000,
+            socketTimeoutMS: 45000,
+            family: 4, // Use IPv4 for stability on some hosts
         });
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        console.log(`✅ [DB] Connected: ${conn.connection.host}`);
+        
+        // Listen for connection drops
+        mongoose.connection.on('error', err => {
+            console.error(`❌ [DB] Runtime Error: ${err.message}`);
+        });
+
+        mongoose.connection.on('disconnected', () => {
+            console.warn('⚠️ [DB] Connection Dropped. Attempting re-connect...');
+        });
+
     } catch (error) {
-        console.error(`MongoDB Connection Error: ${error.message}`);
+        console.error(`❌ [DB] INITIAL CONNECTION FAILED: ${error.message}`);
+        // Log stack trace for deep debugging
+        if (process.env.NODE_ENV !== 'production') console.error(error.stack);
     }
 };
 
