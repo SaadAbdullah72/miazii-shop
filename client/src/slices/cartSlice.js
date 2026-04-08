@@ -1,9 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { updateCart } from '../utils/cartUtils';
 
-const initialState = localStorage.getItem('cartItems')
-    ? JSON.parse(localStorage.getItem('cartItems'))
-    : { cartItems: [], shippingAddress: {}, paymentMethod: 'COD' };
+const getInitialState = () => {
+    try {
+        const storedCart = localStorage.getItem('cartItems');
+        if (storedCart) {
+            const parsed = JSON.parse(storedCart);
+            // Verify structure is an object with cartItems array (not legacy array)
+            if (parsed && typeof parsed === 'object' && Array.isArray(parsed.cartItems)) {
+                return parsed;
+            }
+        }
+    } catch (e) {
+        console.error('Failed to parse cartItems from localStorage', e);
+    }
+    return { cartItems: [], shippingAddress: {}, paymentMethod: 'COD' };
+};
+
+const initialState = getInitialState();
 
 const cartSlice = createSlice({
     name: 'cart',

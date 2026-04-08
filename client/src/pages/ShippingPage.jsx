@@ -6,14 +6,14 @@ import { ChevronRight, Truck, MapPin, CheckCircle2, Navigation, Loader } from 'l
 import { toast } from 'react-toastify';
 
 const ShippingPage = () => {
-    const cart = useSelector((state) => state.cart);
-    const { shippingAddress } = cart;
+    const cart = useSelector((state) => state.cart || {});
+    const { shippingAddress = {} } = cart;
 
-    const [address, setAddress] = useState(shippingAddress.address || '');
-    const [city, setCity] = useState(shippingAddress.city || '');
-    const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || '');
-    const [country, setCountry] = useState(shippingAddress.country || '');
-    const [phone, setPhone] = useState(shippingAddress.phone || '');
+    const [address, setAddress] = useState(shippingAddress?.address || '');
+    const [city, setCity] = useState(shippingAddress?.city || '');
+    const [postalCode, setPostalCode] = useState(shippingAddress?.postalCode || '');
+    const [country, setCountry] = useState(shippingAddress?.country || '');
+    const [phone, setPhone] = useState(shippingAddress?.phone || '');
     const [detecting, setDetecting] = useState(false);
 
     const dispatch = useDispatch();
@@ -35,8 +35,14 @@ const ShippingPage = () => {
                 setDetecting(false);
             },
             (error) => {
-                toast.error('Failed to detect location. Please enter manually.');
+                console.error('Geo error:', error);
+                toast.error('Location timeout/refused. Please enter manually.');
                 setDetecting(false);
+            },
+            {
+                enableHighAccuracy: false, // Much faster
+                timeout: 8000,             // 8s limit
+                maximumAge: 60000          // Use cache
             }
         );
     };

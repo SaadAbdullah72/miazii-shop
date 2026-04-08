@@ -16,19 +16,20 @@ const PlaceOrderPage = () => {
     const [image, setImage] = useState('');
     const [uploading, setUploading] = useState(false);
 
-    const cart = useSelector((state) => state.cart);
+    const cart = useSelector((state) => state.cart || {});
     const { userInfo } = useSelector((state) => state.auth);
+    const { cartItems = [], shippingAddress = {} } = cart;
 
     useEffect(() => {
         if (!userInfo) {
             navigate('/login?redirect=/placeorder');
-        } else if (!cart.shippingAddress.address) {
+        } else if (!shippingAddress?.address) {
             navigate('/shipping');
         }
-    }, [userInfo, cart.shippingAddress.address, navigate]);
+    }, [userInfo, shippingAddress?.address, navigate]);
 
     // Calculate prices
-    const itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+    const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
     const shippingPrice = itemsPrice > 50000 ? 0 : 500;
     const codSurcharge = paymentMethod === 'COD' ? Math.round(0.03 * itemsPrice) : 0;
     const totalPrice = itemsPrice + shippingPrice + codSurcharge;
