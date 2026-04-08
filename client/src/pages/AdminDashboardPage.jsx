@@ -166,26 +166,6 @@ const AdminDashboardPage = () => {
         }
     };
 
-    const uploadVideoHandler = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const formDataVideo = new FormData();
-        formDataVideo.append('video', file);
-        setUploadingVideo(true);
-        try {
-            const { data } = await api.post('/api/upload/video', formDataVideo, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            setFormData(prev => ({ ...prev, videoUrl: data.videoUrl }));
-            toast.success('Video uploaded to Cloudinary!');
-        } catch (err) {
-            toast.error('Video upload failed');
-        } finally {
-            setUploadingVideo(false);
-        }
-    };
-
     const removeUploadedImage = (idx) => {
         setUploadedImages(prev => prev.filter((_, i) => i !== idx));
     };
