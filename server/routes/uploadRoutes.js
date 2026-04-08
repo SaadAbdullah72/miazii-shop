@@ -1,8 +1,7 @@
-import path from 'path';
 import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs';
+import { Readable } from 'stream';
 
 const router = express.Router();
 
@@ -13,31 +12,43 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Configure Multer for temporary local storage (before uploading to Cloudinary)
-const storage = multer.diskStorage({
-    destination(req, file, cb) {
-        if (!fs.existsSync('uploads')) {
-            fs.mkdirSync('uploads');
-        }
-        cb(null, 'uploads/');
-    },
-    filename(req, file, cb) {
-        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-    },
-});
-
+// Use Memory Storage for Serverless environments (Vercel)
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// Image Upload (Local for now, or you can switch to Cloudinary)
-router.post('/', upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-    }
-    const imagePath = '/' + req.file.path.replace(/\\/g, '/');
-    res.send({
-        message: 'Image uploaded successfully',
-        image: imagePath,
+/**
+ * Universal Cloudinary Stream Upload logic
+ */
+const uploadToCloudinary = (fileBuffer, folder, resourceType = 'auto') => {
+    return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            { folder, resource_type: resourceType },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+            }
+        );
+        Readable.from(fileBuffer).pipe(uploadStream);
     });
+};
+
+// Image Upload (Migrated to Cloudinary)
+router.post('/', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No image file uploaded' });
+        }
+
+        const result = await uploadToCloudinary(req.file.buffer, 'products/images', 'image');
+
+        res.send({
+            message: 'Image uploaded successfully',
+            image: result.secure_url, // Full Cloudinary URL
+        });
+    } catch (error) {
+        console.error('Cloudinary Image Upload Error:', error);
+        res.status(500).json({ message: 'Image upload failed', error: error.message });
+    }
 });
 
 // Cloudinary Video Upload
@@ -47,23 +58,18 @@ router.post('/video', upload.single('video'), async (req, res) => {
             return res.status(400).json({ message: 'No video file uploaded' });
         }
 
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            resource_type: 'video',
-            folder: 'products/videos',
-        });
-
-        // Delete local temp file
-        fs.unlinkSync(req.file.path);
+        const result = await uploadToCloudinary(req.file.buffer, 'products/videos', 'video');
 
         res.send({
             message: 'Video uploaded successfully',
             videoUrl: result.secure_url,
         });
     } catch (error) {
-        console.error('Cloudinary Error:', error);
+        console.error('Cloudinary Video Upload Error:', error);
         res.status(500).json({ message: 'Video upload failed', error: error.message });
     }
 });
 
 export default router;
+
 
