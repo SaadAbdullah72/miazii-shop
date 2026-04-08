@@ -120,6 +120,16 @@ const OrderDetailsPage = () => {
                                             <p className="text-base font-black text-electro-dark leading-relaxed italic font-display">
                                                 {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                                             </p>
+                                            {order.shippingAddress.address.startsWith('http') && (
+                                                <a 
+                                                    href={order.shippingAddress.address} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
+                                                >
+                                                    <Globe size={14} /> View On Google Maps
+                                                </a>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -132,14 +142,21 @@ const OrderDetailsPage = () => {
                                             <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1 opacity-40 italic">TIMESTAMP_VERIFIED</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-5 group">
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-100 group-hover:bg-electro-blue group-hover:text-white transition-all"><CreditCard size={20} /></div>
                                         <div>
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Financial Protocol</p>
                                             <p className="text-lg font-black text-electro-dark font-display">{order.paymentMethod}</p>
-                                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-1 opacity-40 italic">SECURE_GATEWAY_AUTH</p>
+                                            {order.paymentScreenshot && (
+                                                <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-gray-100 italic">
+                                                    <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Verified Receipt Output</p>
+                                                    <img 
+                                                        src={order.paymentScreenshot.startsWith('data:image') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`} 
+                                                        alt="Receipt" 
+                                                        className="max-w-full h-32 object-contain rounded-xl shadow-lg border-2 border-white cursor-zoom-in"
+                                                        onClick={() => window.open(order.paymentScreenshot.startsWith('data:image') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`, '_blank')}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -33,25 +33,34 @@ const PlaceOrderPage = () => {
     const codSurcharge = paymentMethod === 'COD' ? Math.round(0.03 * itemsPrice) : 0;
     const totalPrice = itemsPrice + shippingPrice + codSurcharge;
 
-    const uploadFileHandler = async (e) => {
+    const uploadFileHandler = (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append('image', file);
-        setUploading(true);
-
-        try {
-            const { data } = await api.post('/api/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            setImage(data.image);
-            toast.success('Receipt uploaded successfully');
-        } catch (err) {
-            toast.error(err.response?.data?.message || err.message);
-        } finally {
-            setUploading(false);
+        // Ensure it's an image
+        if (!file.type.startsWith('image/')) {
+            toast.error('Please upload an image file');
+            return;
         }
+
+        // Limit size to 5MB for Base64 (approx 3.75MB raw)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Image size must be less than 5MB');
+            return;
+        }
+
+        setUploading(true);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            setImage(reader.result);
+            setUploading(false);
+            toast.success('Screenshot captured successfully');
+        };
+        reader.onerror = (error) => {
+            toast.error('Error reading file');
+            setUploading(false);
+        };
     };
 
     const placeOrderHandler = async () => {

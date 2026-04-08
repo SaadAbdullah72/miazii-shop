@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveShippingAddress } from '../slices/cartSlice';
-import { ChevronRight, Truck, MapPin, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, Truck, MapPin, CheckCircle2, Navigation, Loader } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const ShippingPage = () => {
     const cart = useSelector((state) => state.cart);
@@ -13,9 +14,32 @@ const ShippingPage = () => {
     const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || '');
     const [country, setCountry] = useState(shippingAddress.country || '');
     const [phone, setPhone] = useState(shippingAddress.phone || '');
+    const [detecting, setDetecting] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const detectLocation = () => {
+        if (!navigator.geolocation) {
+            toast.error('Geolocation is not supported by your browser');
+            return;
+        }
+
+        setDetecting(true);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                setAddress(mapsLink);
+                toast.success('Location detected successfully!');
+                setDetecting(false);
+            },
+            (error) => {
+                toast.error('Failed to detect location. Please enter manually.');
+                setDetecting(false);
+            }
+        );
+    };
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -64,11 +88,22 @@ const ShippingPage = () => {
                         <div className="p-8">
                             <form onSubmit={submitHandler} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-gray-500">Address</label>
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-xs font-bold uppercase text-gray-500">Address / Location Link</label>
+                                        <button 
+                                            type="button" 
+                                            onClick={detectLocation}
+                                            disabled={detecting}
+                                            className="text-[10px] font-black text-blue-600 uppercase flex items-center gap-1 hover:text-blue-700 disabled:opacity-50"
+                                        >
+                                            {detecting ? <Loader size={12} className="animate-spin" /> : <Navigation size={12} />}
+                                            {detecting ? 'Detecting...' : 'Detect My Location'}
+                                        </button>
+                                    </div>
                                     <input
                                         type="text"
-                                        placeholder="Enter address"
-                                        className="w-full bg-white border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm"
+                                        placeholder="Enter address or auto-detect link"
+                                        className="w-full bg-white border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm font-semibold"
                                         value={address}
                                         required
                                         onChange={(e) => setAddress(e.target.value)}

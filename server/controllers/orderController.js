@@ -57,9 +57,10 @@ const addOrderItems = asyncHandler(async (req, res) => {
                         <table style="width:100%;margin-bottom:20px;">
                             <tr><td style="padding:4px 0;color:#666;">Name:</td><td style="font-weight:bold;">${shippingAddress.fullName || req.user.name}</td></tr>
                             <tr><td style="padding:4px 0;color:#666;">Email:</td><td>${shippingAddress.email || req.user.email}</td></tr>
-                            <tr><td style="padding:4px 0;color:#666;">Phone:</td><td style="font-weight:bold;">${shippingAddress.phone || 'N/A'}</td></tr>
-                            <tr><td style="padding:4px 0;color:#666;">Address:</td><td>${shippingAddress.address}, ${shippingAddress.city} ${shippingAddress.postalCode || ''}, ${shippingAddress.country || 'Bangladesh'}</td></tr>
-                        </table>
+                             <tr><td style="padding:4px 0;color:#666;">Phone:</td><td style="font-weight:bold;">${shippingAddress.phone || 'N/A'}</td></tr>
+                             <tr><td style="padding:4px 0;color:#666;">Address:</td><td>${shippingAddress.address}, ${shippingAddress.city} ${shippingAddress.postalCode || ''}, ${shippingAddress.country || 'Bangladesh'}</td></tr>
+                             ${shippingAddress.address.startsWith('http') ? `<tr><td style="padding:4px 0;color:#666;">Map Loc:</td><td><a href="${shippingAddress.address}" style="color:#0ea5e9;font-weight:bold;text-decoration:none;">📍 Open Google Maps</a></td></tr>` : ''}
+                         </table>
                         
                         <h3 style="color:#333;">Ordered Products</h3>
                         <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
@@ -83,11 +84,12 @@ const addOrderItems = asyncHandler(async (req, res) => {
                         </div>
                         
                         <p style="color:#666;font-size:12px;margin-top:20px;text-align:center;">Payment Method: ${paymentMethod}</p>
-                        ${paymentScreenshot ? `
-                        <div style="margin-top:20px; text-align:center; background:#f9f9f9; padding:15px; border-radius:10px;">
-                            <p style="font-size:11px; font-black uppercase text-gray-400">Manual Payment Receipt</p>
-                            <img src="${process.env.BASE_URL}${paymentScreenshot}" style="max-width:200px; border:2px solid #ddd; border-radius:5px; margin-top:10px;" />
-                        </div>` : ''}
+                         ${paymentScreenshot ? `
+                         <div style="margin-top:20px; text-align:center; background:#f9f9f9; padding:15px; border-radius:10px;">
+                             <p style="font-size:11px; font-weight:bold; text-transform:uppercase; color:#999; margin-bottom:10px;">Manual Payment Receipt</p>
+                             <img src="${paymentScreenshot.startsWith('data:image') ? paymentScreenshot : (process.env.BASE_URL + paymentScreenshot)}" style="max-width:100%; width:300px; border:2px solid #ddd; border-radius:5px; margin-top:10px;" />
+                             <p style="font-size:10px; color:#999; margin-top:5px;">(Embedded via Base64/Secure Storage)</p>
+                         </div>` : ''}
                     </div>
                     <div style="background:#333e48;padding:15px;text-align:center;color:#999;font-size:12px;">
                         MIAZI SHOP &copy; 2026 | +880 1612-893871

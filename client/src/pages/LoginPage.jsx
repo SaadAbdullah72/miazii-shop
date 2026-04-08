@@ -3,13 +3,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, googleLogin } from '../slices/authSlice';
 import { toast } from 'react-toastify';
-import { Loader, User, Lock, Mail, ChevronRight, LogIn } from 'lucide-react';
+import { Loader, User, Lock, Mail, ChevronRight, LogIn, Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -103,13 +104,20 @@ const LoginPage = () => {
                                             <Lock size={16} />
                                         </div>
                                         <input
-                                            type="password"
-                                            className="w-full bg-white border border-gray-200 p-3 pl-10 rounded-lg outline-none focus:border-yellow-400 text-sm font-semibold transition-all"
+                                            type={showPassword ? "text" : "password"}
+                                            className="w-full bg-white border border-gray-200 p-3 pl-10 pr-10 rounded-lg outline-none focus:border-yellow-400 text-sm font-semibold transition-all"
                                             placeholder="••••••••"
                                             value={password}
                                             required
                                             onChange={(e) => setPassword(e.target.value)}
                                         />
+                                        <button
+                                            type="button"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-slate-600 focus:outline-none"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
                                     </div>
                                 </div>
                                 <button

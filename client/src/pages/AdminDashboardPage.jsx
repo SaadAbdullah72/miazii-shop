@@ -510,7 +510,7 @@ const AdminDashboardPage = () => {
                                             </div>
                                             <div className="rounded-3xl border border-slate-100 p-2 bg-slate-50 relative group/img overflow-hidden cursor-zoom-in">
                                                 <img 
-                                                    src={order.paymentScreenshot?.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`} 
+                                                    src={order.paymentScreenshot?.startsWith('data:image') ? order.paymentScreenshot : (order.paymentScreenshot?.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`)} 
                                                     alt="Payment Receipt" 
                                                     className="w-full rounded-2xl aspect-video xl:aspect-square object-cover shadow-sm group-hover/img:scale-110 transition-transform duration-700" 
                                                 />
@@ -535,6 +535,22 @@ const AdminDashboardPage = () => {
                                                             <p className="text-[10px] text-indigo-500 font-bold mt-1">📞 {order.shippingAddress?.phone}</p>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 flex flex-col justify-center">
+                                                    <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">Delivery Target</h4>
+                                                    <p className="text-[10px] font-black text-slate-800 text-center mb-2">{order.shippingAddress?.city}, {order.shippingAddress?.country}</p>
+                                                    {order.shippingAddress?.address?.startsWith('http') ? (
+                                                        <a 
+                                                            href={order.shippingAddress.address} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="w-full py-2 bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest text-center shadow-lg shadow-blue-100"
+                                                        >
+                                                            Open Map Location
+                                                        </a>
+                                                    ) : (
+                                                        <p className="text-[10px] text-slate-400 text-center italic">{order.shippingAddress?.address}</p>
+                                                    )}
                                                 </div>
                                                 <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
                                                     <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Transaction Valuation</h4>
