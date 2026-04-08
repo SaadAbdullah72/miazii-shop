@@ -19,32 +19,49 @@ const ShippingPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const detectLocation = () => {
-        if (!navigator.geolocation) {
-            toast.error('Geolocation is not supported by your browser');
-            return;
-        }
-
+    const detectLocation = async () => {
         setDetecting(true);
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-                setAddress(mapsLink);
-                toast.success('Location detected successfully!');
-                setDetecting(false);
-            },
-            (error) => {
-                console.error('Geo error:', error);
-                toast.error('Location timeout/refused. Please enter manually.');
-                setDetecting(false);
-            },
-            {
-                enableHighAccuracy: false, // Much faster
-                timeout: 8000,             // 8s limit
-                maximumAge: 60000          // Use cache
+        try {
+            // First try IP-based location (No browser permission required, works instantly)
+            const response = await fetch('https://ipapi.co/json/');
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.reason);
             }
-        );
+
+            setCity(data.city || '');
+            setPostalCode(data.postal || '');
+            setCountry(data.country_name || '');
+            setAddress(`${data.city}, ${data.region}, ${data.country_name}`);
+            
+            toast.success('Location detected successfully!');
+            setDetecting(false);
+        } catch (error) {
+            console.error('IP Location failed, trying GPS:', error);
+            // Fallback to Browser Geolocation if IP API fails
+            if (!navigator.geolocation) {
+                toast.error('Location detection failed. Please enter manually.');
+                setDetecting(false);
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                    setAddress(mapsLink);
+                    toast.success('GPS Location detected!');
+                    setDetecting(false);
+                },
+                (err) => {
+                    console.error('Geo error:', err);
+                    toast.error('Location denied/timeout. Please enter manually.');
+                    setDetecting(false);
+                },
+                { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
+            );
+        }
     };
 
     const submitHandler = (e) => {
