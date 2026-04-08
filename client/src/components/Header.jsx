@@ -111,8 +111,8 @@ const Header = () => {
             <div className="max-w-7xl mx-auto px-4 py-3 md:py-5 flex items-center justify-between gap-4 md:gap-10">
                 {/* Logo Area */}
                 <Link to="/" className="flex items-center flex-shrink-0 group">
-                    <div className=" h-16 w-16 rounded-full flex items-center justify-center shadow-md">
-                        <img src="logo.png" alt="Logo" className="h-12 w-12 object-contain mix-blend-multiply" />
+                    <div className="h-16 md:h-20 flex items-center justify-center">
+                        <img src="/logo.png" alt="Miazii Shop Logo" className="h-full w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
                     </div>
                 </Link>
 

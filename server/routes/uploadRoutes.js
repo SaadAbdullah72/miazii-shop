@@ -39,15 +39,21 @@ router.post('/', upload.single('image'), async (req, res) => {
             return res.status(400).json({ message: 'No image file uploaded' });
         }
 
+        console.log('🚀 [Cloudinary] Starting image upload...');
         const result = await uploadToCloudinary(req.file.buffer, 'products/images', 'image');
+        console.log('✅ [Cloudinary] Image uploaded:', result.secure_url);
 
         res.send({
             message: 'Image uploaded successfully',
-            image: result.secure_url, // Full Cloudinary URL
+            image: result.secure_url,
         });
     } catch (error) {
-        console.error('Cloudinary Image Upload Error:', error);
-        res.status(500).json({ message: 'Image upload failed', error: error.message });
+        console.error('❌ [Cloudinary] Image Upload Error:', error);
+        res.status(500).json({ 
+            message: 'Image upload failed', 
+            error: error.message,
+            details: error // Sending full error for debugging
+        });
     }
 });
 
@@ -58,15 +64,21 @@ router.post('/video', upload.single('video'), async (req, res) => {
             return res.status(400).json({ message: 'No video file uploaded' });
         }
 
+        console.log('🚀 [Cloudinary] Starting video upload...');
         const result = await uploadToCloudinary(req.file.buffer, 'products/videos', 'video');
+        console.log('✅ [Cloudinary] Video uploaded:', result.secure_url);
 
         res.send({
             message: 'Video uploaded successfully',
             videoUrl: result.secure_url,
         });
     } catch (error) {
-        console.error('Cloudinary Video Upload Error:', error);
-        res.status(500).json({ message: 'Video upload failed', error: error.message });
+        console.error('❌ [Cloudinary] Video Upload Error:', error);
+        res.status(500).json({ 
+            message: 'Video upload failed', 
+            error: error.message,
+            details: error
+        });
     }
 });
 

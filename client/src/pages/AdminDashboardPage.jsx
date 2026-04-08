@@ -299,10 +299,10 @@ const AdminDashboardPage = () => {
             <aside className="w-64 bg-white border-r border-slate-200 hidden lg:flex flex-col sticky top-0 h-screen">
                 <div className="p-8">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center shadow-lg shadow-yellow-200">
-                            <TrendingUp size={18} className="text-gray-900" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md overflow-hidden">
+                            <img src="/logo.png" alt="Miazii Shop" className="w-full h-full object-cover" />
                         </div>
-                        <span className="font-black text-lg tracking-tighter text-slate-800 uppercase">Electro <span className="text-yellow-500">Pro</span></span>
+                        <span className="font-black text-lg tracking-tighter text-slate-800 uppercase">Miazii <span className="text-yellow-500">Shop</span></span>
                     </div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Admin Console</p>
                 </div>

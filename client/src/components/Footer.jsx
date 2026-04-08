@@ -51,10 +51,8 @@ const Footer = () => {
                     {/* Left Column: Logo & Contact */}
                     <div className="lg:col-span-4">
                         <Link to="/" className="inline-block mb-8 group">
-                            <div className="flex items-baseline tracking-tighter leading-none">
-                                <span className="text-5xl font-black text-orange-500">M</span>
-                                <span className="text-4xl font-extrabold text-blue-700">iazi</span>
-                                <span className="ml-1 w-3 h-3 bg-yellow-400 rounded-full"></span>
+                            <div className="h-16 flex items-center justify-start">
+                                <img src="/logo.png" alt="Miazii Shop Logo" className="h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" />
                             </div>
                         </Link>
 
