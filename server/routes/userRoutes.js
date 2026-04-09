@@ -6,7 +6,10 @@ import {
     getUserProfile,
     updateUserProfile,
     getUsers,
-    googleAuth
+    googleAuth,
+    forgotPassword,
+    verifyOTP,
+    resetPassword
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import { registerValidation, loginValidation } from '../middleware/validationMiddleware.js';
@@ -18,5 +21,10 @@ router.post('/login', loginValidation, authUser);
 router.post('/google-login', googleAuth);
 router.post('/logout', logoutUser);
 router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+
+// OTP Password Reset Routes
+router.post('/forgot-password', forgotPassword);
+router.post('/verify-otp', verifyOTP);
+router.post('/reset-password', resetPassword);
 
 export default router;

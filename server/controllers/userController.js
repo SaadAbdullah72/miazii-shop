@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
 import generateToken from '../utils/generateToken.js';
+import bcrypt from 'bcryptjs';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -167,6 +168,119 @@ const googleAuth = asyncHandler(async (req, res) => {
     }
 });
 
+import sendEmail from '../utils/emailUtils.js';
+
+// @desc    Forgot Password (Generate OTP)
+// @route   POST /api/users/forgot-password
+// @access  Public
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error('No user found with this email');
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Hash OTP before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedOtp = await bcrypt.hash(otp, salt);
+
+    user.resetOtp = hashedOtp;
+    user.resetOtpExpire = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
+    await user.save();
+
+    // Send Email
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Password Reset OTP - Miazii Shop',
+            html: `
+                <h1>Password Reset</h1>
+                <p>You requested a password reset. Here is your 6-digit OTP:</p>
+                <h2 style="background: #f4f4f4; padding: 10px; display: inline-block; letter-spacing: 5px;">${otp}</h2>
+                <p>This OTP is valid for 5 minutes.</p>
+                <p>If you did not request this, please ignore this email.</p>
+            `,
+        });
+
+        res.status(200).json({ message: 'OTP sent to email' });
+    } catch (error) {
+        user.resetOtp = undefined;
+        user.resetOtpExpire = undefined;
+        await user.save();
+        res.status(500);
+        throw new Error('Email could not be sent. Make sure EMAIL_USER and EMAIL_PASS are configured.');
+    }
+});
+
+// @desc    Verify OTP
+// @route   POST /api/users/verify-otp
+// @access  Public
+const verifyOTP = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error('User not found');
+    }
+
+    if (!user.resetOtp || !user.resetOtpExpire) {
+        res.status(400);
+        throw new Error('No OTP request found for this user');
+    }
+
+    if (Date.now() > user.resetOtpExpire) {
+        res.status(400);
+        throw new Error('OTP has expired');
+    }
+
+    const isMatch = await bcrypt.compare(otp, user.resetOtp);
+
+    if (!isMatch) {
+        res.status(400);
+        throw new Error('Invalid OTP');
+    }
+
+    res.status(200).json({ message: 'OTP verified successfully' });
+});
+
+// @desc    Reset Password
+// @route   POST /api/users/reset-password
+// @access  Public
+const resetPassword = asyncHandler(async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user || !user.resetOtp || !user.resetOtpExpire) {
+        res.status(400);
+        throw new Error('Invalid request');
+    }
+
+    if (Date.now() > user.resetOtpExpire) {
+        res.status(400);
+        throw new Error('OTP has expired');
+    }
+
+    const isMatch = await bcrypt.compare(otp, user.resetOtp);
+    if (!isMatch) {
+        res.status(400);
+        throw new Error('Invalid OTP');
+    }
+
+    user.password = newPassword; // Pre-save hook will hash it
+    user.resetOtp = undefined;
+    user.resetOtpExpire = undefined;
+    
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successfully' });
+});
+
 export {
     authUser,
     registerUser,
@@ -174,5 +288,8 @@ export {
     getUserProfile,
     updateUserProfile,
     getUsers,
-    googleAuth
+    googleAuth,
+    forgotPassword,
+    verifyOTP,
+    resetPassword
 };

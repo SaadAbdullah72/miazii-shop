@@ -156,6 +156,20 @@ const createProductReview = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
 
     if (product) {
+        // STRICT LOGIC: Verify the user has purchased this product
+        // We look for an order belonging to the user that contains this product and is theoretically paid/delivered.
+        // I will check if they have any 'isPaid' = true order for this product.
+        const hasPurchased = await import('../models/orderModel.js').then(module => module.default.findOne({
+            user: req.user._id,
+            isPaid: true,
+            'orderItems.product': product._id
+        }));
+
+        if (!hasPurchased) {
+            res.status(400);
+            throw new Error('You must purchase this product to review it');
+        }
+
         const alreadyReviewed = product.reviews.find(
             (r) => r.user.toString() === req.user._id.toString()
         );

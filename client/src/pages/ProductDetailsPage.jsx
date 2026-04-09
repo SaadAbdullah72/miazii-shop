@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetails } from '../slices/productSlice';
 import { addToCart } from '../slices/cartSlice';
 import { toast } from 'react-toastify';
-import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader } from 'lucide-react';
-import { BASE_URL } from '../utils/axiosConfig';
+import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle } from 'lucide-react';
+import api, { BASE_URL } from '../utils/axiosConfig';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
@@ -14,6 +14,9 @@ const ProductDetailsPage = () => {
 
     const [qty, setQty] = useState(1);
     const [selectedImage, setSelectedImage] = useState(0);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [reviewLoading, setReviewLoading] = useState(false);
 
     const { loading, error, productDetails: product } = useSelector((state) => state.product);
     const { userInfo } = useSelector((state) => state.auth);
@@ -28,6 +31,23 @@ const ProductDetailsPage = () => {
             dispatch(addToCart({ ...product, qty }));
             toast.success('Product added to cart!');
             navigate('/cart');
+        }
+    };
+
+    const submitReviewHandler = async (e) => {
+        e.preventDefault();
+        if (rating === 0) return toast.error('Please select a rating');
+        setReviewLoading(true);
+        try {
+            await api.post(`/api/products/${id}/reviews`, { rating, comment });
+            toast.success('Review submitted successfully');
+            setRating(0);
+            setComment('');
+            dispatch(getProductDetails(id)); // Refresh product details to show new review
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to submit review');
+        } finally {
+            setReviewLoading(false);
         }
     };
 
@@ -214,6 +234,104 @@ const ProductDetailsPage = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* REVIEWS SECTION */}
+            <div className="container-custom py-12 border-t border-gray-200">
+                <div className="max-w-4xl mx-auto">
+                    <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-3 mb-8">
+                        <MessageCircle size={28} className="text-yellow-500" />
+                        Customer Reviews
+                    </h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        {/* Review Form */}
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-800 uppercase mb-4">Write a Review</h3>
+                            {userInfo ? (
+                                <form onSubmit={submitReviewHandler} className="space-y-4 bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Rating</label>
+                                        <select 
+                                            value={rating} 
+                                            onChange={(e) => setRating(Number(e.target.value))}
+                                            className="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm font-semibold"
+                                        >
+                                            <option value="">Select...</option>
+                                            <option value="1">1 - Poor</option>
+                                            <option value="2">2 - Fair</option>
+                                            <option value="3">3 - Good</option>
+                                            <option value="4">4 - Very Good</option>
+                                            <option value="5">5 - Excellent</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Comment</label>
+                                        <textarea 
+                                            rows="4" 
+                                            value={comment}
+                                            onChange={(e) => setComment(e.target.value)}
+                                            required
+                                            className="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm resize-none"
+                                            placeholder="What did you like about this product?"
+                                        ></textarea>
+                                    </div>
+                                    <button 
+                                        type="submit" 
+                                        disabled={reviewLoading}
+                                        className="w-full bg-gray-900 text-white font-bold py-3 rounded-lg uppercase tracking-wider text-xs hover:bg-yellow-500 hover:text-gray-900 transition-colors disabled:opacity-50"
+                                    >
+                                        {reviewLoading ? 'Submitting...' : 'Submit Review'}
+                                    </button>
+                                </form>
+                            ) : (
+                                <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-xl text-center">
+                                    <p className="text-sm text-yellow-800 font-medium mb-4">You must be logged in to write a review.</p>
+                                    <Link to="/login" className="inline-block bg-yellow-400 text-gray-900 font-bold px-6 py-2 rounded-full hover:bg-yellow-500 transition-colors text-sm">
+                                        Login Now
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Reviews List */}
+                        <div className="space-y-6">
+                            {product.reviews.length === 0 ? (
+                                <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                                    <MessageCircle size={40} className="mx-auto text-gray-300 mb-3" />
+                                    <h3 className="text-gray-500 font-medium">No reviews yet.</h3>
+                                    <p className="text-xs text-gray-400">Be the first to review this product!</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                                    {product.reviews.map((review) => (
+                                        <div key={review._id} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-500">
+                                                        <User size={16} />
+                                                    </div>
+                                                    <span className="font-bold text-sm text-gray-800">{review.name}</span>
+                                                </div>
+                                                <span className="text-xs text-gray-400">{review.createdAt.substring(0, 10)}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1 mb-2">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star 
+                                                        key={i} 
+                                                        size={14} 
+                                                        className={i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"} 
+                                                    />
+                                                ))}
+                                            </div>
+                                            <p className="text-gray-600 text-sm leading-relaxed">{review.comment}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -22,20 +22,17 @@ const ShippingPage = () => {
     const detectLocation = async () => {
         setDetecting(true);
         try {
-            // First try IP-based location (No browser permission required, works instantly)
-            const response = await fetch('https://ipapi.co/json/');
+            // First try IP-based location via ipinfo.io (No browser permission required)
+            const response = await fetch('https://ipinfo.io/json');
+            if (!response.ok) throw new Error('IP lookup failed');
             const data = await response.json();
-
-            if (data.error) {
-                throw new Error(data.reason);
-            }
 
             setCity(data.city || '');
             setPostalCode(data.postal || '');
-            setCountry(data.country_name || '');
-            setAddress(`${data.city}, ${data.region}, ${data.country_name}`);
+            setCountry(data.country || ''); 
+            setAddress(`${data.city || ''}, ${data.region || ''}, ${data.country || ''}`);
             
-            toast.success('Location detected successfully!');
+            toast.success('Location detected automatically!');
             setDetecting(false);
         } catch (error) {
             console.error('IP Location failed, trying GPS:', error);
@@ -56,10 +53,13 @@ const ShippingPage = () => {
                 },
                 (err) => {
                     console.error('Geo error:', err);
-                    toast.error('Location denied/timeout. Please enter manually.');
+                    if (err.code === 1) toast.error('Location Access Denied. Please enter manually.');
+                    else if (err.code === 2) toast.error('Position Unavailable. Please enter manually.');
+                    else if (err.code === 3) toast.error('Location Timeout. Connection might be slow.');
+                    else toast.error('Could not detect location. Please enter manually.');
                     setDetecting(false);
                 },
-                { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
+                { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
             );
         }
     };
@@ -132,7 +132,7 @@ const ShippingPage = () => {
                                         onChange={(e) => setAddress(e.target.value)}
                                     />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold uppercase text-gray-500">City</label>
                                         <input

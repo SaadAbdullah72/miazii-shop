@@ -12,6 +12,9 @@ import CategoryPage from './pages/CategoryPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import OtpVerificationPage from './pages/OtpVerificationPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import ShippingPage from './pages/ShippingPage';
 import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
@@ -31,6 +34,9 @@ function App() {
                         <Route path="/cart" element={<CartPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                        <Route path="/verify-otp" element={<OtpVerificationPage />} />
+                        <Route path="/reset-password" element={<ResetPasswordPage />} />
                         <Route path="/shipping" element={<ShippingPage />} />
                         <Route path="/placeorder" element={<PlaceOrderPage />} />
                         <Route path="/order/:id" element={<OrderDetailsPage />} />
