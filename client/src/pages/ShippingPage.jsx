@@ -90,7 +90,18 @@ const ShippingPage = () => {
                     finalLng = parseFloat(data[0].lon);
                     toast.success('Address coordinates resolved successfully!');
                 } else {
-                    toast.warning('Could not pinpoint precise distance. Using standard rate.');
+                    // Fallback Tier 2: Search just the city
+                    console.log('Tier 1 failed, trying Tier 2 (City only)');
+                    const fallbackResponse = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city + ", Bangladesh")}&format=json&limit=1&countrycodes=bd`);
+                    const fallbackData = await fallbackResponse.json();
+                    
+                    if (fallbackData && fallbackData.length > 0) {
+                        finalLat = parseFloat(fallbackData[0].lat);
+                        finalLng = parseFloat(fallbackData[0].lon);
+                        toast.success('City coordinates resolved!');
+                    } else {
+                        toast.warning('Location too vague. Using standard rate.');
+                    }
                 }
             } catch (error) {
                 console.error('Geo-Resolution Error:', error);
