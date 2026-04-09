@@ -50,9 +50,20 @@ const ProfilePage = () => {
                             <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
                                 <User size={24} className="text-yellow-500" /> User Profile
                             </h1>
-                            <div className="flex items-center gap-2 mt-1 text-gray-500">
-                                <Mail size={14} className="text-yellow-500" />
-                                <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email}</span>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-2">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                    <Mail size={14} className="text-yellow-500" />
+                                    <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email}</span>
+                                </div>
+                                <button 
+                                    onClick={() => {
+                                        dispatch({ type: 'auth/logout' }); // Direct logout for speed
+                                        window.location.href = '/login';
+                                    }}
+                                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all w-fit"
+                                >
+                                    <RefreshCw size={12} className="rotate-180" /> Sign Out Session
+                                </button>
                             </div>
                         </div>
                     </div>
