@@ -144,12 +144,13 @@ const Header = () => {
                         )}
                     </Link>
 
-                    <button 
-                        onClick={() => setIsUserDrawerOpen(true)}
+                    <Link 
+                        to="/profile" 
+                        onClick={() => setIsUserDrawerOpen(false)}
                         className="p-2 text-gray-800 hover:text-yellow-500 transition-colors"
                     >
                         <User size={24} />
-                    </button>
+                    </Link>
 
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-800 p-2"><Menu size={24} /></button>
                 </div>

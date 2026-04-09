@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import api from '../utils/axiosConfig';
-import { Loader, Package, Mail, Calendar, CreditCard, ChevronRight, Eye, Info, Clock, CheckCircle2, User } from 'lucide-react';
+import { Loader, Package, Mail, Calendar, CreditCard, ChevronRight, Eye, Info, Clock, CheckCircle2, User, Truck } from 'lucide-react';
 
 const ProfilePage = () => {
     const [orders, setOrders] = useState([]);
@@ -104,10 +104,17 @@ const ProfilePage = () => {
                                             {order.isPaid ? <CheckCircle2 size={12} /> : <Clock size={12} />}
                                             {order.isPaid ? 'Payment Confirmed' : 'Payment Awaiting'}
                                         </div>
-                                        <div className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 border ${order.isDelivered ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-gray-50 text-gray-400 border-gray-100'}`}>
-                                            {order.isDelivered ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                                            {order.isDelivered ? 'Delivered' : 'In Transit'}
+                                        <div className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 border ${order.isDelivered ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                                            {order.isDelivered ? <CheckCircle2 size={12} /> : <Truck size={12} />}
+                                            {order.isDelivered ? 'Delivered' : 'Shipping'}
                                         </div>
+                                        {/* Estimated Delivery Window */}
+                                        {!order.isDelivered && (
+                                            <div className="px-4 py-2 bg-slate-50 border border-gray-100 rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                                                <Calendar size={12} className="text-yellow-500" />
+                                                Will be delivered before {new Date(new Date(order.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                                            </div>
+                                        )}
                                         <Link 
                                             to={`/order/${order._id}`}
                                             className="px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-slate-900 transition-all flex items-center gap-2 ml-auto md:ml-0"
