@@ -82,7 +82,11 @@ const ShippingPage = () => {
             setIsResolving(true);
             try {
                 const query = `${address}, ${city}, Bangladesh`.trim();
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bd`);
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bd`, {
+                    headers: {
+                        'User-Agent': 'Miazii-Shop-Logistics-Bot'
+                    }
+                });
                 const data = await response.json();
 
                 if (data && data.length > 0) {
@@ -173,7 +177,11 @@ const ShippingPage = () => {
                                         className="w-full bg-white border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm font-semibold"
                                         value={address}
                                         required
-                                        onChange={(e) => setAddress(e.target.value)}
+                                        onChange={(e) => {
+                                            setAddress(e.target.value);
+                                            setLat(null); // Clear coords when user types manually
+                                            setLng(null);
+                                        }}
                                     />
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -185,7 +193,11 @@ const ShippingPage = () => {
                                             className="w-full bg-white border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm"
                                             value={city}
                                             required
-                                            onChange={(e) => setCity(e.target.value)}
+                                            onChange={(e) => {
+                                                setCity(e.target.value);
+                                                setLat(null);
+                                                setLng(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-2">
