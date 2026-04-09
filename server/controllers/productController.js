@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler';
+import logger from '../utils/logger.js';
 import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
 import Order from '../models/orderModel.js';
