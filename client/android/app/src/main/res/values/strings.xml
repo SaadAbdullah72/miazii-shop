@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">miazi shop</string>
+    <string name="title_activity_main">miazi shop</string>
+    <string name="package_name">com.miazishop.app</string>
+    <string name="custom_url_scheme">com.miazishop.app</string>
+</resources>

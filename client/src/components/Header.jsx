@@ -144,13 +144,12 @@ const Header = () => {
                         )}
                     </Link>
 
-                    <Link 
-                        to="/profile" 
-                        onClick={() => setIsUserDrawerOpen(false)}
+                    <button 
+                        onClick={() => setIsUserDrawerOpen(true)}
                         className="p-2 text-gray-800 hover:text-yellow-500 transition-colors"
                     >
                         <User size={24} />
-                    </Link>
+                    </button>
 
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-800 p-2"><Menu size={24} /></button>
                 </div>
@@ -375,7 +374,7 @@ const Header = () => {
                             </Link>
                         </>
                     ) : (
-                        <Link to="/login" onClick={() => setIsUserDrawerOpen(false)} className="w-full h-18 bg-yellow-400 text-slate-900 rounded-3xl font-black uppercase text-xs tracking-[0.3em] flex items-center justify-center shadow-2xl shadow-yellow-100 hover:scale-[1.02] transition-all">Sign In Protocol</Link>
+                        <Link to="/login" onClick={() => setIsUserDrawerOpen(false)} className="w-full h-16 bg-yellow-400 text-slate-900 rounded-3xl font-black uppercase text-sm tracking-[0.2em] flex items-center justify-center shadow-xl shadow-yellow-100 ring-4 ring-yellow-400/20 hover:scale-[1.02] transition-all">Sign In / Register</Link>
                     )}
                 </div>
                 {userInfo && (
