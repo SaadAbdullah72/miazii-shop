@@ -129,8 +129,13 @@ const MyOrdersPage = () => {
                                                     <Truck size={12} /> ARRIVED
                                                 </div>
                                             ) : (
-                                                <div className="flex items-center gap-2 text-gray-400 font-bold bg-gray-50 px-3 py-1 rounded-full w-fit border border-gray-100">
-                                                    <Clock size={12} /> DISPATCHING
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center gap-2 text-amber-600 font-bold bg-amber-50 px-3 py-1 rounded-full w-fit border border-amber-100 uppercase tracking-widest text-[9px]">
+                                                        <Truck size={12} className="animate-pulse" /> Shipping
+                                                    </div>
+                                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
+                                                        Arriving Before: {new Date(new Date(order.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                                                    </p>
                                                 </div>
                                             )}
                                         </td>
