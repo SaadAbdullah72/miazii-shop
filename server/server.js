@@ -32,10 +32,10 @@ const app = express();
 // No per-request blocking middleware is required.
 
 // Middleware
-app.use(express.json({ limit: '10mb' })); // Reduced from 50mb for DOS protection
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(mongoSanitize()); // Prevent NoSQL Injection
-app.use(xss()); // Filter XSS attacks
+// app.use(mongoSanitize()); // Temporarily disabled for diagnostics
+// app.use(xss()); // Temporarily disabled for diagnostics
 
 app.use(cors({
     origin: [
@@ -83,6 +83,11 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+// Health check route for diagnostics
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'UP', environment: process.env.NODE_ENV, timestamp: new Date().toISOString() });
+});
 
 // Server running check route for Vercel
 app.get('/', (req, res) => {

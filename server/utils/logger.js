@@ -1,22 +1,8 @@
-import winston from 'winston';
-
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-    ),
-    defaultMeta: { service: 'miazii-shop-api' },
-    transports: [
-        // On Vercel/Serverless, we MUST log to console. 
-        // File transports will cause 500 errors due to read-only filesystem.
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-            ),
-        }),
-    ],
-});
+// Diagnostic Logger: Replaced Winston with standard console for Vercel troubleshooting.
+const logger = {
+    info: (...args) => console.log('INFO:', ...args),
+    error: (...args) => console.error('ERROR:', ...args),
+    warn: (...args) => console.warn('WARN:', ...args),
+};
 
 export default logger;
