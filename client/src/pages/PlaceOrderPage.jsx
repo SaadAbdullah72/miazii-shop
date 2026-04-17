@@ -164,8 +164,8 @@ const PlaceOrderPage = () => {
             <div className="max-w-7xl mx-auto px-4 pt-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Checkout Protocol <span className="text-blue-600">v1.2</span></h1>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">Manifest Finalization & Logistics Prep</p>
+                        <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Order Review</h1>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">Verify items & Delivery Information</p>
                     </div>
                     <div className="flex items-center gap-4 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
                         <div className="flex items-center gap-2 text-green-600 px-4 py-2 bg-green-50 rounded-xl">
@@ -349,49 +349,42 @@ const PlaceOrderPage = () => {
 
                     {/* Summary Section */}
                     <div className="lg:col-span-4 sticky top-8">
-                        <div className="bg-slate-900 rounded-[3rem] shadow-2xl shadow-indigo-200/50 overflow-hidden relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
-                            
-                            <div className="p-10 border-b border-white/5">
-                                <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-2">Billing Matrix</h2>
-                                <h3 className="text-2xl font-black text-white tracking-tighter">Summary Data</h3>
+                        <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                            <div className="p-8 border-b border-slate-100 bg-slate-50/30">
+                                <h3 className="text-lg font-black text-slate-800 uppercase tracking-tight">Order Summary</h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Final Price Calculations</p>
                             </div>
 
-                            <div className="p-10 space-y-6">
-                                <div className="flex justify-between items-center group">
-                                    <span className="uppercase tracking-[0.2em] text-[9px] font-black text-gray-500 group-hover:text-white transition-colors duration-300">Net Product Subtotal</span>
-                                    <span className="text-white font-black font-sans text-sm tracking-tighter">৳{itemsPrice.toLocaleString()}</span>
+                            <div className="p-8 space-y-6">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Items Total</span>
+                                    <span className="text-slate-800 font-black text-sm">৳{itemsPrice.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between items-center group">
+                                <div className="flex justify-between items-center">
                                     <div className="flex flex-col">
-                                        <span className="uppercase tracking-[0.2em] text-[9px] font-black text-gray-500 group-hover:text-white transition-colors duration-300">Logistic Coordination</span>
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Delivery Charge</span>
                                         {userDistance && (
-                                            <span className="text-[7px] font-bold text-indigo-400 uppercase tracking-widest mt-0.5">Distance: {userDistance.toFixed(1)} KM</span>
+                                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">Distance: {userDistance.toFixed(1)} KM</span>
                                         )}
                                     </div>
-                                    <span className="text-white font-black font-sans text-sm tracking-tighter">৳{shippingPrice.toLocaleString()}</span>
+                                    <span className="text-slate-800 font-black text-sm">৳{shippingPrice.toLocaleString()}</span>
                                 </div>
                                 
                                 {paymentMethod === 'COD' && (
-                                    <div className="flex justify-between items-center bg-amber-500/10 p-5 rounded-2xl border border-amber-500/20 animate-in zoom-in duration-300">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 bg-amber-400 rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-amber-400/20">
-                                                <Package size={14} />
-                                            </div>
-                                            <span className="uppercase tracking-widest text-[9px] font-black text-amber-400">COD Handling Fee (3%)</span>
-                                        </div>
-                                        <span className="text-amber-400 font-black font-sans text-base tracking-tighter">৳{codSurcharge.toLocaleString()}</span>
+                                    <div className="flex justify-between items-center pt-4 border-t border-slate-50">
+                                        <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Cash Collection Fee (3%)</span>
+                                        <span className="text-amber-600 font-black text-sm">৳{codSurcharge.toLocaleString()}</span>
                                     </div>
                                 )}
 
-                                <div className="pt-10 border-t border-white/10 flex flex-col gap-4">
+                                <div className="pt-8 border-t border-slate-100">
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">Total Authorized Amount</p>
-                                            <p className="text-5xl font-black text-white italic tracking-tighter">৳{totalPrice.toLocaleString()}</p>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Grand Total</p>
+                                            <p className="text-4xl font-black text-slate-900 tracking-tighter">৳{totalPrice.toLocaleString()}</p>
                                         </div>
-                                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-indigo-400 mb-2">
-                                            <Globe size={24} />
+                                        <div className="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-yellow-100">
+                                            <Zap size={20} className="text-slate-900" />
                                         </div>
                                     </div>
                                 </div>
@@ -399,16 +392,17 @@ const PlaceOrderPage = () => {
                                 <button
                                     onClick={placeOrderHandler}
                                     disabled={cart.cartItems.length === 0 || isPlacing}
-                                    className={`w-full py-6 mt-8 flex items-center justify-center gap-3 disabled:opacity-50 font-black text-[10px] tracking-[0.4em] uppercase rounded-[2rem] transition-all relative group overflow-hidden ${paymentMethod === 'Online' ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/40' : 'bg-white hover:bg-yellow-400 text-slate-900 shadow-xl'}`}
+                                    className="w-full py-5 mt-6 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-yellow-100 transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
                                 >
-                                    <span className="relative z-10">{isPlacing ? <Loader className="animate-spin" size={20}/> : 'Execute Transaction'}</span>
-                                    <ChevronRight size={18} className="relative z-10 group-hover:translate-x-2 transition-transform" />
-                                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                    {isPlacing ? <Loader className="animate-spin" size={20}/> : 'Place Order'}
+                                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                                 
-                                <div className="flex items-center justify-center gap-2 pt-6">
-                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></div>
-                                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{paymentMethod === 'Online' ? 'Requires Admin Audit' : 'Instant Transmission Ready'}</p>
+                                <div className="text-center pt-4">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2">
+                                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                        Secure Transaction Point
+                                    </p>
                                 </div>
                             </div>
                         </div>
