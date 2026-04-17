@@ -11,7 +11,7 @@ import {
     FolderPlus, Tag, Upload, Image,
     LayoutDashboard, TrendingUp, Users, DollarSign,
     Search, Filter, ChevronRight, MoreHorizontal, Zap,
-    Bell, Send, Info, AlertTriangle, CheckCircle
+    Bell, Send, Info, AlertTriangle, CheckCircle, Settings, Menu
 } from 'lucide-react';
 
 const AdminDashboardPage = () => {
@@ -30,6 +30,7 @@ const AdminDashboardPage = () => {
     // Notification Form States
     const [notifData, setNotifData] = useState({ title: '', message: '', type: 'info', link: '' });
     const [isSendingNotif, setIsSendingNotif] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     // Filtering States
     const [productSearch, setProductSearch] = useState('');
@@ -304,12 +305,14 @@ const AdminDashboardPage = () => {
 
     const sidebarItems = [
         { id: 'overview', name: 'Overview', icon: LayoutDashboard },
-        { id: 'payment approval', name: 'Payment Requests', icon: Zap },
-        { id: 'paid manifest', name: 'Shipment Manifest', icon: TrendingUp },
-        { id: 'notifications', name: 'Notifications', icon: Bell },
+        { id: 'payment approval', name: 'Payments', icon: Zap },
         { id: 'products', name: 'Products', icon: Package },
-        { id: 'categories', name: 'Categories', icon: List },
-        { id: 'orders history', name: 'Orders History', icon: ShoppingCart },
+        { id: 'orders history', name: 'Orders', icon: ShoppingCart },
+        { id: 'users', name: 'Users', icon: Users },
+        { id: 'paid manifest', name: 'Shipment', icon: TrendingUp },
+        { id: 'notifications', name: 'Notif', icon: Bell },
+        { id: 'categories', name: 'Cats', icon: List },
+        { id: 'settings', name: 'Settings', icon: Settings },
     ];
 
     return (
@@ -348,19 +351,55 @@ const AdminDashboardPage = () => {
                 </div>
             </aside>
 
-            {/* Mobile Navigation - Top Horizontal Scrollable */}
-            <div className="lg:hidden sticky top-20 bg-white border-b border-slate-200 z-30 px-4 py-2 flex gap-2 items-center overflow-x-auto custom-scrollbar no-scrollbar">
-                {sidebarItems.map(item => (
+            {/* ========== MOBILE BOTTOM NAVIGATION ========== */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 z-50 px-6 py-3 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] ring-1 ring-white/50">
+                {sidebarItems.slice(0, 4).map(item => (
                     <button 
                         key={item.id} 
-                        onClick={() => setActiveTab(item.id)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${activeTab === item.id ? 'bg-slate-900 text-yellow-500 shadow-lg' : 'bg-slate-50 text-slate-400 border border-slate-100'}`}
+                        onClick={() => { setActiveTab(item.id); setIsDrawerOpen(false); }}
+                        className={`flex flex-col items-center gap-1 transition-all duration-300 ${activeTab === item.id ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-60'}`}
                     >
-                        <item.icon size={14} />
-                        {item.name}
+                        <item.icon size={20} className={activeTab === item.id ? 'text-yellow-500 fill-yellow-50' : ''} />
+                        <span className="text-[8px] font-black uppercase tracking-widest">{item.name}</span>
                     </button>
                 ))}
+                <button 
+                    onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+                    className={`flex flex-col items-center gap-1 transition-all duration-300 ${isDrawerOpen ? 'text-slate-900 scale-110' : 'text-slate-400 opacity-60'}`}
+                >
+                    <Menu size={20} className={isDrawerOpen ? 'text-yellow-500' : ''} />
+                    <span className="text-[8px] font-black uppercase tracking-widest">More</span>
+                </button>
             </div>
+
+            {/* ========== MOBILE OVERFLOW DRAWER ========== */}
+            {isDrawerOpen && (
+                <div className="lg:hidden fixed inset-0 z-[60] animate-in fade-in duration-300">
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsDrawerOpen(false)}></div>
+                    <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[3rem] p-8 shadow-2xl animate-in slide-in-from-bottom duration-500 ring-1 ring-white/20">
+                        <div className="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-8"></div>
+                        <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 text-center">More Consoles</h3>
+                        <div className="grid grid-cols-3 gap-6">
+                            {sidebarItems.slice(4).map(item => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => { setActiveTab(item.id); setIsDrawerOpen(false); }}
+                                    className={`flex flex-col items-center gap-3 p-4 rounded-3xl transition-all duration-300 ${activeTab === item.id ? 'bg-slate-900 text-white shadow-xl shadow-slate-200' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                                >
+                                    <item.icon size={24} className={activeTab === item.id ? 'text-yellow-400' : ''} />
+                                    <span className="text-[8px] font-black uppercase tracking-widest text-center">{item.name}</span>
+                                </button>
+                            ))}
+                        </div>
+                        <button 
+                            onClick={() => setIsDrawerOpen(false)}
+                            className="w-full mt-10 py-4 bg-slate-50 text-slate-400 rounded-2xl text-[10px] font-black uppercase tracking-widest"
+                        >
+                            Close Menu
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* ========== MAIN CONTENT ========== */}
             <main className="flex-1 min-w-0">
@@ -381,12 +420,15 @@ const AdminDashboardPage = () => {
                     </div>
                 </header>
 
-                <div className="p-4 md:p-8 pb-32 lg:pb-8 w-full">
+                <div className="p-4 md:p-8 pb-32 lg:pb-8 w-full max-w-7xl mx-auto">
                     {/* Defensive rendering for data failure */}
                     {(productsLoading && products?.length === 0) ? (
                         <div className="flex flex-col items-center justify-center py-40">
-                            <Loader size={40} className="animate-spin text-yellow-500 mb-4" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Loading Console Data...</p>
+                            <div className="relative">
+                                <div className="w-16 h-16 border-4 border-slate-100 border-t-yellow-500 rounded-full animate-spin"></div>
+                                <Zap size={24} className="absolute inset-0 m-auto text-yellow-500" />
+                            </div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-6">Synchronizing Console Data...</p>
                         </div>
                     ) : (Array.isArray(products) && Array.isArray(categories)) ? (
                         <>
@@ -975,6 +1017,136 @@ const AdminDashboardPage = () => {
                                         ))}
                                     </tbody>
                                 </table>
+                                {orders.length === 0 && (
+                                    <div className="py-24 text-center">
+                                        <ShoppingCart size={48} className="mx-auto text-slate-100 mb-4" />
+                                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">No order records found in archives</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========== USERS MANAGEMENT TAB ========== */}
+                    {activeTab === 'users' && (
+                        <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+                             <div className="flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">User Directory</h2>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Manage Customer Accounts & Access Control</p>
+                                </div>
+                                <div className="bg-slate-100 px-4 py-2 rounded-xl text-[9px] font-black text-slate-400 uppercase tracking-widest border border-slate-200">
+                                    {users.length} Total Users
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead>
+                                            <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                                <th className="p-6">Identity</th>
+                                                <th className="p-6">Contact Info</th>
+                                                <th className="p-6">Status</th>
+                                                <th className="p-6">Joined Date</th>
+                                                <th className="p-6 text-right">Verification</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-50">
+                                            {users.map(u => (
+                                                <tr key={u._id} className="hover:bg-slate-50/30 transition-colors">
+                                                    <td className="p-6">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-10 h-10 rounded-2xl bg-slate-900 text-yellow-400 flex items-center justify-center font-black shadow-lg">
+                                                                {(u.name || 'U')[0]}
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm font-black text-slate-800">{u.name}</p>
+                                                                <p className="text-[10px] text-slate-400 font-bold">UID: {u._id.slice(-6).toUpperCase()}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-6">
+                                                        <p className="text-xs font-bold text-slate-600">{u.email}</p>
+                                                        <p className="text-[10px] text-indigo-500 font-black uppercase mt-1">Authenticated</p>
+                                                    </td>
+                                                    <td className="p-6">
+                                                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${u.isAdmin ? 'bg-emerald-100 text-emerald-600 border border-emerald-200' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
+                                                            {u.isAdmin ? 'Administrator' : 'Customer'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-6 text-xs text-slate-400 font-bold">{new Date(u.createdAt).toLocaleDateString()}</td>
+                                                    <td className="p-6 text-right">
+                                                        <CheckCircle size={16} className="text-emerald-500 ml-auto" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {users.length === 0 && (
+                                    <div className="py-24 text-center">
+                                        <Users size={48} className="mx-auto text-slate-100 mb-4" />
+                                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">No users detected in database</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========== SETTINGS TAB ========== */}
+                    {activeTab === 'settings' && (
+                        <div className="max-w-4xl space-y-8 animate-in fade-in duration-500">
+                             <div>
+                                <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Terminal Settings</h2>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Platform-Wide Configuration System</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+                                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-tight mb-6 flex items-center gap-2">
+                                        <Zap size={16} className="text-yellow-500" /> Performance Console
+                                    </h4>
+                                    <div className="space-y-6">
+                                        {[
+                                            { label: 'Maintenance Mode', desc: 'Shut down customer access to the storefront.', status: 'Disabled' },
+                                            { label: 'Real-time Analytics', desc: 'Enable live logging of user behavior.', status: 'Active' },
+                                            { label: 'Cloudinary Proxy', desc: 'Bypass Vercel limits for video assets.', status: 'Enabled' }
+                                        ].map((s, i) => (
+                                            <div key={i} className="flex justify-between items-center pb-6 border-b border-slate-50 last:border-0 last:pb-0">
+                                                <div>
+                                                    <p className="text-xs font-black text-slate-800">{s.label}</p>
+                                                    <p className="text-[9px] text-slate-400 font-bold uppercase mt-1">{s.desc}</p>
+                                                </div>
+                                                <span className="bg-slate-50 px-3 py-1 rounded-full text-[8px] font-black uppercase text-slate-400 border border-slate-100">{s.status}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-slate-300">
+                                    <h4 className="text-xs font-black uppercase tracking-widest mb-6 text-yellow-500">Security & Keys</h4>
+                                    <div className="space-y-6">
+                                        <div>
+                                            <p className="text-[10px] font-black text-white/40 uppercase mb-2">Cloudinary Master API</p>
+                                            <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 font-mono text-[10px] truncate">
+                                                ******************************
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-black text-white/40 uppercase mb-2">MongoDB Cluster Connection</p>
+                                            <div className="flex items-center gap-2 text-emerald-400 text-[10px] font-black uppercase">
+                                                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                                                Status: Stable Pipeline
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 text-center border-dashed">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Export Platform Backup</p>
+                                <button className="px-8 py-3 bg-slate-100 text-slate-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">Download .JSON Snapshot</button>
                             </div>
                         </div>
                     )}
