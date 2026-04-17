@@ -22,6 +22,7 @@ const Header = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -123,6 +124,13 @@ const Header = () => {
 
                 {/* Mobile Icons Action Bar */}
                 <div className="flex items-center gap-1 sm:gap-3 md:hidden">
+                    <button 
+                        onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                        className={`p-2 transition-colors ${isMobileSearchOpen ? 'text-yellow-500' : 'text-gray-700'}`}
+                    >
+                        <Search size={22} />
+                    </button>
+
                     <button 
                         onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); }}
                         className="p-2 text-gray-700 hover:text-yellow-500 transition-colors relative"
@@ -238,6 +246,22 @@ const Header = () => {
                         </span>
                     </Link>
                 </div>
+            </div>
+
+            {/* Mobile Search Row - Toggles with Search Icon */}
+            <div className={`md:hidden bg-white border-b border-gray-100 px-4 py-2 transition-all duration-300 overflow-hidden ${isMobileSearchOpen ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0 py-0 border-none'}`}>
+                <form onSubmit={handleSearch} className="flex border-2 border-yellow-400 rounded-2xl h-10 overflow-hidden">
+                    <input
+                        type="text"
+                        className="flex-1 bg-transparent px-4 text-sm focus:outline-none"
+                        placeholder="What are you looking for?"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                    />
+                    <button type="submit" className="bg-yellow-400 px-4 flex items-center justify-center">
+                        <Search size={18} />
+                    </button>
+                </form>
             </div>
 
             {/* TIER 3: NAV BAR */}
@@ -372,6 +396,18 @@ const Header = () => {
                                 </div>
                                 <ChevronRight size={18} className="text-gray-300 group-hover:translate-x-1 transition-transform" />
                             </Link>
+
+                            {userInfo.isAdmin && (
+                                <Link to="/admin/dashboard" onClick={() => setIsUserDrawerOpen(false)} className="flex items-center justify-between p-6 bg-slate-900 border border-slate-800 rounded-3xl hover:bg-yellow-500 hover:border-yellow-600 transition-all group shadow-xl">
+                                    <div className="flex items-center gap-5">
+                                        <div className="p-3 bg-white/10 rounded-2xl text-yellow-400 group-hover:text-slate-900 transition-colors">
+                                            <LayoutDashboard size={22} />
+                                        </div>
+                                        <span className="text-sm font-black uppercase tracking-widest text-white group-hover:text-slate-900">Admin Dashboard</span>
+                                    </div>
+                                    <ChevronRight size={18} className="text-yellow-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            )}
                         </>
                     ) : (
                         <Link to="/login" onClick={() => setIsUserDrawerOpen(false)} className="w-full h-16 bg-yellow-400 text-slate-900 rounded-3xl font-black uppercase text-sm tracking-[0.2em] flex items-center justify-center shadow-xl shadow-yellow-100 ring-4 ring-yellow-400/20 hover:scale-[1.02] transition-all">Sign In / Register</Link>
@@ -405,11 +441,70 @@ const Header = () => {
                                         </Link>
                                     </li>
                                 ))}
+                                {userInfo && userInfo.isAdmin && (
+                                    <li className="pt-4 mt-4 border-t border-gray-100">
+                                        <Link onClick={() => setIsMobileMenuOpen(false)} to="/admin/dashboard" className="flex items-center justify-between p-4 bg-slate-900 rounded-2xl text-xs font-black uppercase tracking-widest text-yellow-400 shadow-lg">
+                                            <div className="flex items-center gap-3">
+                                                <LayoutDashboard size={18} />
+                                                <span>Admin Command Center</span>
+                                            </div>
+                                            <ChevronRight size={14} className="text-yellow-400/50" />
+                                        </Link>
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </div>
                 </div>
             )}
+
+            {/* APP-LIKE BOTTOM NAVIGATION BAR (MOBILE ONLY) */}
+            <div className="md:hidden fixed bottom-6 left-6 right-6 h-18 bg-white/80 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-[2.5rem] z-[999] p-2 flex items-center justify-between">
+                <Link to="/" className="flex-1 flex flex-col items-center justify-center gap-1">
+                    <div className="p-2 rounded-2xl bg-yellow-400/10 text-yellow-600">
+                        <ShoppingBag size={20} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-tighter">Shop</span>
+                </Link>
+
+                <button 
+                    onClick={() => { setIsMobileSearchOpen(true); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                    className="flex-1 flex flex-col items-center justify-center gap-1"
+                >
+                    <div className="p-2 rounded-2xl text-slate-400">
+                        <Search size={20} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Search</span>
+                </button>
+
+                <div className="flex-1 flex justify-center -mt-12">
+                     <Link to="/cart" className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center shadow-2xl shadow-yellow-200 border-8 border-[#f5f5f5] transition-transform hover:scale-110 active:scale-95 relative">
+                        <ShoppingBag size={24} className="text-slate-900" />
+                        {cartItems.length > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-full border-4 border-[#f5f5f5]">
+                                {cartItems.reduce((a, c) => a + c.qty, 0)}
+                            </span>
+                        )}
+                     </Link>
+                </div>
+
+                <Link to="/myorders" className="flex-1 flex flex-col items-center justify-center gap-1">
+                    <div className="p-2 rounded-2xl text-slate-400">
+                        <Truck size={20} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Orders</span>
+                </Link>
+
+                <button 
+                    onClick={() => setIsUserDrawerOpen(true)}
+                    className="flex-1 flex flex-col items-center justify-center gap-1"
+                >
+                    <div className="p-2 rounded-2xl text-slate-400">
+                        <User size={20} />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Portal</span>
+                </button>
+            </div>
         </header>
     );
 };
