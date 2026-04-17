@@ -71,87 +71,140 @@ const MyOrdersPage = () => {
                 </header>
 
                 {orders.length === 0 ? (
-                    <div className="bg-white border border-gray-200 rounded-3xl p-20 text-center shadow-sm relative overflow-hidden">
+                    <div className="bg-white border border-gray-200 rounded-3xl p-12 md:p-20 text-center shadow-sm relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-20 opacity-[0.02] pointer-events-none rotate-12">
                            <ShoppingCart size={300} />
                         </div>
-                        <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-10 border border-gray-100 italic">
+                        <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-10 border border-gray-100">
                            <ShoppingCart size={40} className="text-gray-200" />
                         </div>
-                        <h2 className="text-3xl font-bold text-electro-dark mb-4">No order data found.</h2>
-                        <p className="text-gray-500 mb-12 max-w-md mx-auto leading-relaxed">It looks like you haven't initialized any logistics dispatches yet. Visit the catalog to begin your premium tech acquisition journey.</p>
+                        <h2 className="text-2xl md:text-3xl font-bold text-electro-dark mb-4">No order data found.</h2>
+                        <p className="text-gray-500 mb-10 max-w-md mx-auto leading-relaxed text-sm">It looks like you haven't initialized any logistics dispatches yet. Visit the catalog to begin your premium tech acquisition journey.</p>
                         <Link to="/" className="btn-electro bg-electro-yellow text-electro-dark px-12 py-4 rounded-full font-bold shadow-md hover:shadow-lg transition flex items-center gap-4 mx-auto w-fit">
                             Return To Shop <ArrowRight size={18} />
                         </Link>
                     </div>
                 ) : (
-                    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
-                        <table className="w-full text-left min-w-[800px]">
-                            <thead>
-                                <tr className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-200">
-                                    <th className="py-6 px-10">Deployment ID</th>
-                                    <th className="py-6 px-10">Timestamp</th>
-                                    <th className="py-6 px-10">Logistics Total</th>
-                                    <th className="py-6 px-10">Payment Condition</th>
-                                    <th className="py-6 px-10">Delivery Status</th>
-                                    <th className="py-6 px-10 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {orders.map((order) => (
-                                    <tr key={order._id} className="group hover:bg-gray-50/30 transition-colors">
-                                        <td className="py-6 px-10">
-                                            <span className="font-bold text-electro-dark tracking-tighter">#{order._id.toUpperCase()}</span>
-                                        </td>
-                                        <td className="py-6 px-10">
-                                            <div className="flex items-center gap-3 text-gray-500 font-medium">
-                                                <Calendar size={14} className="text-gray-300" />
-                                                {new Date(order.createdAt).toLocaleDateString()}
-                                            </div>
-                                        </td>
-                                        <td className="py-6 px-10">
-                                            <span className="font-bold text-electro-dark text-lg italic">৳{order.totalPrice.toLocaleString()}</span>
-                                        </td>
-                                        <td className="py-6 px-10 text-sm">
-                                            {order.isPaid ? (
-                                                <div className="flex items-center gap-2 text-green-600 font-bold bg-green-50 px-3 py-1 rounded-full w-fit border border-green-100">
-                                                    <CheckCircle2 size={12} /> COMPLETED
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center gap-2 text-red-500 font-bold bg-red-50 px-3 py-1 rounded-full w-fit border border-red-100">
-                                                    <Clock size={12} /> PENDING
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="py-6 px-10 text-sm">
-                                            {order.isDelivered ? (
-                                                <div className="flex items-center gap-2 text-electro-blue font-bold bg-blue-50 px-3 py-1 rounded-full w-fit border border-blue-100">
-                                                    <Truck size={12} /> ARRIVED
-                                                </div>
-                                            ) : (
-                                                <div className="space-y-2">
-                                                    <div className="flex items-center gap-2 text-amber-600 font-bold bg-amber-50 px-3 py-1 rounded-full w-fit border border-amber-100 uppercase tracking-widest text-[9px]">
-                                                        <Truck size={12} className="animate-pulse" /> Shipping
-                                                    </div>
-                                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
-                                                        Arriving Before: {new Date(new Date(order.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="py-6 px-10 text-right">
-                                            <Link 
-                                                to={`/order/${order._id}`} 
-                                                className="inline-flex items-center gap-2 bg-gray-50 group-hover:bg-electro-yellow text-gray-400 group-hover:text-electro-dark px-6 py-2.5 rounded-full font-bold uppercase tracking-widest text-[10px] transition-all duration-300"
-                                            >
-                                                Details <Eye size={12} />
-                                            </Link>
-                                        </td>
+                    <>
+                        {/* DESKTOP TABLE VIEW */}
+                        <div className="hidden md:block bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
+                            <table className="w-full text-left min-w-[800px]">
+                                <thead>
+                                    <tr className="bg-gray-50/50 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-200">
+                                        <th className="py-6 px-10">Deployment ID</th>
+                                        <th className="py-6 px-10">Timestamp</th>
+                                        <th className="py-6 px-10">Logistics Total</th>
+                                        <th className="py-6 px-10">Payment Condition</th>
+                                        <th className="py-6 px-10">Delivery Status</th>
+                                        <th className="py-6 px-10 text-right">Actions</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {orders.map((order) => (
+                                        <tr key={order._id} className="group hover:bg-gray-50/30 transition-colors">
+                                            <td className="py-6 px-10">
+                                                <span className="font-bold text-electro-dark tracking-tighter">#{order._id.toUpperCase()}</span>
+                                            </td>
+                                            <td className="py-6 px-10">
+                                                <div className="flex items-center gap-3 text-gray-500 font-bold">
+                                                    <Calendar size={14} className="text-gray-300" />
+                                                    {new Date(order.createdAt).toLocaleDateString()}
+                                                </div>
+                                            </td>
+                                            <td className="py-6 px-10">
+                                                <span className="font-black text-electro-dark text-lg">৳{order.totalPrice.toLocaleString()}</span>
+                                            </td>
+                                            <td className="py-6 px-10 text-xs">
+                                                {order.isPaid ? (
+                                                    <div className="flex items-center gap-2 text-green-600 font-black bg-green-50 px-3 py-1.5 rounded-full w-fit border border-green-100 uppercase tracking-widest text-[9px]">
+                                                        <CheckCircle2 size={12} /> Completed
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-2 text-red-500 font-black bg-red-50 px-3 py-1.5 rounded-full w-fit border border-red-100 uppercase tracking-widest text-[9px]">
+                                                        <Clock size={12} /> Pending
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="py-6 px-10 text-xs">
+                                                {order.isDelivered ? (
+                                                    <div className="flex items-center gap-2 text-electro-blue font-black bg-blue-50 px-3 py-1.5 rounded-full w-fit border border-blue-100 uppercase tracking-widest text-[9px]">
+                                                        <Truck size={12} /> Arrived
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-center gap-2 text-amber-600 font-black bg-amber-50 px-3 py-1.5 rounded-full w-fit border border-amber-100 uppercase tracking-widest text-[9px]">
+                                                            <Truck size={12} className="animate-pulse" /> Shipping
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="py-6 px-10 text-right">
+                                                <Link 
+                                                    to={`/order/${order._id}`} 
+                                                    className="inline-flex items-center gap-2 bg-slate-50 group-hover:bg-electro-yellow text-slate-400 group-hover:text-electro-dark px-6 py-2.5 rounded-full font-black uppercase tracking-widest text-[10px] transition-all duration-300 border border-slate-100"
+                                                >
+                                                    Details <Eye size={12} />
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* MOBILE CARD VIEW */}
+                        <div className="md:hidden space-y-4">
+                            {orders.map((order) => (
+                                <div key={order._id} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm active:scale-[0.98] transition-all">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">Order Registry ID</p>
+                                            <p className="font-black text-slate-800 tracking-tight text-sm">#{order._id.toUpperCase()}</p>
+                                        </div>
+                                        {order.isPaid ? (
+                                            <CheckCircle2 size={18} className="text-green-500" />
+                                        ) : (
+                                            <Clock size={18} className="text-amber-500" />
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 mb-6">
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                <Calendar size={10} /> Date
+                                            </p>
+                                            <p className="text-xs font-bold text-slate-600">
+                                                {new Date(order.createdAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                <CreditCard size={10} /> Value
+                                            </p>
+                                            <p className="text-sm font-black text-slate-900">
+                                                ৳{order.totalPrice.toLocaleString()}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                                        <div className="space-y-1">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Tracking Status</p>
+                                            <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${order.isDelivered ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
+                                                {order.isDelivered ? 'Arrived' : 'In Transit'}
+                                            </span>
+                                        </div>
+                                        <Link 
+                                            to={`/order/${order._id}`} 
+                                            className="h-10 px-6 bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-slate-200"
+                                        >
+                                            Logistics <Eye size={12} />
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
         </div>

@@ -348,12 +348,16 @@ const AdminDashboardPage = () => {
                 </div>
             </aside>
 
-            {/* Mobile Navigation */}
-            <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur-md rounded-full px-6 py-3 flex gap-8 items-center border border-white/10 shadow-2xl z-[100]">
+            {/* Mobile Navigation - Top Horizontal Scrollable */}
+            <div className="lg:hidden sticky top-20 bg-white border-b border-slate-200 z-30 px-4 py-2 flex gap-2 items-center overflow-x-auto custom-scrollbar no-scrollbar">
                 {sidebarItems.map(item => (
-                    <button key={item.id} onClick={() => setActiveTab(item.id)}
-                        className={`transition-all ${activeTab === item.id ? 'text-yellow-400 scale-110' : 'text-white/40'}`}>
-                        <item.icon size={20} />
+                    <button 
+                        key={item.id} 
+                        onClick={() => setActiveTab(item.id)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${activeTab === item.id ? 'bg-slate-900 text-yellow-500 shadow-lg' : 'bg-slate-50 text-slate-400 border border-slate-100'}`}
+                    >
+                        <item.icon size={14} />
+                        {item.name}
                     </button>
                 ))}
             </div>

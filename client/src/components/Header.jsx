@@ -300,8 +300,8 @@ const Header = () => {
             <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[1001] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0">
                     <div>
-                        <h3 className="text-sm font-black uppercase tracking-widest text-gray-900">Broadcast Center</h3>
-                        <p className="text-[10px] text-gray-800 font-bold mt-0.5">{notifications.length} Announcements Active</p>
+                        <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 leading-none">Broadcast Center</h3>
+                        <p className="text-[10px] text-gray-800 font-bold mt-1.5 opacity-80">{notifications.length} Announcements Active</p>
                     </div>
                     <button onClick={() => setIsNotifOpen(false)} className="p-2 hover:bg-black/10 rounded-full transition-colors text-gray-900">
                         <CloseIcon size={20} />
@@ -332,9 +332,12 @@ const Header = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center p-12 text-center opacity-30">
-                            <Bell size={64} className="text-slate-200 mb-6" />
-                            <p className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 font-sans italic">Registry Quiet</p>
+                        <div className="h-full flex flex-col items-center justify-center p-12 text-center opacity-40">
+                            <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6 border border-slate-100/50">
+                                <Bell size={32} className="text-slate-300" />
+                            </div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 font-sans">Registry Quiet</p>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">No new broadcasts found</p>
                         </div>
                     )}
                 </div>
@@ -347,8 +350,8 @@ const Header = () => {
             <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[1001] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isUserDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0 text-gray-900">
                     <div>
-                        <h3 className="text-sm font-black uppercase tracking-[0.2em] italic">Account Control</h3>
-                        <p className="text-[10px] font-bold mt-0.5">Secure Operating Portal</p>
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] leading-none">Account Control</h3>
+                        <p className="text-[10px] font-bold mt-1.5 opacity-80">Secure Operating Portal</p>
                     </div>
                     <button onClick={() => setIsUserDrawerOpen(false)} className="p-2 hover:bg-black/10 rounded-full transition-colors">
                         <CloseIcon size={20} />
@@ -425,7 +428,7 @@ const Header = () => {
                 <div className="fixed inset-0 z-[1000] md:hidden">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsMobileMenuOpen(false)} />
                     <div className="absolute top-0 left-0 h-full w-80 bg-white shadow-2xl flex flex-col transform transition-transform duration-300 overflow-hidden">
-                        <div className="p-6 border-b border-gray-100 bg-yellow-400 flex justify-between items-center text-gray-900 italic">
+                        <div className="p-6 border-b border-gray-100 bg-yellow-400 flex justify-between items-center text-gray-900">
                             <span className="text-xs font-black uppercase tracking-[0.2em]">Nav Manifest</span>
                             <button onClick={() => setIsMobileMenuOpen(false)}>
                                 <CloseIcon size={20} />
