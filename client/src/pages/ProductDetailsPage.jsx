@@ -52,9 +52,17 @@ const ProductDetailsPage = () => {
     };
 
     if (loading) return (
-        <div className="flex flex-col justify-center items-center py-64">
-            <Loader size={40} className="animate-spin text-yellow-400 mb-4" />
-            <span className="text-gray-500 font-bold">Loading Product Details...</span>
+        <div className="container-custom py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-pulse">
+                <div className="bg-slate-100 aspect-square rounded-3xl" />
+                <div className="space-y-6">
+                    <div className="h-4 bg-slate-100 w-1/4 rounded" />
+                    <div className="h-10 bg-slate-100 w-3/4 rounded" />
+                    <div className="h-6 bg-slate-100 w-1/3 rounded" />
+                    <div className="h-32 bg-slate-100 w-full rounded" />
+                    <div className="h-12 bg-slate-100 w-full rounded-full" />
+                </div>
+            </div>
         </div>
     );
     
@@ -74,12 +82,12 @@ const ProductDetailsPage = () => {
         <div className="bg-gray-50 min-h-screen pb-20">
             {/* Breadcrumb */}
             <div className="bg-white border-b border-gray-200 mb-8">
-                <div className="container-custom py-4 flex items-center gap-2 text-sm text-gray-500">
-                    <Link to="/" className="hover:text-blue-600">Home</Link>
+                <div className="container-custom py-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    <Link to="/" className="hover:text-yellow-500">Home</Link>
                     <ChevronRight size={14} />
-                    <Link to={`/?category=${product.category?.name}`} className="hover:text-blue-600">{product.category?.name}</Link>
+                    <Link to={`/?category=${product.category?.name}`} className="hover:text-yellow-500">{product.category?.name}</Link>
                     <ChevronRight size={14} />
-                    <span className="text-gray-800 font-bold">{product.name}</span>
+                    <span className="text-slate-800">{product.name}</span>
                 </div>
             </div>
 
@@ -134,8 +142,8 @@ const ProductDetailsPage = () => {
                         {/* Content */}
                         <div className="flex flex-col">
                             <div className="mb-6 pb-6 border-b border-gray-100">
-                                <p className="text-blue-600 text-xs font-bold uppercase tracking-widest mb-2">{product.category?.name}</p>
-                                <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
+                                <p className="text-yellow-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">{product.category?.name}</p>
+                                <h1 className="text-2xl md:text-4xl font-black text-slate-800 mb-4 tracking-tight">{product.name}</h1>
                                 
                                 <div className="flex items-center gap-4 mb-4">
                                     <div className="flex items-center gap-1">
@@ -166,7 +174,7 @@ const ProductDetailsPage = () => {
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <span className="text-xs font-bold text-gray-400 uppercase w-24">Category:</span>
-                                    <Link to={`/category/${product.category?._id}`} className="text-sm font-bold text-blue-600 hover:underline">{product.category?.name || 'N/A'}</Link>
+                                    <Link to={`/category/${product.category?._id}`} className="text-sm font-bold text-slate-800 hover:text-yellow-600 transition-colors uppercase">{product.category?.name || 'N/A'}</Link>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <span className="text-xs font-bold text-gray-400 uppercase w-24">Availability:</span>
@@ -236,6 +244,37 @@ const ProductDetailsPage = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* MOBILE FLOATING ACTION BAR */}
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 z-50 flex items-center gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                    <div className="flex flex-col flex-1 text-left">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Price</span>
+                        <span className="text-lg font-black text-slate-800">৳{product.price?.toLocaleString()}</span>
+                    </div>
+                    {product.countInStock > 0 ? (
+                        <>
+                            <button 
+                                onClick={addToCartHandler}
+                                className="w-12 h-12 bg-slate-50 text-slate-800 rounded-2xl flex items-center justify-center shrink-0"
+                            >
+                                <ShoppingBag size={20} />
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    dispatch(addToCart({ ...product, qty }));
+                                    navigate('/shipping');
+                                }}
+                                className="flex-[2] h-12 bg-yellow-400 text-slate-900 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-lg shadow-yellow-100"
+                            >
+                                Buy Now
+                            </button>
+                        </>
+                    ) : (
+                        <div className="flex-1 text-center py-3 bg-slate-50 text-red-600 text-[10px] font-black uppercase rounded-2xl">
+                            Out of Stock
+                        </div>
+                    )}
                 </div>
             </div>
 

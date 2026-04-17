@@ -1,0 +1,20 @@
+{
+  "short_name": "Miazii",
+  "name": "Miazii Shop | Premium Tech Store",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#fed700",
+  "background_color": "#f5f5f5"
+}

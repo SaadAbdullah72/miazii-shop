@@ -16,7 +16,7 @@ import {
 
 const AdminDashboardPage = () => {
     const dispatch = useDispatch();
-    const [activeTab, setActiveTab] = useState('payment approval');
+    const [activeTab, setActiveTab] = useState('overview');
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);

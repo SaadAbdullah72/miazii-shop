@@ -28,6 +28,12 @@
     overflow-x: hidden;
     max-width: 100vw;
     position: relative;
+    font-style: normal !important; /* Force NO italics globally */
+  }
+
+  /* Force NO italics on all common tags */
+  i, em, address, cite, dfn, var {
+    font-style: normal !important;
   }
 }
 

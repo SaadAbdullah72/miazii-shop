@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
 import { toast } from 'react-toastify'; 
+import { ProductSkeleton } from '../components/Skeleton';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -238,8 +239,8 @@ const HomePage = () => {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {[...Array(8)].map((_, i) => <div key={i} className="bg-gray-100 rounded-lg h-64 animate-pulse" />)}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
