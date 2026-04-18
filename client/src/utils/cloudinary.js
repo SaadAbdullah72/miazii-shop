@@ -1,4 +1,4 @@
-import api from './api';
+import api from './axiosConfig';
 
 /**
  * Uploads a file directly to Cloudinary bypassing the local server.
