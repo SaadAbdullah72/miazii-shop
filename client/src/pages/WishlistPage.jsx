@@ -5,6 +5,7 @@ import { getWishlist, toggleWishlist } from '../slices/wishlistSlice';
 import { addToCart } from '../slices/cartSlice';
 import { Trash2, ShoppingCart, Heart, ChevronRight, ShoppingBag } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
+import { ERROR_IMAGE } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 
 const WishlistPage = () => {
@@ -68,11 +69,11 @@ const WishlistPage = () => {
                             <div key={item._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                                 <Link to={`/product/${item.slug}`} className="block relative aspect-square bg-gray-50 p-6 overflow-hidden">
                                     <img 
-                                        src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : `${BASE_URL}${item.images[0]}`) : 'https://placehold.co/400x400?text=Item'} 
+                                        src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : `${BASE_URL}${item.images[0]}`) : ERROR_IMAGE} 
                                         alt={item.name} 
                                         className="w-full h-full object-contain mix-blend-multiply transition-transform group-hover:scale-110 duration-500" 
                                         onError={(e) => {
-                                            e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                                            e.target.src = ERROR_IMAGE;
                                             e.target.onerror = null;
                                         }}
                                     />

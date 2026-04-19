@@ -13,7 +13,7 @@ import {
   Truck, Shield, Headphones as HeadphoneIcon, Eye, Plus, Tag, ArrowRight
 } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
-import { toCDN } from '../utils/imageUtils';
+import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { ProductSkeleton } from '../components/Skeleton';
 
@@ -284,7 +284,7 @@ const HomePage = () => {
                         loading="lazy"
                         className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-500 group-hover/img:scale-110"
                         onError={(e) => {
-                          e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                          e.target.src = ERROR_IMAGE;
                           e.target.onerror = null;
                         }}
                       />
@@ -389,12 +389,12 @@ const HomePage = () => {
                           </div>
   
                           <img
-                            src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 400)}
+                            src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 400)}
                             alt={p.name}
                             loading="lazy"
                             className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
                             onError={(e) => {
-                              e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                              e.target.src = ERROR_IMAGE;
                               e.target.onerror = null;
                             }}
                           />
@@ -482,12 +482,12 @@ const HomePage = () => {
                 <div key={p._id} className="group">
                   <div className="bg-gray-50 rounded-lg p-3 mb-2 aspect-square overflow-hidden relative">
                     <img
-                      src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 300)}
+                      src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 300)}
                       alt={p.name}
                       loading="lazy"
                       className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
                       onError={(e) => {
-                        e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                        e.target.src = ERROR_IMAGE;
                         e.target.onerror = null;
                       }}
                     />

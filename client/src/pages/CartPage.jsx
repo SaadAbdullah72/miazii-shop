@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from '../slices/cartSlice';
 import { Trash2, ShoppingCart, ArrowLeft, ChevronRight, Plus, Minus } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
+import { ERROR_IMAGE } from '../utils/imageUtils';
 
 const CartPage = () => {
     const navigate = useNavigate();
@@ -79,7 +80,7 @@ const CartPage = () => {
                                                         alt={item.name} 
                                                         className="max-w-full max-h-full object-contain mix-blend-multiply" 
                                                         onError={(e) => {
-                                                            e.target.src = 'https://placehold.co/100x100?text=Item';
+                                                            e.target.src = ERROR_IMAGE;
                                                             e.target.onerror = null;
                                                         }}
                                                     />

@@ -15,6 +15,7 @@ import { updateProfile } from '../slices/authSlice';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../utils/axiosConfig';
+import { ERROR_IMAGE } from '../utils/imageUtils';
 
 const Header = () => {
     const [keyword, setKeyword] = useState('');
@@ -222,10 +223,10 @@ const Header = () => {
                                         >
                                             <div className="w-10 h-10 bg-gray-50 rounded flex items-center justify-center p-1 shrink-0">
                                                 <img
-                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/200x200?text=Product'}
+                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE}
                                                     alt="" className="max-w-full max-h-full object-contain mix-blend-multiply"
                                                     onError={(e) => {
-                                                        e.target.src = 'https://placehold.co/200x200?text=Product';
+                                                        e.target.src = ERROR_IMAGE;
                                                         e.target.onerror = null;
                                                     }}
                                                 />

@@ -5,6 +5,7 @@ import { listCategories, createCategory, deleteCategory } from '../slices/catego
 import { fetchNotifications, createNotification as pushNotification, deleteNotification as removeNotification } from '../slices/notificationSlice';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
 import api, { BASE_URL } from '../utils/axiosConfig';
+import { ERROR_IMAGE } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { 
     Package, List, ShoppingCart, 
@@ -511,7 +512,7 @@ const AdminDashboardPage = () => {
                                                                     alt="" 
                                                                     className="max-w-full max-h-full object-contain mix-blend-multiply" 
                                                                     onError={(e) => {
-                                                                        e.target.src = 'https://placehold.co/100x100?text=Missing';
+                                                                        e.target.src = ERROR_IMAGE;
                                                                         e.target.onerror = null;
                                                                     }}
                                                                 />

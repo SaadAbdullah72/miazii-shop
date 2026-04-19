@@ -6,7 +6,7 @@ import { addToCart } from '../slices/cartSlice';
 import { toast } from 'react-toastify';
 import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle } from 'lucide-react';
 import api, { BASE_URL } from '../utils/axiosConfig';
-import { toCDN } from '../utils/imageUtils';
+import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
 import Skeleton from '../components/Skeleton';
 
 const ProductDetailsPage = () => {
@@ -128,7 +128,7 @@ const ProductDetailsPage = () => {
                                     loading="eager" // Main image should load first for LCP
                                     className="max-w-full max-h-full object-contain mix-blend-multiply" 
                                     onError={(e) => {
-                                        e.target.src = 'https://placehold.co/800x800?text=Product+Preview';
+                                        e.target.src = ERROR_IMAGE;
                                         e.target.onerror = null;
                                     }}
                                 />
@@ -148,7 +148,7 @@ const ProductDetailsPage = () => {
                                                 loading="lazy"
                                                 className="w-full h-full object-contain mix-blend-multiply" 
                                                 onError={(e) => {
-                                                    e.target.src = 'https://placehold.co/200x200?text=Thumb';
+                                                    e.target.src = ERROR_IMAGE;
                                                     e.target.onerror = null;
                                                 }}
                                             />
