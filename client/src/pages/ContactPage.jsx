@@ -1,27 +1,64 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom'; // 1. Import useLocation
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import api from '../utils/axiosConfig';
+import { toast } from 'react-toastify';
 import { 
     Mail, User, Phone, 
     MessageSquare, Tag, Send, 
-    X, ChevronRight, UserCircle 
+    X, ChevronRight, UserCircle,
+    Loader2
 } from 'lucide-react';
 
 const FloatingContactForm = () => {
-    const location = useLocation(); // 2. Initialize location
+    const location = useLocation();
+    const { userInfo } = useSelector((state) => state.auth);
+
     const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        name: '', email: '', phone: '', subject: '', message: ''
+        name: '', 
+        email: '', 
+        phone: '', 
+        subject: '', 
+        message: ''
     });
 
-    // 3. Only render if the current path is the root (Home)
+    // Auto-fill user data if logged in
+    useEffect(() => {
+        if (userInfo) {
+            setFormData(prev => ({
+                ...prev,
+                name: userInfo.name || '',
+                email: userInfo.email || ''
+            }));
+        }
+    }, [userInfo]);
+
     if (location.pathname !== "/") {
         return null;
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form Submitted:", formData);
-        setIsOpen(false); 
+        setLoading(true);
+
+        try {
+            const { data } = await api.post('/api/users/contact', formData);
+            if (data.success) {
+                toast.success('Your message was transmitted to the Support Hub.');
+                setFormData({
+                    ...formData,
+                    subject: '',
+                    message: ''
+                });
+                setIsOpen(false);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Communication link failed. Please retry.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -38,10 +75,10 @@ const FloatingContactForm = () => {
                         </div>
                         <div>
                             <h3 className="text-sm font-black uppercase tracking-widest leading-none">Support Hub</h3>
-                            <p className="text-[9px] text-gray-400 mt-1 uppercase tracking-tighter">Online • Usually responds in 2h</p>
+                            <p className="text-[9px] text-gray-400 mt-1 uppercase tracking-tighter">Online • Monitoring active inquiries</p>
                         </div>
                     </div>
-                    <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                    <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white">
                         <X size={20} />
                     </button>
                 </div>
@@ -53,6 +90,7 @@ const FloatingContactForm = () => {
                         <input 
                             type="text" 
                             placeholder="FULL NAME *"
+                            value={formData.name}
                             required
                             className="w-full bg-slate-50 border border-transparent rounded-2xl py-4 pl-12 pr-4 text-xs font-bold uppercase tracking-widest focus:bg-white focus:border-yellow-400 focus:outline-none transition-all"
                             onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -64,6 +102,7 @@ const FloatingContactForm = () => {
                         <input 
                             type="email" 
                             placeholder="EMAIL ADDRESS *"
+                            value={formData.email}
                             required
                             className="w-full bg-slate-50 border border-transparent rounded-2xl py-4 pl-12 pr-4 text-xs font-bold uppercase tracking-widest focus:bg-white focus:border-yellow-400 focus:outline-none transition-all"
                             onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -75,14 +114,28 @@ const FloatingContactForm = () => {
                         <input 
                             type="tel" 
                             placeholder="MOBILE NUMBER *"
+                            value={formData.phone}
                             className="w-full bg-transparent py-4 px-4 text-xs font-bold uppercase tracking-widest focus:outline-none"
                             onChange={(e) => setFormData({...formData, phone: e.target.value})}
                         />
                     </div>
 
+                    <div className="relative">
+                        <Tag size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
+                        <input 
+                            type="text" 
+                            placeholder="SUBJECT / ISSUE *"
+                            value={formData.subject}
+                            required
+                            className="w-full bg-slate-50 border border-transparent rounded-2xl py-4 pl-12 pr-4 text-xs font-bold uppercase tracking-widest focus:bg-white focus:border-yellow-400 focus:outline-none transition-all"
+                            onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                        />
+                    </div>
+
                     <textarea 
                         rows="3"
-                        placeholder="HOW CAN WE HELP? *"
+                        placeholder="DESCRIBE YOUR COMPLAINT OR ISSUE... *"
+                        value={formData.message}
                         required
                         className="w-full bg-slate-50 border border-transparent rounded-2xl py-4 px-5 text-xs font-bold uppercase tracking-widest focus:bg-white focus:border-yellow-400 focus:outline-none transition-all resize-none"
                         onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -90,9 +143,10 @@ const FloatingContactForm = () => {
 
                     <button 
                         type="submit"
-                        className="w-full py-4 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-2 transition-all shadow-lg shadow-yellow-100 active:scale-95"
+                        disabled={loading}
+                        className="w-full py-4 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-2 transition-all shadow-lg shadow-yellow-100 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                     >
-                        Send Request <Send size={14} />
+                        {loading ? <Loader2 size={16} className="animate-spin" /> : <>Send Request <Send size={14} /></>}
                     </button>
                 </form>
             </div>

@@ -9,7 +9,8 @@ import {
     googleAuth,
     forgotPassword,
     verifyOTP,
-    resetPassword
+    resetPassword,
+    contactUs
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import validateRequest from '../middleware/validateMiddleware.js';
@@ -33,5 +34,6 @@ router.route('/profile')
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);
 router.post('/verify-otp', verifyOTP);
 router.post('/reset-password', validateRequest(resetPasswordSchema), resetPassword);
+router.post('/contact', contactUs);
 
 export default router;

@@ -296,6 +296,65 @@ const resetPassword = asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'Password reset successfully' });
 });
 
+// @desc    Contact Us / Support Inquiry
+// @route   POST /api/users/contact
+// @access  Public
+const contactUs = asyncHandler(async (req, res) => {
+    const { name, email, phone, subject, message } = req.body;
+
+    if (!name || !email || !message) {
+        res.status(400);
+        throw new Error('Please provide all required fields (Name, Email, Message)');
+    }
+
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+
+    try {
+        await sendEmail({
+            email: adminEmail,
+            subject: `Support Hub Inquiry: ${subject || 'General Assistance'}`,
+            html: `
+                <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                    <div style="background-color: #0f172a; padding: 40px; text-align: center;">
+                        <h1 style="color: #fbbf24; margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">Support Hub</h1>
+                        <p style="color: #94a3b8; margin-top: 10px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Incoming Communication Registry</p>
+                    </div>
+                    
+                    <div style="padding: 40px; background-color: #ffffff;">
+                        <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
+                            <p style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Identified Sender</p>
+                            <p style="color: #1e293b; font-size: 18px; font-weight: 800; margin: 0;">${name.toUpperCase()}</p>
+                            <p style="color: #64748b; font-size: 14px; font-weight: 500; margin-top: 5px;">${email.toLowerCase()}</p>
+                            <p style="color: #64748b; font-size: 14px; font-weight: 500; margin-top: 5px;"><b>Phone:</b> ${phone || 'Not Provided'}</p>
+                        </div>
+
+                        <div style="margin-bottom: 30px;">
+                            <p style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Subject / Issue</p>
+                            <div style="background-color: #f8fafc; padding: 15px 20px; border-radius: 12px; border-left: 4px solid #fbbf24;">
+                                <p style="color: #1e293b; font-size: 14px; font-weight: 700; margin: 0;">${subject || 'General Inquiry'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Communication Content</p>
+                            <div style="color: #475569; font-size: 15px; line-height: 1.6; white-space: pre-wrap; background-color: #fafafa; padding: 25px; border-radius: 16px;">${message}</div>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9;">
+                        <p style="color: #94a3b8; font-size: 10px; font-weight: 600; margin: 0;">MIAZI SHOP | Secure Support Infrastructure</p>
+                    </div>
+                </div>
+            `,
+        });
+
+        res.status(200).json({ success: true, message: 'Message sent successfully' });
+    } catch (error) {
+        res.status(500);
+        throw new Error('Message could not be sent. Communication hub is currently offline.');
+    }
+});
+
 export {
     authUser,
     registerUser,
@@ -306,5 +365,6 @@ export {
     googleAuth,
     forgotPassword,
     verifyOTP,
-    resetPassword
+    resetPassword,
+    contactUs
 };
