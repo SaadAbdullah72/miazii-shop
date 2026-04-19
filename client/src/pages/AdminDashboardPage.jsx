@@ -129,7 +129,9 @@ const AdminDashboardPage = () => {
 
     const uploadToCloudinaryDirect = async (file, folder) => {
         // Step 1: Get signature from backend
-        const { data: sigData } = await api.get(`/api/upload/signature?folder=${folder}`);
+        const { data: sigData } = await api.get('/api/upload/signature', {
+            params: { folder }
+        });
         
         // Step 2: Push directly to Cloudinary bypassing Vercel
         const formData = new FormData();

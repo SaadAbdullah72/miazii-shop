@@ -1,54 +1,19 @@
 import express from 'express';
-import { v2 as cloudinary } from 'cloudinary';
+import { generateSignature } from '../utils/cloudinary.js';
 
 const router = express.Router();
-
-// Cloudinary Configuration
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Secure Signature Generation for Frontend Direct Upload
 router.get('/signature', (req, res) => {
     try {
-        const timestamp = Math.round((new Date()).getTime() / 1000);
-        
-        // This folder MUST match where the frontend tells Cloudinary it is uploading to
         const folder = req.query.folder || 'products/images';
-        
-        // Safety Check: Verify configuration exists
-        const missing = [];
-        if (!process.env.CLOUDINARY_CLOUD_NAME) missing.push('CLOUDINARY_CLOUD_NAME');
-        if (!process.env.CLOUDINARY_API_KEY) missing.push('CLOUDINARY_API_KEY');
-        if (!process.env.CLOUDINARY_API_SECRET) missing.push('CLOUDINARY_API_SECRET');
-
-        if (missing.length > 0) {
-            return res.status(500).json({ 
-                message: 'Cloudinary configuration is INCOMPLETE on the server.',
-                error: `Missing: ${missing.join(', ')}`,
-                isConfigured: false 
-            });
-        }
-
-        const signature = cloudinary.utils.api_sign_request({
-            timestamp: timestamp,
-            folder: folder,
-        }, process.env.CLOUDINARY_API_SECRET);
-
-        res.json({
-            timestamp,
-            signature,
-            cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-            apiKey: process.env.CLOUDINARY_API_KEY
-        });
+        const sigData = generateSignature(folder);
+        res.json(sigData);
     } catch (error) {
         console.error('Signature Generation Error:', error);
         res.status(500).json({ 
             message: 'Failed to generate signature', 
-            error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+            error: error.message 
         });
     }
 });
