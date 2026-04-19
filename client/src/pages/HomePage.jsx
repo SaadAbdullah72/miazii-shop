@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../slices/productSlice';
 import { addToCart } from '../slices/cartSlice';
@@ -112,6 +113,25 @@ const HomePage = () => {
     p.category?.name?.toLowerCase().includes('laptop') || 
     p.category?.name?.toLowerCase().includes('computer')
   ) || products?.[0];
+
+  // MEMOIZED FILTERING LOGIC (prevents lag on mobile)
+  const displayProducts = useMemo(() => {
+    if (!products) return [];
+    
+    let filtered = [...products];
+
+    if (activeTab === 'On Sale') {
+      filtered = filtered.filter(p => p.discountPrice > 0 || p.countInStock > 10).sort((a, b) => b.countInStock - a.countInStock);
+    } else if (activeTab === 'Top Rated') {
+      // STRICT AUTHENTICITY: Only show products with actual reviews
+      filtered = filtered.filter(p => p.numReviews > 0).sort((a, b) => b.rating - a.rating);
+    } else {
+      // Featured: Sorted by number of reviews
+      filtered = filtered.sort((a, b) => b.numReviews - a.numReviews);
+    }
+
+    return filtered.slice(0, 8);
+  }, [products, activeTab]);
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -277,125 +297,116 @@ const HomePage = () => {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
               </div>
-            ) : (() => {
-              let filtered = [...products];
-
-              // DYNAMIC FILTERING LOGIC
-              if (activeTab === 'On Sale') {
-                filtered = filtered.filter(p => p.discountPrice > 0 || p.countInStock > 10).sort((a, b) => b.countInStock - a.countInStock);
-              } else if (activeTab === 'Top Rated') {
-                // Sorts by rating (highest first) and filters out products with 0 reviews if you want
-                filtered = filtered.filter(p => p.rating > 0).sort((a, b) => b.rating - a.rating);
-              } else {
-                // Featured: Sorted by number of reviews or a specific 'isFeatured' flag
-                filtered = filtered.sort((a, b) => b.numReviews - a.numReviews);
-              }
-
-              const display = filtered.slice(0, 8);
-
-              if (products.length === 0) {
-                return (
-                  <div className="col-span-full text-center py-20">
-                    <Search size={48} className="mx-auto text-gray-200 mb-4" />
-                    <h3 className="text-lg font-bold text-gray-600 mb-2">No Products Found</h3>
-                  </div>
-                );
-              }
-
-              return (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {display.map((p) => (
-                    <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
-                      <div className="relative bg-gray-50 p-4 aspect-square">
-
-                        {/* --- DYNAMIC BADGE OVERLAYS --- */}
-                        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
-
-                          {/* TOP RATED: Dynamic based on p.rating */}
-                          {activeTab === 'Top Rated' && p.rating > 0 && (
-                            <div className="flex flex-col gap-1">
-                              <span className="bg-gradient-to-r from-gray-900 to-gray-700 text-yellow-400 text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-yellow-400/30 flex items-center gap-1 animate-in fade-in zoom-in duration-300">
-                                <Star size={10} fill="#facc15" stroke="none" />
-                                {p.rating.toFixed(1)}
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                >
+                  {displayProducts.length > 0 ? (
+                    displayProducts.map((p) => (
+                      <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
+                        <div className="relative bg-gray-50 p-4 aspect-square">
+  
+                          {/* --- DYNAMIC BADGE OVERLAYS --- */}
+                          <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
+  
+                            {/* TOP RATED: Dynamic based on p.rating */}
+                            {activeTab === 'Top Rated' && p.rating > 0 && (
+                              <div className="flex flex-col gap-1">
+                                <span className="bg-gradient-to-r from-gray-900 to-gray-700 text-yellow-400 text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-yellow-400/30 flex items-center gap-1 animate-in fade-in zoom-in duration-300">
+                                  <Star size={10} fill="#facc15" stroke="none" />
+                                  {p.rating.toFixed(1)}
+                                </span>
+                                <span className="text-[9px] font-bold text-gray-500 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-full self-start shadow-sm border border-gray-100">
+                                  {p.numReviews} Reviews
+                                </span>
+                              </div>
+                            )}
+  
+                            {/* ON SALE */}
+                            {activeTab === 'On Sale' && (
+                              <span className="bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md uppercase tracking-tighter animate-in slide-in-from-left-2 duration-300">
+                                Hot Deal
                               </span>
-                              <span className="text-[9px] font-bold text-gray-500 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-full self-start shadow-sm border border-gray-100">
-                                {p.numReviews} Reviews
+                            )}
+  
+                            {/* FEATURED */}
+                            {activeTab === 'Featured' && (
+                              <span className="bg-yellow-400 text-gray-900 text-[10px] font-black px-2.5 py-1 rounded shadow-sm uppercase italic tracking-widest border-b-2 border-yellow-600">
+                                Featured
                               </span>
-                            </div>
-                          )}
-
-                          {/* ON SALE */}
-                          {activeTab === 'On Sale' && (
-                            <span className="bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md uppercase tracking-tighter animate-in slide-in-from-left-2 duration-300">
-                              Hot Deal
-                            </span>
-                          )}
-
-                          {/* FEATURED */}
-                          {activeTab === 'Featured' && (
-                            <span className="bg-yellow-400 text-gray-900 text-[10px] font-black px-2.5 py-1 rounded shadow-sm uppercase italic tracking-widest border-b-2 border-yellow-600">
-                              Featured
-                            </span>
-                          )}
-                        </div>
-
-                        <img
-                          src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 400)}
-                          alt={p.name}
-                          loading="lazy"
-                          className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
-                          onError={(e) => {
-                            e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
-                            e.target.onerror = null;
-                          }}
-                        />
-
-                        <button
-                          onClick={(e) => { e.preventDefault(); addToCartHandler(p); }}
-                          className="absolute bottom-2 right-2 w-9 h-9 bg-yellow-400 rounded-full shadow-lg flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white"
-                        >
-                          <Plus className="w-5 h-5" />
-                        </button>
-                      </div>
-
-                      <div className="p-3">
-                        <p className="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-tight">
-                          {p.category?.name || 'Electronics'}
-                        </p>
-
-                        <Link to={`/product/${p.slug}`}>
-                          <h3 className="text-sm font-semibold text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors leading-tight">
-                            {p.name}
-                          </h3>
-                        </Link>
-
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-lg font-black text-gray-900">
-                              ৳{p.price?.toLocaleString()}
-                            </span>
+                            )}
                           </div>
-
-                          {/* Visual Stars for Top Rated tab in the info section */}
-                          {activeTab === 'Top Rated' && p.rating > 0 && (
-                            <div className="flex gap-0.5">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  size={10}
-                                  fill={i < Math.round(p.rating) ? "#facc15" : "#e2e8f0"}
-                                  stroke="none"
-                                />
-                              ))}
+  
+                          <img
+                            src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 400)}
+                            alt={p.name}
+                            loading="lazy"
+                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => {
+                              e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                              e.target.onerror = null;
+                            }}
+                          />
+  
+                          <button
+                            onClick={(e) => { e.preventDefault(); addToCartHandler(p); }}
+                            className="absolute bottom-2 right-2 w-9 h-9 bg-yellow-400 rounded-full shadow-lg flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white"
+                          >
+                            <Plus className="w-5 h-5" />
+                          </button>
+                        </div>
+  
+                        <div className="p-3">
+                          <p className="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-tight">
+                            {p.category?.name || 'Electronics'}
+                          </p>
+  
+                          <Link to={`/product/${p.slug}`}>
+                            <h3 className="text-sm font-semibold text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors leading-tight">
+                              {p.name}
+                            </h3>
+                          </Link>
+  
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-lg font-black text-gray-900">
+                                ৳{p.price?.toLocaleString()}
+                              </span>
                             </div>
-                          )}
+  
+                            {/* Visual Stars for Top Rated tab in the info section */}
+                            {activeTab === 'Top Rated' && p.rating > 0 && (
+                              <div className="flex gap-0.5">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    size={10}
+                                    fill={i < Math.round(p.rating) ? "#facc15" : "#e2e8f0"}
+                                    stroke="none"
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-20">
+                      <Search size={48} className="mx-auto text-gray-200 mb-4" />
+                      <h3 className="text-lg font-bold text-gray-600 mb-2">No Real Reviews Found</h3>
+                      <p className="text-sm text-gray-400">Products with authentic reviews will appear here.</p>
                     </div>
-                  ))}
-                </div>
-              );
-            })()}
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
         </div>
       </section>
