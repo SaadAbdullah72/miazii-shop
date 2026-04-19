@@ -38,9 +38,15 @@ const PrivacyPolicyPage = () => {
                         <span className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-900 text-sm">01</span>
                         Introduction
                     </h2>
-                    <p className="text-slate-600 leading-relaxed">
+                    <p className="text-slate-600 leading-relaxed mb-4">
                         Welcome to <strong>Miazi Shop</strong>. Your privacy is critically important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our mobile application and website services. By using Miazi Shop, you agree to the terms outlined here.
                     </p>
+                    <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex items-start gap-3">
+                        <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 shrink-0 animate-pulse" />
+                        <p className="text-emerald-800 text-sm font-bold uppercase tracking-tight">
+                            Strict Data Protection: We NEVER sell, rent, or trade your personal data to any third parties under any circumstances.
+                        </p>
+                    </div>
                 </section>
 
                 {/* Data Collection */}

@@ -29,6 +29,17 @@
     max-width: 100vw;
     position: relative;
     font-style: normal !important; /* Force NO italics globally */
+    overscroll-behavior-y: none; /* PLAY STORE: Prevent overscroll white gap */
+  }
+
+  /* PLAY STORE: Remove native web tap highlight glow */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* PLAY STORE: Prevent input zoom on mobile by forcing 16px */
+  input, textarea, select {
+    font-size: 16px !important;
   }
 
   /* Force NO italics on all common tags */
