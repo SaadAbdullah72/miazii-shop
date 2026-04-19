@@ -64,7 +64,6 @@ function App() {
                 </main>
                 <ContactPage />
                 <BottomNavigation />
-                <Footer />
                 <ToastContainer position="bottom-right" autoClose={3000} />
             </div>
         </Router>

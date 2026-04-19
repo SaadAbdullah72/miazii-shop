@@ -265,7 +265,7 @@ const PlaceOrderPage = () => {
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex items-center justify-between">
-                                            <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">bKash / Nagad</p>
+                                            <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">bKash / Nagad / Rocket</p>
                                             <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[8px] font-black rounded uppercase">SAVE 3%</div>
                                         </div>
                                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Manual Direct Protocol</p>
@@ -313,9 +313,12 @@ const PlaceOrderPage = () => {
           </div>
 
           <div>
-            <p className="text-[11px] text-slate-400">Agent</p>
+            <p className="text-[11px] text-slate-400">Agent (Rocket Available Here)</p>
             <p className="font-semibold text-slate-800">
               +880 1905-507895
+            </p>
+            <p className="text-[9px] font-black text-indigo-600 uppercase mt-1">
+              Rocket: Use this number only
             </p>
           </div>
         </div>
