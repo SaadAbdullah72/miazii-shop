@@ -19,9 +19,15 @@ router.get('/signature', (req, res) => {
         const folder = req.query.folder || 'products/images';
         
         // Safety Check: Verify configuration exists
-        if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        const missing = [];
+        if (!process.env.CLOUDINARY_CLOUD_NAME) missing.push('CLOUDINARY_CLOUD_NAME');
+        if (!process.env.CLOUDINARY_API_KEY) missing.push('CLOUDINARY_API_KEY');
+        if (!process.env.CLOUDINARY_API_SECRET) missing.push('CLOUDINARY_API_SECRET');
+
+        if (missing.length > 0) {
             return res.status(500).json({ 
-                message: 'Cloudinary is not configured on the server. Please check environment variables.',
+                message: 'Cloudinary configuration is INCOMPLETE on the server.',
+                error: `Missing: ${missing.join(', ')}`,
                 isConfigured: false 
             });
         }
@@ -39,7 +45,11 @@ router.get('/signature', (req, res) => {
         });
     } catch (error) {
         console.error('Signature Generation Error:', error);
-        res.status(500).json({ message: 'Failed to generate signature', error: error.message });
+        res.status(500).json({ 
+            message: 'Failed to generate signature', 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+        });
     }
 });
 
