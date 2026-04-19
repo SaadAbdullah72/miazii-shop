@@ -35,7 +35,20 @@ const PageLoader = () => (
     </div>
 );
 
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile } from './slices/authSlice';
+
 function App() {
+    const dispatch = useDispatch();
+    const { userInfo } = useSelector((state) => state.auth);
+
+    // Sync profile data on app mount to ensure cross-device consistency
+    React.useEffect(() => {
+        if (userInfo) {
+            dispatch(getProfile());
+        }
+    }, [dispatch]); // Only on mount, don't depend on userInfo to avoid loops
+
     return (
         <Router>
             <div className="flex flex-col min-h-screen bg-[#f5f5f5]">

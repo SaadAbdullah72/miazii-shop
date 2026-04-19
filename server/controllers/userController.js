@@ -168,6 +168,7 @@ const googleAuth = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
+            avatar: user.avatar,
         });
     } else {
         res.status(400);

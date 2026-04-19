@@ -133,6 +133,49 @@ const HomePage = () => {
     return filtered.slice(0, 8);
   }, [products, activeTab]);
 
+  const bestDealsProducts = useMemo(() => {
+    if (!products) return [];
+    const activeLabel = activeDealCategory.toLowerCase();
+
+    if (activeLabel === 'best deals') {
+      // BALANCED GALLERY LOGIC: Ensure every category gets representation
+      const groupedByCategory = {};
+      products.forEach(p => {
+        const catName = p.category?.name || 'Uncategorized';
+        // Only include if authentic (has reviews) for the main dashboard
+        if (!p.reviews || p.reviews.length === 0) return;
+        if (p.isDeals || p.discountPrice > 0 || p.rating >= 4) {
+          if (!groupedByCategory[catName]) groupedByCategory[catName] = [];
+          groupedByCategory[catName].push(p);
+        }
+      });
+
+      const balancedList = [];
+      const categoriesKeys = Object.keys(groupedByCategory);
+      
+      // First pass: Take 1 from every category
+      categoriesKeys.forEach(cat => {
+        const sorted = groupedByCategory[cat].sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
+        balancedList.push(sorted[0]);
+      });
+
+      // Second pass: Fill up to 12 with remaining best ones
+      const remaining = products
+        .filter(p => !balancedList.find(b => b._id === p._id) && (p.reviews?.length > 0))
+        .filter(p => p.isDeals || p.discountPrice > 0 || p.rating >= 4)
+        .sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
+
+      return [...balancedList, ...remaining].slice(0, 12);
+    }
+
+    // Specific Category Tab: Relaxed filtering so tab feels "active"
+    return products.filter(p => {
+      const productCatName = p.category?.name?.toLowerCase() || "";
+      return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
+    }).sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
+
+  }, [products, activeDealCategory]);
+
   return (
     <div className="min-h-screen bg-white font-sans">
 
@@ -433,26 +476,7 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pb-25">
-            {products
-              ?.filter((p) => {
-                const productCatName = p.category?.name?.toLowerCase() || "";
-                const activeLabel = activeDealCategory.toLowerCase();
-
-                // IRON-CLAD AUTHENTICITY: No REAL reviews = No Deal
-                if (!p.reviews || p.reviews.length === 0) return false;
-
-                // 1. Default Deal logic
-                if (activeLabel === 'best deals') {
-                   // Only show highly rated products that actually have reviews backings
-                   return p.isDeals || p.discountPrice > 0 || (p.rating >= 4 && p.reviews.length > 0);
-                }
-
-                // 2. Fuzzy matching (Handles "Audio" matching "Portable Audio" etc.)
-                return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
-              })
-              .sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0)) // Order by real popularity
-              .slice(0, 12)
-              .map((p) => (
+            {bestDealsProducts.map((p) => (
                 <div key={p._id} className="group">
                   <div className="bg-gray-50 rounded-lg p-3 mb-2 aspect-square overflow-hidden relative">
                     <img

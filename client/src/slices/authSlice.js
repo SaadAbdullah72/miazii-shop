@@ -62,6 +62,16 @@ export const updateProfile = createAsyncThunk('auth/updateProfile', async (userD
     }
 });
 
+export const getProfile = createAsyncThunk('auth/getProfile', async (_, { rejectWithValue }) => {
+    try {
+        const response = await api.get('/api/users/profile');
+        localStorage.setItem('userInfo', JSON.stringify(response.data));
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || error.message);
+    }
+});
+
 const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
 const initialState = {
@@ -131,6 +141,10 @@ const authSlice = createSlice({
             .addCase(updateProfile.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            // Get Profile (Background Sync)
+            .addCase(getProfile.fulfilled, (state, action) => {
+                state.userInfo = action.payload;
             });
     },
 });
