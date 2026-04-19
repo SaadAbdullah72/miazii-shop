@@ -21,5 +21,21 @@
   "orientation": "portrait",
   "theme_color": "#fed700",
   "background_color": "#ffffff",
-  "categories": ["shopping", "electronics"]
+  "categories": ["shopping", "electronics", "technology"],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Miazii Shop Mobile Experience"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Miazii Shop Desktop Gallery"
+    }
+  ]
 }
