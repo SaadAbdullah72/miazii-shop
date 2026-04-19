@@ -6,13 +6,13 @@
   "icons": [
     {
       "src": "/logo.png",
-      "type": "image/jpeg",
+      "type": "image/png",
       "sizes": "1024x1024",
       "purpose": "any"
     },
     {
       "src": "/logo.png",
-      "type": "image/jpeg",
+      "type": "image/png",
       "sizes": "1024x1024",
       "purpose": "maskable"
     }
