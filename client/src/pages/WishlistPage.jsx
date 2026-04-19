@@ -68,9 +68,13 @@ const WishlistPage = () => {
                             <div key={item._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all">
                                 <Link to={`/product/${item.slug}`} className="block relative aspect-square bg-gray-50 p-6 overflow-hidden">
                                     <img 
-                                        src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : `${BASE_URL}${item.images[0]}`) : 'https://placehold.co/300x300'} 
+                                        src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : `${BASE_URL}${item.images[0]}`) : 'https://placehold.co/400x400?text=Item'} 
                                         alt={item.name} 
-                                        className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
+                                        className="w-full h-full object-contain mix-blend-multiply transition-transform group-hover:scale-110 duration-500" 
+                                        onError={(e) => {
+                                            e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                                            e.target.onerror = null;
+                                        }}
                                     />
                                     <div className="absolute top-2 left-2 px-2 py-1 bg-white/80 backdrop-blur rounded text-[10px] font-bold text-gray-500 uppercase">
                                         {item.category?.name || 'Category'}

@@ -111,6 +111,10 @@ const ProductDetailsPage = () => {
                                     src={product.images?.[selectedImage]?.startsWith('http') ? product.images[selectedImage] : `${BASE_URL}${product.images?.[selectedImage]}`} 
                                     alt={product.name} 
                                     className="max-w-full max-h-full object-contain mix-blend-multiply" 
+                                    onError={(e) => {
+                                        e.target.src = 'https://placehold.co/800x800?text=Product+Preview';
+                                        e.target.onerror = null;
+                                    }}
                                 />
                             </div>
                             
@@ -122,7 +126,15 @@ const ProductDetailsPage = () => {
                                             onClick={() => setSelectedImage(idx)}
                                             className={`w-20 h-20 bg-white border-2 rounded transition-all p-2 flex items-center justify-center shrink-0 ${selectedImage === idx ? 'border-yellow-400 shadow-md' : 'border-gray-100 opacity-60 hover:opacity-100'}`}
                                         >
-                                            <img src={img?.startsWith('http') ? img : `${BASE_URL}${img}`} alt="" className="w-full h-full object-contain mix-blend-multiply" />
+                                            <img 
+                                                src={img?.startsWith('http') ? img : `${BASE_URL}${img}`} 
+                                                alt="" 
+                                                className="w-full h-full object-contain mix-blend-multiply" 
+                                                onError={(e) => {
+                                                    e.target.src = 'https://placehold.co/200x200?text=Thumb';
+                                                    e.target.onerror = null;
+                                                }}
+                                            />
                                         </button>
                                     ))}
                                 </div>

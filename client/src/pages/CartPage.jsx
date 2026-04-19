@@ -74,7 +74,15 @@ const CartPage = () => {
                                             {/* Info Group */}
                                             <div className="md:col-span-6 flex items-center gap-4 md:gap-6">
                                                 <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-50 rounded-2xl p-2 flex items-center justify-center shrink-0 border border-gray-50 group-hover:scale-105 transition-transform">
-                                                    <img src={item.image || (item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}`)} alt={item.name} className="max-w-full max-h-full object-contain mix-blend-multiply" />
+                                                    <img 
+                                                        src={item.image || (item.images?.[0]?.startsWith('http') ? item.images[0] : `${BASE_URL}${item.images?.[0]}`)} 
+                                                        alt={item.name} 
+                                                        className="max-w-full max-h-full object-contain mix-blend-multiply" 
+                                                        onError={(e) => {
+                                                            e.target.src = 'https://placehold.co/100x100?text=Item';
+                                                            e.target.onerror = null;
+                                                        }}
+                                                    />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <Link to={`/product/${item.slug}`} className="text-sm md:text-base font-black text-slate-800 hover:text-blue-600 transition-colors line-clamp-1 uppercase tracking-tight">{item.name}</Link>

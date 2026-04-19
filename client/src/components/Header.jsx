@@ -222,8 +222,12 @@ const Header = () => {
                                         >
                                             <div className="w-10 h-10 bg-gray-50 rounded flex items-center justify-center p-1 shrink-0">
                                                 <img
-                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/100x100'}
+                                                    src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/200x200?text=Product'}
                                                     alt="" className="max-w-full max-h-full object-contain mix-blend-multiply"
+                                                    onError={(e) => {
+                                                        e.target.src = 'https://placehold.co/200x200?text=Product';
+                                                        e.target.onerror = null;
+                                                    }}
                                                 />
                                             </div>
                                             <div className="min-w-0">

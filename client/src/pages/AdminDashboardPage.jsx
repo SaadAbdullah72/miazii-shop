@@ -530,7 +530,15 @@ const AdminDashboardPage = () => {
                                                     <td className="p-6">
                                                         <div className="flex items-center gap-4">
                                                             <div className="w-12 h-12 bg-white border border-slate-100 rounded-2xl p-1 shrink-0 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                                                <img src={p.images?.[0]?.startsWith('http') ? p.images[0] : `${BASE_URL}${p.images?.[0]}`} alt="" className="max-w-full max-h-full object-contain mix-blend-multiply" />
+                                                                <img 
+                                                                    src={p.images?.[0]?.startsWith('http') ? p.images[0] : `${BASE_URL}${p.images?.[0]}`} 
+                                                                    alt="" 
+                                                                    className="max-w-full max-h-full object-contain mix-blend-multiply" 
+                                                                    onError={(e) => {
+                                                                        e.target.src = 'https://placehold.co/100x100?text=Missing';
+                                                                        e.target.onerror = null;
+                                                                    }}
+                                                                />
                                                             </div>
                                                             <div className="min-w-0">
                                                                 <p className="text-sm font-black text-slate-800 truncate max-w-[200px]">{p.name}</p>

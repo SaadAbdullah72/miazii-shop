@@ -83,9 +83,13 @@ const CategoryPage = () => {
                                     <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
                                         <div className="relative bg-gray-50 p-4 aspect-square">
                                             <img 
-                                                src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/300x300'} 
+                                                src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image'} 
                                                 alt={p.name} 
                                                 className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
+                                                onError={(e) => {
+                                                    e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                                                    e.target.onerror = null;
+                                                }}
                                             />
                                             <button onClick={() => addToCartHandler(p)}
                                                 className="absolute bottom-2 right-2 w-8 h-8 bg-yellow-400 rounded-full shadow flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white">

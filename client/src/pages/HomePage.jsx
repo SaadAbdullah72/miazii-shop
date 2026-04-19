@@ -348,9 +348,13 @@ const HomePage = () => {
                         </div>
 
                         <img
-                          src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/300x300'}
+                          src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image'}
                           alt={p.name}
                           className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                            e.target.onerror = null;
+                          }}
                         />
 
                         <button
@@ -443,9 +447,13 @@ const HomePage = () => {
                 <div key={p._id} className="group">
                   <div className="bg-gray-50 rounded-lg p-3 mb-2 aspect-square overflow-hidden relative">
                     <img
-                      src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/200x200'}
+                      src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image'}
                       alt={p.name}
                       className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
+                      onError={(e) => {
+                        e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                        e.target.onerror = null;
+                      }}
                     />
                     <button
                       onClick={() => addToCartHandler(p)}
