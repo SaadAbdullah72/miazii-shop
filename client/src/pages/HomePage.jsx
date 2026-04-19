@@ -106,9 +106,10 @@ const HomePage = () => {
   // Use this instead of the hardcoded array to ensure names always match
   const bestDealCategories = ['Best Deals', ...categories.map(c => c.name)];
   const formatTime = (num) => num.toString().padStart(2, '0');
-  // Find the product to link to (searching for "controller" in your products array)
+  // Find the product to link to (searching for "Laptops & Computers" first)
   const specialOfferProduct = products?.find(p =>
-    p.name.toLowerCase().includes('controller')
+    p.category?.name?.toLowerCase().includes('laptop') || 
+    p.category?.name?.toLowerCase().includes('computer')
   ) || products?.[0];
 
   return (
@@ -200,64 +201,53 @@ const HomePage = () => {
             <aside className="w-full lg:w-72 flex-shrink-0">
               <div className="bg-white border-2 border-yellow-400 rounded-xl overflow-hidden shadow-lg">
                 {/* Header */}
-                <div className="bg-yellow-400 px-4 py-3 flex items-center justify-between">
+                <div className="bg-yellow-400 px-4 py-4 flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-bold text-gray-800 uppercase">Special</p>
-                    <p className="text-lg font-bold text-gray-800">Offer</p>
-                  </div>
-                  <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    Save<br />৳2,000
+                    <p className="text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-60">Today's</p>
+                    <p className="text-xl font-black text-gray-800 uppercase tracking-tighter">Special Offer</p>
                   </div>
                 </div>
 
-                <div className="p-4 text-center">
-                  {/* 1. Simple Image Tag (Not Clickable) */}
-                  {/* 1. Simple Image Tag */}
-                  {/* Added an onError handler to show a placeholder if the file is missing */}
-                  <div className="relative mb-4 h-48 flex items-center justify-center bg-gray-50 rounded-lg">
-                    <img
-                      src="https://images.unsplash.com/photo-1605901309584-818e25960a8f?w=300&q=80"
-                      alt="Special Offer"
-                      className="max-w-full max-h-full object-contain"
-                      onError={(e) => {
-                        e.target.src = 'https://placehold.co/400x400?text=Gamepad+Missing';
-                        e.target.onerror = null;
-                      }}
-                    />
-                  </div>
+                <div className="p-4 pt-2 text-center">
+                  {/* 1. Clickable Image */}
+                  <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'} className="block">
+                    <div className="relative mb-6 h-56 flex items-center justify-center bg-gray-50 rounded-2xl overflow-hidden group/img">
+                      <img
+                        src={specialOfferProduct?.images?.[0]?.startsWith('http') ? specialOfferProduct.images[0] : `${BASE_URL}${specialOfferProduct?.images?.[0]}`}
+                        alt="Special Offer"
+                        className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-500 group-hover/img:scale-110"
+                        onError={(e) => {
+                          e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
+                          e.target.onerror = null;
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/5 transition-colors duration-500" />
+                    </div>
+                  </Link>
 
                   {/* 2. Clickable Product Name */}
                   <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'}>
-                    <h3 className="text-sm text-slate-800 font-bold mb-1 hover:text-yellow-600 transition-colors uppercase line-clamp-2 min-h-[2.5rem]">
-                      {specialOfferProduct?.name || "Game Console Controller"}
+                    <p className="text-[10px] font-black text-yellow-600 uppercase tracking-[0.2em] mb-2">
+                      {specialOfferProduct?.category?.name || "Featured"}
+                    </p>
+                    <h3 className="text-base text-slate-800 font-black mb-3 hover:text-yellow-600 transition-colors uppercase line-clamp-2 min-h-[3rem] tracking-tight leading-tight px-2">
+                      {specialOfferProduct?.name || "Premium Selection"}
                     </h3>
                   </Link>
 
                   {/* Pricing */}
-                  <div className="flex items-center justify-center gap-2 mb-6">
-                    <span className="text-gray-400 line-through text-sm">
-                      ৳{specialOfferProduct ? (specialOfferProduct.price + 2000).toLocaleString() : '9,900'}
-                    </span>
-                    <span className="text-red-600 font-bold text-xl">
-                      ৳{specialOfferProduct?.price?.toLocaleString() || '7,900'}
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <span className="text-2xl font-black text-slate-900 tracking-tighter">
+                      ৳{specialOfferProduct?.price?.toLocaleString() || '---'}
                     </span>
                   </div>
 
-                  {/* Timer Section */}
-                  <div className="flex justify-center gap-2 pb-2">
-                    {[
-                      { val: formatTime(timeLeft.hours), label: 'HOURS' },
-                      { val: formatTime(timeLeft.minutes), label: 'MINS' },
-                      { val: formatTime(timeLeft.seconds), label: 'SECS' }
-                    ].map((item, idx) => (
-                      <div key={idx} className="text-center">
-                        <div className="w-12 h-10 bg-gray-100 rounded flex items-center justify-center font-bold text-gray-800 mb-1">
-                          {item.val}
-                        </div>
-                        <span className="text-[10px] text-gray-500 font-bold uppercase">{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <Link 
+                    to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'}
+                    className="inline-flex items-center gap-2 text-[10px] font-black text-slate-800 uppercase tracking-widest border-b-2 border-yellow-400 pb-1 hover:text-yellow-600 transition-colors"
+                  >
+                    View Details <ArrowRight size={14} />
+                  </Link>
                 </div>
               </div>
             </aside>
