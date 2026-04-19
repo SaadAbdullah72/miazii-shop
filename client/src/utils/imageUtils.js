@@ -7,9 +7,22 @@
 export const toCDN = (url, width) => {
     if (!url) return 'https://placehold.co/400x400?text=No+Image';
 
-    // If it's already a full URL and NOT cloudinary, just return it
-    if (url.startsWith('http') && !url.includes('cloudinary.com')) {
+    // If it's already a full URL and NOT cloudinary or unsplash, just return it
+    if (url.startsWith('http') && !url.includes('cloudinary.com') && !url.includes('unsplash.com')) {
         return url;
+    }
+
+    // Handle Unsplash dynamic CDN resizing and compression
+    if (url.includes('images.unsplash.com')) {
+        try {
+            const urlObj = new URL(url);
+            urlObj.searchParams.set('w', width || 400); // Standardize width vs 1000px default
+            urlObj.searchParams.set('q', '60');         // Optimize quality parameter
+            urlObj.searchParams.set('auto', 'format');  // Let browser use webp/avif
+            return urlObj.toString();
+        } catch(e) {
+            return url;
+        }
     }
 
     // Handle Cloudinary specifically for optimization

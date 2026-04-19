@@ -144,7 +144,7 @@ const Header = () => {
             <div className="max-w-7xl mx-auto px-4 py-3 md:py-5 flex items-center justify-between gap-4 md:gap-10">
                 <Link to="/" className="flex items-center flex-shrink-0 group">
                     <div className="h-16 md:h-20 flex items-center justify-center">
-                        <img src="/logo.png" alt="Miazii Shop Logo" className="h-full w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
+                        <img src="/logo.png" alt="Miazii Shop Logo" width="112" height="112" className="h-full w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
                     </div>
                 </Link>
 
