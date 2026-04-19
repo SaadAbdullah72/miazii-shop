@@ -1,4 +1,4 @@
-import app from '../server/server.js';
+import app from '../server/server.js'; // Vercel Environment Trigger Sync
 
 // Vercel Serverless Entry Point
 export default async (req, res) => {
