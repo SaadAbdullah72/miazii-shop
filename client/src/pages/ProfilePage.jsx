@@ -7,7 +7,7 @@ import {
     Loader, Package, Mail, Calendar, 
     CreditCard, ChevronRight, Eye, Info, 
     Clock, CheckCircle2, User, Truck,
-    LogOut, RefreshCw, Camera
+    LogOut, RefreshCw, Camera, Trash2, Shield
 } from 'lucide-react';
 import { updateProfile } from '../slices/authSlice';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
@@ -37,6 +37,19 @@ const ProfilePage = () => {
             toast.error(err.message || 'Avatar upload failed');
         } finally {
             setIsAvatarUploading(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        if (window.confirm('WARNING: Are you sure you want to PERMANENTLY delete your account? This action cannot be undone and all your order history will be lost.')) {
+            try {
+                await api.delete('/api/users/profile');
+                toast.success('Your account has been deleted.');
+                dispatch(logout());
+                navigate('/');
+            } catch (err) {
+                toast.error(err.response?.data?.message || 'Deletion failed');
+            }
         }
     };
 
@@ -185,6 +198,47 @@ const ProfilePage = () => {
                         ))}
                     </div>
                 )}
+
+                {/* SECURITY & PRIVACY SECTION */}
+                <div className="mt-16 pt-12 border-t border-gray-200">
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center">
+                            <Shield size={20} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-black text-slate-800 uppercase tracking-tight">Security & Privacy</h2>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-0.5">Manage Your Identity</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+                        <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight mb-4 flex items-center gap-2">
+                                <Trash2 size={16} className="text-red-500" /> Permanent Data Removal
+                            </h3>
+                            <p className="text-xs text-gray-500 leading-relaxed mb-6">
+                                If you no longer wish to use Miazii Shop, you can permanently delete your account and all associated data. This action is irreversible.
+                            </p>
+                            <button 
+                                onClick={handleDeleteAccount}
+                                className="w-full py-4 bg-red-50 text-red-600 border border-red-100 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                            >
+                                Delete My Account
+                            </button>
+                        </div>
+                        <Link 
+                            to="/privacy-policy" 
+                            className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm hover:border-yellow-400 transition-all group"
+                        >
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight mb-4 flex items-center gap-2 group-hover:text-yellow-600">
+                                <Info size={16} className="text-yellow-500" /> Read Privacy Policy
+                            </h3>
+                            <p className="text-xs text-gray-500 leading-relaxed">
+                                Learn how we protect your data and stay compliant with Google Play global standards.
+                            </p>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );

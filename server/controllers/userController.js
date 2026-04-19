@@ -355,6 +355,32 @@ const contactUs = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Delete user account
+// @route   DELETE /api/users/profile
+// @access  Private
+const deleteUserAccount = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+        if (user.isAdmin) {
+            res.status(400);
+            throw new Error('Admin accounts cannot be deleted directly. Please contact support.');
+        }
+
+        await User.findByIdAndDelete(req.user._id);
+
+        res.cookie('jwt', '', {
+            httpOnly: true,
+            expires: new Date(0),
+        });
+
+        res.status(200).json({ message: 'Account deleted successfully' });
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
 export {
     authUser,
     registerUser,
@@ -366,5 +392,6 @@ export {
     forgotPassword,
     verifyOTP,
     resetPassword,
-    contactUs
+    contactUs,
+    deleteUserAccount,
 };

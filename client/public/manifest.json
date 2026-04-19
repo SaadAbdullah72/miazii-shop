@@ -1,20 +1,25 @@
 {
-  "short_name": "Miazii",
-  "name": "Miazii Shop | Premium Tech Store",
+  "short_name": "Miazi Shop",
+  "name": "Miazi Shop | Premium Electronics & Tech",
+  "description": "Premium electronics and tech store offering high-quality gadgets at best prices in Bangladesh.",
   "icons": [
     {
       "src": "/logo.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "/logo.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#fed700",
-  "background_color": "#f5f5f5"
+  "background_color": "#ffffff",
+  "categories": ["shopping", "electronics"]
 }

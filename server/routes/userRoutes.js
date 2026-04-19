@@ -10,7 +10,8 @@ import {
     forgotPassword,
     verifyOTP,
     resetPassword,
-    contactUs
+    contactUs,
+    deleteUserAccount
 } from '../controllers/userController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import validateRequest from '../middleware/validateMiddleware.js';
@@ -29,7 +30,8 @@ router.post('/google-login', googleAuth);
 router.post('/logout', logoutUser);
 router.route('/profile')
     .get(protect, getUserProfile)
-    .put(protect, updateUserProfile);
+    .put(protect, updateUserProfile)
+    .delete(protect, deleteUserAccount);
 
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);
 router.post('/verify-otp', verifyOTP);

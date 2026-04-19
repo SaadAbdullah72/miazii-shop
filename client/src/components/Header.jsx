@@ -480,9 +480,9 @@ const Header = () => {
                         </div>
                         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
                             <ul className="space-y-4">
-                                {departments.map(dept => (
-                                    <li key={dept.id || dept.name}>
-                                        <Link onClick={() => setIsMobileMenuOpen(false)} to={dept.id ? `/category/${dept.id}` : '#'} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-500">
+                                {categories.map(dept => (
+                                    <li key={dept._id || dept.name}>
+                                        <Link onClick={() => setIsMobileMenuOpen(false)} to={`/category/${dept.slug}`} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-500">
                                             {dept.name}
                                             <ChevronRight size={14} className="opacity-30" />
                                         </Link>
@@ -502,56 +502,6 @@ const Header = () => {
                             </ul>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* APP-LIKE BOTTOM NAVIGATION BAR (MOBILE ONLY) - Hidden on Admin Dashboard */}
-            {!location.pathname.startsWith('/admin') && (
-                <div className="md:hidden fixed bottom-6 left-6 right-6 h-18 bg-white/80 backdrop-blur-xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-[2.5rem] z-[999] p-2 flex items-center justify-between">
-                    <Link to="/" className="flex-1 flex flex-col items-center justify-center gap-1">
-                        <div className="p-2 rounded-2xl bg-yellow-400/10 text-yellow-600">
-                            <ShoppingBag size={20} />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-tighter">Shop</span>
-                    </Link>
-
-                    <button
-                        onClick={() => { setIsMobileSearchOpen(true); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                        className="flex-1 flex flex-col items-center justify-center gap-1"
-                    >
-                        <div className="p-2 rounded-2xl text-slate-400">
-                            <Search size={20} />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Search</span>
-                    </button>
-
-                    <div className="flex-1 flex justify-center -mt-12">
-                        <Link to="/cart" className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center shadow-2xl shadow-yellow-200 border-8 border-[#f5f5f5] transition-transform hover:scale-110 active:scale-95 relative">
-                            <ShoppingBag size={24} className="text-slate-900" />
-                            {cartItems.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-full border-4 border-[#f5f5f5]">
-                                    {cartItems.reduce((a, c) => a + c.qty, 0)}
-                                </span>
-                            )}
-                        </Link>
-                    </div>
-
-                    <Link to="/myorders" className="flex-1 flex flex-col items-center justify-center gap-1">
-                        <div className="p-2 rounded-2xl text-slate-400">
-                            <Truck size={20} />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Orders</span>
-                    </Link>
-
-                    <button
-                        onClick={() => setIsUserDrawerOpen(true)}
-                        className="flex-1 flex flex-col items-center justify-center gap-1"
-                    >
-                        <div className="p-2 rounded-2xl text-slate-400">
-                            <User size={20} />
-                        </div>
-                        <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">Account</span>
-                    </button>
                 </div>
             )}
         </header>
