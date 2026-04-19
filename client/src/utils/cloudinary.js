@@ -10,11 +10,17 @@ import api from './axiosConfig';
  */
 export const uploadToCloudinaryDirect = async (file, folder) => {
     // Step 1: Get signature from backend
-    const { data: sigData } = await api.get(`/api/upload/signature?folder=${folder}`);
+    // Use Axios params to ensure folder name (with slashes) is correctly encoded
+    const { data: sigData } = await api.get('/api/upload/signature', {
+        params: { folder }
+    });
     
     if (!sigData.cloudName || !sigData.apiKey) {
         throw new Error('Cloudinary is not configured. Please add CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY to environment variables.');
     }
+
+    // Determine resource type based on file type (image or video)
+    const resourceType = file.type.startsWith('video') ? 'video' : 'image';
 
     // Step 2: Push directly to Cloudinary
     const formData = new FormData();
@@ -24,13 +30,15 @@ export const uploadToCloudinaryDirect = async (file, folder) => {
     formData.append('signature', sigData.signature);
     formData.append('folder', folder);
     
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/auto/upload`, {
+    // Use 'auto' or specific resource type for flexibility
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${sigData.cloudName}/${resourceType}/upload`, {
         method: 'POST',
         body: formData
     });
     
     if (!response.ok) {
-        throw new Error(`Cloudinary error: ${response.statusText}`);
+        const errData = await response.json();
+        throw new Error(`Cloudinary Error: ${errData.error?.message || response.statusText}`);
     }
     
     const data = await response.json();
