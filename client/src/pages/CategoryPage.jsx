@@ -6,6 +6,7 @@ import { addToCart } from '../slices/cartSlice';
 import { Link, useParams } from 'react-router-dom';
 import { Plus, ChevronRight, Tag } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
+import { toCDN } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { ProductSkeleton } from '../components/Skeleton';
 
@@ -83,8 +84,9 @@ const CategoryPage = () => {
                                     <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
                                         <div className="relative bg-gray-50 p-4 aspect-square">
                                             <img 
-                                                src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image'} 
+                                                src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 400)} 
                                                 alt={p.name} 
+                                                loading="lazy"
                                                 className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
                                                 onError={(e) => {
                                                     e.target.src = 'https://placehold.co/400x400?text=Product+Preview';

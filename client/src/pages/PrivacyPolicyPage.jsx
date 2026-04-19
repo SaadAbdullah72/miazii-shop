@@ -6,22 +6,27 @@ const PrivacyPolicyPage = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-white pb-20">
-            {/* Header */}
-            <div className="bg-slate-900 text-white p-6 md:p-12">
-                <button 
-                    onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 text-yellow-400 text-xs font-black uppercase tracking-widest mb-6 hover:text-white transition-colors"
-                >
-                    <ChevronLeft size={16} /> Back
-                </button>
-                <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-slate-900 shadow-lg shadow-yellow-400/20">
-                        <Shield size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl md:text-4xl font-black uppercase tracking-tighter italic">Privacy Policy</h1>
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Last Updated: April 2026</p>
+        <div className="min-h-screen bg-white pb-20 font-sans">
+            {/* Clean Header */}
+            <div className="bg-slate-50 border-b border-slate-100 p-8 md:p-16">
+                <div className="max-w-4xl mx-auto">
+                    <button 
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-widest mb-10 hover:text-yellow-600 transition-all group"
+                    >
+                        <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Go Back
+                    </button>
+                    <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-slate-900 shadow-xl shadow-slate-200/50 border border-slate-100">
+                            <Shield size={28} className="text-yellow-500" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl md:text-5xl font-black text-slate-900 uppercase tracking-tight">Privacy Policy</h1>
+                            <div className="flex items-center gap-2 mt-2">
+                                <div className="w-1 h-1 bg-yellow-400 rounded-full" />
+                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Global Data Safety Standards • April 2026</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

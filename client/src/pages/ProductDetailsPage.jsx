@@ -6,6 +6,8 @@ import { addToCart } from '../slices/cartSlice';
 import { toast } from 'react-toastify';
 import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle } from 'lucide-react';
 import api, { BASE_URL } from '../utils/axiosConfig';
+import { toCDN } from '../utils/imageUtils';
+import Skeleton from '../components/Skeleton';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
@@ -53,14 +55,27 @@ const ProductDetailsPage = () => {
 
     if (loading) return (
         <div className="container-custom py-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 animate-pulse">
-                <div className="bg-slate-100 aspect-square rounded-3xl" />
-                <div className="space-y-6">
-                    <div className="h-4 bg-slate-100 w-1/4 rounded" />
-                    <div className="h-10 bg-slate-100 w-3/4 rounded" />
-                    <div className="h-6 bg-slate-100 w-1/3 rounded" />
-                    <div className="h-32 bg-slate-100 w-full rounded" />
-                    <div className="h-12 bg-slate-100 w-full rounded-full" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+                <div className="flex flex-col gap-4">
+                    <Skeleton height="500px" className="rounded-3xl" />
+                    <div className="flex gap-4">
+                        <Skeleton width="80px" height="80px" className="rounded-xl" />
+                        <Skeleton width="80px" height="80px" className="rounded-xl" />
+                        <Skeleton width="80px" height="80px" className="rounded-xl" />
+                    </div>
+                </div>
+                <div className="space-y-6 flex flex-col justify-center">
+                    <Skeleton width="100px" height="12px" />
+                    <Skeleton width="80%" height="40px" />
+                    <div className="flex gap-2">
+                        {[...Array(5)].map((_, i) => <Skeleton key={i} width="20px" height="20px" circle />)}
+                    </div>
+                    <Skeleton width="150px" height="24px" />
+                    <Skeleton height="100px" />
+                    <div className="pt-8 border-t border-gray-100 flex gap-4">
+                        <Skeleton width="200px" height="48px" className="rounded-full" />
+                        <Skeleton width="200px" height="48px" className="rounded-full" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,8 +123,9 @@ const ProductDetailsPage = () => {
                         <div className="space-y-6">
                             <div className="bg-white border border-gray-100 rounded-lg p-8 flex items-center justify-center h-[400px] md:h-[500px]">
                                 <img 
-                                    src={product.images?.[selectedImage]?.startsWith('http') ? product.images[selectedImage] : `${BASE_URL}${product.images?.[selectedImage]}`} 
+                                    src={toCDN(product.images?.[selectedImage]?.startsWith('http') ? product.images[selectedImage] : `${BASE_URL}${product.images?.[selectedImage]}`, 800)} 
                                     alt={product.name} 
+                                    loading="eager" // Main image should load first for LCP
                                     className="max-w-full max-h-full object-contain mix-blend-multiply" 
                                     onError={(e) => {
                                         e.target.src = 'https://placehold.co/800x800?text=Product+Preview';
@@ -127,8 +143,9 @@ const ProductDetailsPage = () => {
                                             className={`w-20 h-20 bg-white border-2 rounded transition-all p-2 flex items-center justify-center shrink-0 ${selectedImage === idx ? 'border-yellow-400 shadow-md' : 'border-gray-100 opacity-60 hover:opacity-100'}`}
                                         >
                                             <img 
-                                                src={img?.startsWith('http') ? img : `${BASE_URL}${img}`} 
+                                                src={toCDN(img?.startsWith('http') ? img : `${BASE_URL}${img}`, 200)} 
                                                 alt="" 
+                                                loading="lazy"
                                                 className="w-full h-full object-contain mix-blend-multiply" 
                                                 onError={(e) => {
                                                     e.target.src = 'https://placehold.co/200x200?text=Thumb';
@@ -150,8 +167,9 @@ const ProductDetailsPage = () => {
                                         <video 
                                             src={product.videoUrl} 
                                             controls 
+                                            preload="none"
                                             className="w-full h-full object-cover"
-                                            poster={product.images?.[0]?.startsWith('http') ? product.images[0] : `${BASE_URL}${product.images?.[0]}`}
+                                            poster={toCDN(product.images?.[0]?.startsWith('http') ? product.images[0] : `${BASE_URL}${product.images?.[0]}`, 800)}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                                     </div>

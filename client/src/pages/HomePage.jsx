@@ -12,6 +12,7 @@ import {
   Truck, Shield, Headphones as HeadphoneIcon, Eye, Plus, Tag, ArrowRight
 } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
+import { toCDN } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { ProductSkeleton } from '../components/Skeleton';
 
@@ -213,8 +214,9 @@ const HomePage = () => {
                   <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'} className="block">
                     <div className="relative mb-6 h-56 flex items-center justify-center bg-gray-50 rounded-2xl overflow-hidden group/img">
                       <img
-                        src={specialOfferProduct?.images?.[0]?.startsWith('http') ? specialOfferProduct.images[0] : `${BASE_URL}${specialOfferProduct?.images?.[0]}`}
+                        src={toCDN(specialOfferProduct?.images?.[0]?.startsWith('http') ? specialOfferProduct.images[0] : `${BASE_URL}${specialOfferProduct?.images?.[0]}`, 600)}
                         alt="Special Offer"
+                        loading="lazy"
                         className="max-w-[85%] max-h-[85%] object-contain transition-transform duration-500 group-hover/img:scale-110"
                         onError={(e) => {
                           e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
@@ -310,11 +312,11 @@ const HomePage = () => {
                         <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
 
                           {/* TOP RATED: Dynamic based on p.rating */}
-                          {activeTab === 'Top Rated' && (
+                          {activeTab === 'Top Rated' && p.rating > 0 && (
                             <div className="flex flex-col gap-1">
                               <span className="bg-gradient-to-r from-gray-900 to-gray-700 text-yellow-400 text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-yellow-400/30 flex items-center gap-1 animate-in fade-in zoom-in duration-300">
                                 <Star size={10} fill="#facc15" stroke="none" />
-                                {p.rating > 0 ? p.rating.toFixed(1) : '5.0'}
+                                {p.rating.toFixed(1)}
                               </span>
                               <span className="text-[9px] font-bold text-gray-500 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-full self-start shadow-sm border border-gray-100">
                                 {p.numReviews} Reviews
@@ -338,8 +340,9 @@ const HomePage = () => {
                         </div>
 
                         <img
-                          src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image'}
+                          src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 400)}
                           alt={p.name}
+                          loading="lazy"
                           className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
                             e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
@@ -374,7 +377,7 @@ const HomePage = () => {
                           </div>
 
                           {/* Visual Stars for Top Rated tab in the info section */}
-                          {activeTab === 'Top Rated' && (
+                          {activeTab === 'Top Rated' && p.rating > 0 && (
                             <div className="flex gap-0.5">
                               {[...Array(5)].map((_, i) => (
                                 <Star
@@ -437,8 +440,9 @@ const HomePage = () => {
                 <div key={p._id} className="group">
                   <div className="bg-gray-50 rounded-lg p-3 mb-2 aspect-square overflow-hidden relative">
                     <img
-                      src={p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image'}
+                      src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : 'https://placehold.co/400x400?text=Product+Image', 300)}
                       alt={p.name}
+                      loading="lazy"
                       className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
                       onError={(e) => {
                         e.target.src = 'https://placehold.co/400x400?text=Product+Preview';
