@@ -11,6 +11,7 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isGoogleExecuting, setIsGoogleExecuting] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -46,6 +47,7 @@ const LoginPage = () => {
 
     const handleGoogleSuccess = async (credentialResponse) => {
         const decoded = jwtDecode(credentialResponse.credential);
+        setIsGoogleExecuting(true);
         try {
             toast.dismiss(); 
             await dispatch(googleLogin({
@@ -54,14 +56,30 @@ const LoginPage = () => {
                 googleId: decoded.sub,
                 image: decoded.picture
             })).unwrap();
-            toast.success('Successfully logged in via Google.');
+            // Redirect is handled by useEffect
         } catch (err) {
             toast.error(err?.data?.message || err.message || 'Google Login failed');
+            setIsGoogleExecuting(false);
         }
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-20 font-sans">
+        <div className="bg-gray-50 min-h-screen pb-20 font-sans relative">
+            {/* GOOGLE SYNC OVERLAY */}
+            {isGoogleExecuting && (
+                <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
+                    <div className="relative mb-10 scale-150">
+                        <div className="absolute inset-0 bg-yellow-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+                        <Loader size={48} className="text-yellow-500 animate-[spin_1.5s_linear_infinite]" />
+                    </div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-3">Social Synchronization</h2>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] max-w-xs leading-loose">
+                        Verifying Secure Identity Protocol <br/>
+                        with Google Cloud Systems...
+                    </p>
+                </div>
+            )}
+
             {/* Breadcrumb */}
             <div className="bg-white border-b border-gray-200 mb-12">
                 <div className="container-custom py-4 flex items-center gap-2 text-sm text-gray-500">
@@ -151,6 +169,7 @@ const LoginPage = () => {
                                         onSuccess={handleGoogleSuccess}
                                         onError={() => toast.error('Google Access Denied')}
                                         useOneTap
+                                        auto_select={true}
                                         theme="outline"
                                         shape="pill"
                                         width="350"

@@ -147,8 +147,8 @@ const getUsers = asyncHandler(async (req, res) => {
 // @access  Public
 const googleAuth = asyncHandler(async (req, res) => {
     const { name, email, googleId } = req.body;
-
-    let user = await User.findOne({ email });
+    // Optimized lookup: Only fetching required fields
+    let user = await User.findOne({ email }).select('-password');
 
     if (!user) {
         // Create new user if they don't exist
