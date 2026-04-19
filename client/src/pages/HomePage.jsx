@@ -123,11 +123,11 @@ const HomePage = () => {
     if (activeTab === 'On Sale') {
       filtered = filtered.filter(p => p.discountPrice > 0 || p.countInStock > 10).sort((a, b) => b.countInStock - a.countInStock);
     } else if (activeTab === 'Top Rated') {
-      // STRICT AUTHENTICITY: Only show products with actual reviews
-      filtered = filtered.filter(p => p.numReviews > 0).sort((a, b) => b.rating - a.rating);
+      // IRON-CLAD AUTHENTICITY: Check the actual reviews array length, ignore the counter
+      filtered = filtered.filter(p => p.reviews && p.reviews.length > 0).sort((a, b) => b.rating - a.rating);
     } else {
-      // Featured: Sorted by number of reviews
-      filtered = filtered.sort((a, b) => b.numReviews - a.numReviews);
+      // Featured: Sorted by actual number of reviews in the array
+      filtered = filtered.sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
     }
 
     return filtered.slice(0, 8);
@@ -315,15 +315,15 @@ const HomePage = () => {
                           {/* --- DYNAMIC BADGE OVERLAYS --- */}
                           <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
   
-                            {/* TOP RATED: Dynamic based on p.rating */}
-                            {activeTab === 'Top Rated' && p.rating > 0 && (
+                            {/* TOP RATED: Dynamic based on p.rating & REAL reviews */}
+                            {activeTab === 'Top Rated' && p.reviews && p.reviews.length > 0 && (
                               <div className="flex flex-col gap-1">
                                 <span className="bg-gradient-to-r from-gray-900 to-gray-700 text-yellow-400 text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-yellow-400/30 flex items-center gap-1 animate-in fade-in zoom-in duration-300">
                                   <Star size={10} fill="#facc15" stroke="none" />
                                   {p.rating.toFixed(1)}
                                 </span>
                                 <span className="text-[9px] font-bold text-gray-500 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-full self-start shadow-sm border border-gray-100">
-                                  {p.numReviews} Reviews
+                                  {p.reviews.length} {p.reviews.length === 1 ? 'Review' : 'Reviews'}
                                 </span>
                               </div>
                             )}
@@ -438,19 +438,19 @@ const HomePage = () => {
                 const productCatName = p.category?.name?.toLowerCase() || "";
                 const activeLabel = activeDealCategory.toLowerCase();
 
-                // STRICT AUTHENTICITY: No reviews = No Deal
-                if (p.numReviews === 0) return false;
+                // IRON-CLAD AUTHENTICITY: No REAL reviews = No Deal
+                if (!p.reviews || p.reviews.length === 0) return false;
 
                 // 1. Default Deal logic
                 if (activeLabel === 'best deals') {
-                   // Only show highly rated products with real reviews
-                   return p.isDeals || p.discountPrice > 0 || (p.rating >= 4 && p.numReviews > 0);
+                   // Only show highly rated products that actually have reviews backings
+                   return p.isDeals || p.discountPrice > 0 || (p.rating >= 4 && p.reviews.length > 0);
                 }
 
                 // 2. Fuzzy matching (Handles "Audio" matching "Portable Audio" etc.)
                 return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
               })
-              .sort((a, b) => b.numReviews - a.numReviews) // Order by real popularity
+              .sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0)) // Order by real popularity
               .slice(0, 12)
               .map((p) => (
                 <div key={p._id} className="group">
@@ -477,10 +477,10 @@ const HomePage = () => {
                   </Link>
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-sm font-bold text-gray-800">৳{p.price?.toLocaleString()}</p>
-                    {p.numReviews > 0 && (
+                    {p.reviews && p.reviews.length > 0 && (
                       <div className="flex items-center gap-1">
                         <Star size={10} fill="#facc15" stroke="none" />
-                        <span className="text-[10px] font-bold text-gray-400">{p.numReviews}</span>
+                        <span className="text-[10px] font-bold text-gray-400">{p.reviews.length}</span>
                       </div>
                     )}
                   </div>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v2'; // Incremented version
+const CACHE_NAME = 'miazi-cache-v3'; // Incremented version to force update
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
