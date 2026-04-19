@@ -438,14 +438,19 @@ const HomePage = () => {
                 const productCatName = p.category?.name?.toLowerCase() || "";
                 const activeLabel = activeDealCategory.toLowerCase();
 
+                // STRICT AUTHENTICITY: No reviews = No Deal
+                if (p.numReviews === 0) return false;
+
                 // 1. Default Deal logic
                 if (activeLabel === 'best deals') {
-                  return p.isDeals || p.discountPrice > 0 || p.rating >= 4;
+                   // Only show highly rated products with real reviews
+                   return p.isDeals || p.discountPrice > 0 || (p.rating >= 4 && p.numReviews > 0);
                 }
 
                 // 2. Fuzzy matching (Handles "Audio" matching "Portable Audio" etc.)
                 return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
               })
+              .sort((a, b) => b.numReviews - a.numReviews) // Order by real popularity
               .slice(0, 12)
               .map((p) => (
                 <div key={p._id} className="group">
@@ -468,9 +473,17 @@ const HomePage = () => {
                     </button>
                   </div>
                   <Link to={`/product/${p.slug}`}>
-                    <h4 className="text-xs font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-1 transition-colors">{p.name}</h4>
+                    <h4 className="text-xs font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-1 transition-colors uppercase tracking-tight leading-tight">{p.name}</h4>
                   </Link>
-                  <p className="text-sm font-bold text-gray-800">৳{p.price?.toLocaleString()}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <p className="text-sm font-bold text-gray-800">৳{p.price?.toLocaleString()}</p>
+                    {p.numReviews > 0 && (
+                      <div className="flex items-center gap-1">
+                        <Star size={10} fill="#facc15" stroke="none" />
+                        <span className="text-[10px] font-bold text-gray-400">{p.numReviews}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
           </div>

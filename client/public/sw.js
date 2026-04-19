@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v1';
+const CACHE_NAME = 'miazi-cache-v2'; // Incremented version
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -7,16 +7,17 @@ const ASSETS_TO_CACHE = [
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'
 ];
 
-// Install: Cache essential assets
+// Install: Cache essential assets and skip waiting
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
+  self.skipWaiting(); // Force new service worker to take over immediately
 });
 
-// Activate: Cleanup old caches
+// Activate: Cleanup old caches and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -25,36 +26,46 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  self.clients.claim(); // Immediately start controlling all open clients
 });
 
-// Fetch: Professional Caching Strategy
+// Fetch: Professional Hybrid Caching Strategy
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin and dynamic API requests to avoid conflicts
-  if (!event.request.url.startsWith(self.location.origin) || event.request.url.includes('/api/')) {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Skip APIs and cross-origin requests
+  if (!url.origin.includes(self.location.origin) || url.pathname.includes('/api/')) {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+  // 1. NETWORK-FIRST Strategy for Navigation (HTML)
+  // This ensures the user gets the latest code if online, without hard refresh
+  if (request.mode === 'navigate' || url.pathname === '/index.html' || url.pathname === '/') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
 
-      return fetch(event.request).then((response) => {
-        // Cache new static assets
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+  // 2. STALE-WHILE-REVALIDATE for Static Assets (JS, CSS, Images)
+  // This provides instant loading while updating the cache in the background
+  event.respondWith(
+    caches.match(request).then((cachedResponse) => {
+      const fetchPromise = fetch(request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
         }
-        return response;
-      }).catch(() => {
-        // Return index.html as fallback for SPA routing issues while offline
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
+        return networkResponse;
       });
+      return cachedResponse || fetchPromise;
     })
   );
 });
