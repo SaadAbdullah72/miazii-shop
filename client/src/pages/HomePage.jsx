@@ -206,6 +206,8 @@ const HomePage = () => {
                       <img
                         src={slide.img}
                         alt={slide.highlight}
+                        fetchPriority={idx === 0 ? "high" : "auto"}
+                        loading={idx === 0 ? "eager" : "lazy"}
                         className="max-w-full h-[220px] md:h-[320px] object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 animate-in zoom-in-95 duration-700 pointer-events-none"
                       />
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-80 h-80 bg-slate-50 rounded-full blur-[120px] opacity-40"></div>

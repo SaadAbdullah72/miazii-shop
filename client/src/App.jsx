@@ -75,7 +75,9 @@ function App() {
                         </Routes>
                     </Suspense>
                 </main>
-                <ContactPage />
+                <Suspense fallback={null}>
+                    <ContactPage />
+                </Suspense>
                 <BottomNavigation />
                 <ToastContainer position="bottom-right" autoClose={3000} />
             </div>
