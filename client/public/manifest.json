@@ -26,14 +26,14 @@
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
+      "sizes": "500x3488",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Miazii Shop Mobile Experience"
     },
     {
       "src": "/screenshot-desktop.png",
-      "sizes": "1920x1080",
+      "sizes": "1370x2119",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Miazii Shop Desktop Gallery"
