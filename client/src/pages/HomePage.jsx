@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts } from '../slices/productSlice';
-import { addToCart } from '../slices/cartSlice';
-import { listCategories } from '../slices/categorySlice';
+import { useGetProductsQuery } from '../slices/productApiSlice';
+import { useGetCategoriesQuery } from '../slices/categoryApiSlice';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ShoppingCart, Search, Menu, ChevronDown, MapPin,
@@ -18,19 +17,28 @@ import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { ProductSkeleton } from '../components/Skeleton';
 
-const HomePage = () => {
   const dispatch = useDispatch();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const { products, loading, error } = useSelector((state) => state.product);
-  const { categories } = useSelector((state) => state.category);
-  const { userInfo } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const query = new URLSearchParams(location.search);
-  const keyword = query.get('keyword');
-  const category = query.get('category');
-  const isTrending = query.get('isTrending');
-  const isDeals = query.get('isDeals');
+  const keyword = query.get('keyword') || '';
+  const category = query.get('category') || '';
+  
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const { data: productsData, isLoading: loading, error: productsError } = useGetProductsQuery({ 
+    keyword, 
+    category,
+    limit: 50
+  });
+  const { data: categoriesData } = useGetCategoriesQuery();
+  
+  const products = productsData?.products || [];
+  const categories = categoriesData || [];
+  
+  const trendingProducts = useMemo(() => products.filter(p => p.isTrending), [products]);
+  const bestDealsProducts = useMemo(() => products.filter(p => p.isDeals), [products]);
+  
+  const { userInfo } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState('Featured');
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [activeDealCategory, setActiveDealCategory] = useState('Best Deals');
@@ -268,12 +276,10 @@ const HomePage = () => {
             <aside className="w-full lg:w-72 flex-shrink-0">
               <div className="bg-white border-2 border-yellow-400 rounded-xl overflow-hidden shadow-lg">
                 {/* Header */}
-                <div className="bg-yellow-400 px-4 py-4 flex items-center justify-between">
                   <div>
                     <p className="text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-60">Today's</p>
                     <p className="text-xl font-black text-gray-800 uppercase tracking-tighter">Special Offer</p>
                   </div>
-                </div>
 
                 <div className="p-4 pt-2 text-center">
                   {/* 1. Clickable Image */}

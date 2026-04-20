@@ -34,7 +34,7 @@ const RefundPolicyPage = () => {
                                 The Miazii 7-Day Quality Promise
                             </h3>
                             <p className="text-blue-800 font-medium">
-                                We want you to love your tech. If you are not 100% satisfied with your purchase, you can return your item for a full refund within **7 days** of delivery. No hidden catches, just simple and fair.
+                                We want you to love your tech. If you are not 100% satisfied with your purchase, you can return your item for a full refund within 7 days of delivery. No hidden catches, just simple and fair.
                             </p>
                         </div>
 

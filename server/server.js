@@ -12,6 +12,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import connectDB from './config/db.js';
 import logger from './utils/logger.js';
+import compression from 'compression';
 
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -39,6 +40,7 @@ const app = express();
 // connectDB() is already called at line 25
 
 // Middleware
+app.use(compression()); // Compress all JSON/Text responses
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(mongoSanitize()); // Prevent NoSQL Injection

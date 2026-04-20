@@ -99,6 +99,11 @@ const productSchema = new mongoose.Schema({
     timestamps: true,
 });
 
+// INDEXES for High-Class Speed
+productSchema.index({ slug: 1 });
+productSchema.index({ category: 1 });
+productSchema.index({ isTrending: 1, isDeals: 1 });
+
 const Product = mongoose.model('Product', productSchema);
 
 export default Product;
