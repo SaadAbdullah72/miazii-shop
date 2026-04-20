@@ -5,24 +5,27 @@
       "type": "TextBlock",
       "size": "Medium",
       "weight": "Bolder",
-      "text": "Miazii Shop Deals"
-    },
-    {
-      "type": "Image",
-      "url": "https://miazii-shop.vercel.app/logo.png",
-      "size": "Stretch"
+      "text": "${title}"
     },
     {
       "type": "TextBlock",
-      "text": "Check out the latest electronics deals!",
-      "wrap": true
-    }
-  ],
-  "actions": [
+      "text": "Last updated: ${lastUpdated}",
+      "wrap": true,
+      "size": "Small",
+      "isSubtle": true
+    },
     {
-      "type": "Action.OpenUrl",
-      "title": "Shop Now",
-      "url": "https://miazii-shop.vercel.app/"
+      "type": "FactSet",
+      "facts": [
+        {
+          "title": "${deals[0].name}",
+          "value": "${deals[0].price}"
+        },
+        {
+          "title": "${deals[1].name}",
+          "value": "${deals[1].price}"
+        }
+      ]
     }
   ],
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",

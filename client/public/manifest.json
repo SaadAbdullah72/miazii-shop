@@ -10,7 +10,7 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone", "window-controls-overlay"],
+  "display_override": ["fullscreen", "standalone", "tabbed", "window-controls-overlay"],
   "orientation": "portrait",
   "theme_color": "#fed700",
   "background_color": "#ffffff",
@@ -30,20 +30,88 @@
       "url": "https://play.google.com/store/apps/details?id=com.miazi.shop"
     }
   ],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "file_handlers": [
+    {
+      "action": "/?source=file_handler",
+      "accept": {
+        "application/vnd.miazi.order": [".order"],
+        "application/vnd.miazi.product": [".miazi"]
+      },
+      "icons": [
+        {
+          "src": "/logo.png",
+          "sizes": "1024x1024",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+miazi",
+      "url": "/search?keyword=%s&source=protocol"
+    }
+  ],
+  "widgets": [
+    {
+      "name": "Miazi Shop Deals",
+      "short_name": "Deals",
+      "description": "Get the latest electronics deals and cart status.",
+      "tag": "miazi-deals",
+      "template": "widget-template",
+      "ms_ac_template": "widget-template.json",
+      "data": "/widget-data.json",
+      "type": "application/json",
+      "screenshot": {
+        "src": "/screenshot-mobile.png",
+        "sizes": "500x3488",
+        "type": "image/png",
+        "label": "Latest Deals Widget"
+      },
+      "icons": [
+        {
+          "src": "/logo.png",
+          "sizes": "1024x1024",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "/?source=note"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "shortcuts": [
     {
       "name": "Open Cart",
       "short_name": "Cart",
+      "description": "View items in your shopping cart",
       "url": "/cart?source=pwa",
       "icons": [{ "src": "/logo.png", "sizes": "1024x1024", "type": "image/png" }]
     },
     {
       "name": "Track Orders",
       "short_name": "Orders",
+      "description": "Check the status of your recent orders",
       "url": "/myorders?source=pwa",
       "icons": [{ "src": "/logo.png", "sizes": "1024x1024", "type": "image/png" }]
     }
   ],
+  "share_target": {
+    "action": "/?source=share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
@@ -51,6 +119,13 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Miazii Shop Mobile Experience"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1370x2119",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Miazii Shop Desktop Gallery"
     }
   ]
 }
