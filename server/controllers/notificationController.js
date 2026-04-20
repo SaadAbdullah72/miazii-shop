@@ -23,8 +23,10 @@ const safePushDispatch = async (title, message, link) => {
             return;
         }
 
-        // Dynamic Import to prevent crash if library is missing in environment
-        const webpush = (await import('web-push')).default;
+        // Robust Dynamic Import for Vercel Environment
+        const webpushModule = await import('web-push');
+        const webpush = webpushModule.default || webpushModule;
+        
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
         const payload = JSON.stringify({
             title: title || 'Miazii Shop Update',
