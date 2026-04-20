@@ -51,6 +51,13 @@ const TermsConditionsPage = () => {
                             <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide at least 30 days' notice prior to any new terms taking effect.</p>
                         </section>
                     </div>
+
+                    {/* Contact Section */}
+                    <div className="mt-12 pt-10 border-t border-gray-100 text-center">
+                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-3">Legal Inquiries?</p>
+                        <p className="text-slate-800 font-bold mb-1">miazistore.bd@gmail.com</p>
+                        <p className="text-gray-500 text-xs italic">Miazi Shop Legal Team</p>
+                    </div>
                 </div>
             </div>
         </div>

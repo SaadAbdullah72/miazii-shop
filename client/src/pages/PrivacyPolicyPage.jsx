@@ -135,7 +135,7 @@ const PrivacyPolicyPage = () => {
                 {/* Contact */}
                 <section className="pt-12 border-t border-slate-100 text-center">
                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Contact Our Privacy Team</p>
-                    <h3 className="text-lg font-black text-slate-900">saad489254@gmail.com</h3>
+                    <h3 className="text-lg font-black text-slate-900">miazistore.bd@gmail.com</h3>
                     <p className="text-slate-500 text-sm mt-2">Miazi Shop HQ, Dhaka, Bangladesh</p>
                 </section>
             </div>

@@ -71,6 +71,13 @@ const RefundPolicyPage = () => {
                             <p>You are responsible for the cost and risk of returning the Goods to Us. We cannot be held responsible for Goods damaged or lost in return shipment. Therefore, We recommend an insured and trackable mail service.</p>
                         </section>
                     </div>
+
+                    {/* Contact Section */}
+                    <div className="mt-12 pt-10 border-t border-gray-100 text-center">
+                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-3">Questions about Refunds?</p>
+                        <p className="text-slate-800 font-bold mb-1">miazistore.bd@gmail.com</p>
+                        <p className="text-gray-500 text-xs italic">Miazi Shop Official Support</p>
+                    </div>
                 </div>
             </div>
         </div>
