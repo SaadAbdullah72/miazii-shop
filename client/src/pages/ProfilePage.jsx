@@ -82,7 +82,7 @@ const ProfilePage = () => {
 
     if (!userInfo) {
         return (
-            <div className="bg-slate-50 min-h-screen flex items-center justify-center font-sans p-6">
+            <div className="bg-slate-50 min-h-screen flex items-start justify-center font-sans p-6 pt-24 translate-y-[-20px]">
                 <div className="bg-white border border-gray-100 rounded-[3rem] p-12 text-center shadow-xl max-w-md w-full">
                     <div className="w-24 h-24 bg-yellow-400 rounded-3xl flex items-center justify-center text-slate-900 mx-auto mb-8 shadow-lg rotate-3">
                         <User size={48} />
