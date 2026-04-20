@@ -110,9 +110,12 @@ const Header = () => {
             if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
             try {
+                console.log('[Push] Verification Step 1: Starting...');
+                toast.info('Push Status: Initializing...');
+
                 const registration = await navigator.serviceWorker.ready;
-                
-                // FORCE UPDATE CHECK:
+                console.log('[Push] Verification Step 2: SW Ready.');
+                toast.info('Push Status: Service Worker Ready.');
                 // If the user is on their phone, we want to make sure the SW is fresh
                 if (registration.active) {
                     registration.update();
