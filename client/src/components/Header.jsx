@@ -105,6 +105,39 @@ const Header = () => {
         toast.info('Signed out successfully.');
     };
 
+    useEffect(() => {
+        const subscribeToPush = async () => {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                const existingSub = await registration.pushManager.getSubscription();
+                if (existingSub) return;
+
+                const publicKey = 'BFWSwNjnK-MVVS3oCnq2JczOnbUrTwHTpJ6KjCeepWVvDTX48DsvhajZwufpDorSPMgf7TcVXVGPzpmhBC6VJ34';
+                
+                const padding = '='.repeat((4 - publicKey.length % 4) % 4);
+                const base64 = (publicKey + padding).replace(/-/g, '+').replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+                for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: outputArray
+                });
+
+                await api.post('/api/notifications/subscribe', subscription);
+                console.log('[Push] Subscription recorded.');
+            } catch (err) {
+                console.warn('[Push] Registration skipped:', err.message);
+            }
+        };
+
+        const timer = setTimeout(subscribeToPush, 5000);
+        return () => clearTimeout(timer);
+    }, [userInfo]);
+
     const handleDeleteNotification = (e, id) => {
         e.stopPropagation();
         dispatch(deleteNotification(id));

@@ -35,6 +35,7 @@
     "uuid": "^13.0.0",
     "express-mongo-sanitize": "^2.2.0",
     "xss-clean": "^0.1.4",
+    "web-push": "^3.6.7",
     "zod": "^4.3.6"
   },
   "devDependencies": {
