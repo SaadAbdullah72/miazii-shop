@@ -101,15 +101,7 @@ const HomePage = () => {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    dispatch(listProducts({
-      keyword: keyword || '',
-      category: category || '',
-      isTrending: isTrending || '',
-      isDeals: isDeals || ''
-    }));
-    dispatch(listCategories());
-  }, [dispatch, keyword, category, isTrending, isDeals, userInfo]);
+  // Data fetching is now handled automatically by useGetProductsQuery and useGetCategoriesQuery above.
 
 
 
