@@ -206,6 +206,14 @@ const Header = () => {
 
     return (
         <header className="w-full bg-white font-sans relative">
+            {/* DIAGNOSTIC BANNER FOR BLOCKED PERMISSIONS */}
+            {Notification.permission === 'denied' && (
+                <div onClick={handleFixPush} className="bg-red-600 text-white text-[10px] font-black uppercase tracking-[0.2em] py-3 px-4 text-center cursor-pointer animate-pulse sticky top-0 z-[2000] flex items-center justify-center gap-2">
+                    <span className="bg-white text-red-600 px-2 py-0.5 rounded-full shrink-0">!</span>
+                    NOTIFICATIONS BLOCKED! CLICK HERE TO UNBLOCK
+                </div>
+            )}
+
             {/* TIER 1: TOP BAR */}
             <div className="border-b border-gray-100 hidden md:block">
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center py-2 text-[12px] text-gray-500">
