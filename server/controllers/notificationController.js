@@ -9,14 +9,23 @@ const safePushDispatch = async (title, message, link) => {
     const privateKey = process.env.VAPID_PRIVATE_KEY;
     const mailEmail = process.env.VAPID_EMAIL || 'mailto:miazistore.bd@gmail.com';
 
-    if (!publicKey || !privateKey) return;
+    if (!publicKey || !privateKey) {
+        console.error('[Push] CANNOT SEND: VAPID keys missing from process.env');
+        return;
+    }
 
     try {
+        const subscriptions = await Subscription.find({});
+        console.log(`[Push] Found ${subscriptions.length} subscriptions in DB.`);
+
+        if (subscriptions.length === 0) {
+            console.warn('[Push] Skipping: No devices registered.');
+            return;
+        }
+
         // Dynamic Import to prevent crash if library is missing in environment
         const webpush = (await import('web-push')).default;
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
-
-        const subscriptions = await Subscription.find({});
         const payload = JSON.stringify({
             title: title || 'Miazii Shop Update',
             body: message,
