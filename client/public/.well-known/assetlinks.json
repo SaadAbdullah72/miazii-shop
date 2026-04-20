@@ -1,14 +1,8 @@
-[
-  {
-    "relation": [
-      "delegate_permission/common.handle_all_urls"
-    ],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "app.vercel.miazii_shop.twa",
-      "sha256_cert_fingerprints": [
-        "D1:BC:EA:64:3B:8D:33:F5:03:0F:FA:0F:5D:9A:B6:23:5A:87:9D:DF:A0:F6:57:46:38:E7:31:88:D5:63:FD:06"
-      ]
-    }
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.vercel.miazii_shop.twa",
+    "sha256_cert_fingerprints": ["ED:D0:A6:D1:73:5C:9D:6F:06:FE:30:B2:1C:2F:16:CB:3E:3F:CC:B6:90:E9:3C:4B:A1:24:C7:11:09:BF:54:77"]
   }
-]
+}]
