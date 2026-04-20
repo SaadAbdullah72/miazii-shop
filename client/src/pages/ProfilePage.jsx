@@ -228,13 +228,14 @@ const ProfilePage = () => {
                         </div>
                         <Link 
                             to="/privacy-policy" 
-                            className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm hover:border-yellow-400 transition-all group"
+                            className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm hover:border-yellow-400 transition-all group flex flex-col justify-center"
                         >
-                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight mb-4 flex items-center gap-2 group-hover:text-yellow-600">
-                                <Info size={16} className="text-yellow-500" /> Read Privacy Policy
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight mb-2 flex items-center gap-2 group-hover:text-gray-900">
+                                <Shield size={16} className="text-green-600" /> Legal & Privacy Policy
                             </h3>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Google Play Compliance</p>
                             <p className="text-xs text-gray-500 leading-relaxed">
-                                Learn how we protect your data and stay compliant with Google Play global standards.
+                                Review our global data protection standards and how we keep your identity secure and private.
                             </p>
                         </Link>
                     </div>
