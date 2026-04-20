@@ -84,9 +84,9 @@ export const createNotification = asyncHandler(async (req, res) => {
     });
 
     const createdNotification = await notification.save();
-
-    // Trigger push without blocking response
-    safePushDispatch(title, message, link);
+    
+    // System Push Dispatch is disabled per user request
+    // safePushDispatch(title, message, link);
 
     res.status(201).json(createdNotification);
 });

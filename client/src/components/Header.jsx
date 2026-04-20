@@ -105,100 +105,11 @@ const Header = () => {
         toast.info('Signed out successfully.');
     };
 
-    const handleFixPush = async () => {
-        toast.info('Diagnostic: Hard Resetting Push System...');
-        try {
-            // 0. Request permission again
-            const permission = await Notification.requestPermission();
-            if (permission === 'denied') {
-                toast.error('Browser still reports "Denied". Please reset site settings in Chrome.');
-            }
-
-            // 1. Unregister all existing service workers
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            for (let reg of registrations) {
-                await reg.unregister();
-                console.log('[Push] Unregistered SW:', reg.scope);
-            }
-
-            // 2. Clear all site data (Cache) for SW
-            if ('caches' in window) {
-                const keys = await caches.keys();
-                await Promise.all(keys.map(key => caches.delete(key)));
-            }
-
-            toast.info('Diagnostic: System Cleared. Re-registering...');
-
-            // 3. Re-register and Refresh
-            window.location.reload();
-        } catch (err) {
-            toast.error(`Diagnostic Error: ${err.message}`);
-        }
-    };
-
-    useEffect(() => {
-        const subscribeToPush = async () => {
-            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
-
-            try {
-                console.log('[Push] Verification Step 1: Starting...');
-                // toast.info('Push Status: Initializing...'); // Quiet on auto-start
-
-                const registration = await navigator.serviceWorker.ready;
-                console.log('[Push] Verification Step 2: SW Ready.');
-                toast.info('Push Status: Service Worker Ready.');
-                // If the user is on their phone, we want to make sure the SW is fresh
-                if (registration.active) {
-                    registration.update();
-                }
-
-                const existingSub = await registration.pushManager.getSubscription();
-                
-                if (existingSub) {
-                    console.log('[Push] Device already subscribed. Endpoint:', existingSub.endpoint.substring(0, 40));
-                    // toast.info('Push Status: Already Active'); // Optional, but let's keep it quiet unless new
-                    return;
-                }
-                console.log('[Push] No subscription found. Registering...');
-                toast.info('Push Status: Registering device...');
-
-                const publicKey = 'BFWSwNjnK-MVVS3oCnq2JczOnbUrTwHTpJ6KjCeepWVvDTX48DsvhajZwufpDorSPMgf7TcVXVGPzpmhBC6VJ34';
-                
-                const padding = '='.repeat((4 - publicKey.length % 4) % 4);
-                const base64 = (publicKey + padding).replace(/-/g, '+').replace(/_/g, '/');
-                const rawData = window.atob(base64);
-                const outputArray = new Uint8Array(rawData.length);
-                for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
-
-                const subscription = await registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: outputArray
-                });
-
-                await api.post('/api/notifications/subscribe', subscription);
-                console.log('[Push] NEW Subscription recorded successfully.');
-                toast.success('System Trace: Subscribed successfully!');
-            } catch (err) {
-                console.error('[Push] Browser Error:', err.message);
-                if (Notification.permission === 'denied') {
-                    toast.error('Permission Denied! Click the LOCK icon 🔒 in your browser address bar to ALLOW notifications.');
-                } else {
-                    toast.error(`Push Status Error: ${err.message}`);
-                }
-            }
-        };
-
-        const timer = setTimeout(subscribeToPush, 5000);
-        return () => clearTimeout(timer);
-    }, [userInfo]);
-
     const handleDeleteNotification = (e, id) => {
         e.stopPropagation();
         dispatch(deleteNotification(id));
         toast.success('Notification removed');
     };
-
-
 
     const departments = categories.length > 0
         ? categories.map(c => ({ name: c.name, id: c._id }))
@@ -206,16 +117,8 @@ const Header = () => {
 
     return (
         <header className="w-full bg-white font-sans relative">
-            {/* DIAGNOSTIC BANNER FOR BLOCKED PERMISSIONS */}
-            {Notification.permission === 'denied' && (
-                <div onClick={handleFixPush} className="bg-red-600 text-white text-[10px] font-black uppercase tracking-[0.2em] py-3 px-4 text-center cursor-pointer animate-pulse sticky top-0 z-[2000] flex items-center justify-center gap-2">
-                    <span className="bg-white text-red-600 px-2 py-0.5 rounded-full shrink-0">!</span>
-                    NOTIFICATIONS BLOCKED! CLICK HERE TO UNBLOCK
-                </div>
-            )}
-
             {/* TIER 1: TOP BAR */}
-            <div className="border-b border-gray-100 hidden md:block">
+            <div className="border-b border-gray-100 hidden md:block">k">
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center py-2 text-[12px] text-gray-500">
                     <div>Welcome to Worldwide Electronics Store</div>
                     <div className="flex items-center gap-4">

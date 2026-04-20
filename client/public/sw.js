@@ -71,69 +71,6 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// ==========================================
-// PUSH NOTIFICATIONS (WEB PUSH API)
-// ==========================================
-self.addEventListener('push', (event) => {
-  console.log('[SW] Push Received Event triggered.');
-  if (!event.data) {
-    console.warn('[SW] Push Received but event.data is empty!');
-    return;
-  }
-
-  try {
-    const data = event.data.json();
-    
-    const options = {
-      body: data.body || 'You have a new update from Miazii Shop!',
-      icon: data.icon || '/logo.png',
-      badge: data.badge || '/logo.png',
-      tag: data.tag || 'miazii-notification', // Essential for background grouping
-      renotify: data.renotify || false,
-      timestamp: data.timestamp || Date.now(),
-      vibrate: [200, 100, 200, 100, 200, 100, 200],
-      data: {
-        url: data.url || '/'
-      },
-      requireInteraction: true
-    };
-
-    event.waitUntil(
-      self.registration.showNotification(data.title || 'Miazii Shop', options)
-    );
-  } catch (err) {
-    console.error('Push Event parsing error:', err);
-    // Safe Fallback for unstructured pushes
-    event.waitUntil(
-      self.registration.showNotification('Miazii Shop', {
-        body: 'You have a new notification!',
-        icon: '/logo.png'
-      })
-    );
-  }
-});
-
-// Handle Notification Clicks (Open App)
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close(); // Close the notification popup
-
-  // Check if the payload contains a URL to redirect to
-  const urlToOpen = event.notification.data.url;
-
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Check if there is already a window/tab open with the target URL
-      for (let i = 0; i < windowClients.length; i++) {
-        const client = windowClients[i];
-        // If so, just focus it.
-        if (client.url === urlToOpen && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      // If not, then open the target URL in a new window/tab.
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
     })
   );
 });
