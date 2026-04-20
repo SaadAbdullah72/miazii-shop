@@ -118,13 +118,10 @@ const Header = () => {
     return (
         <header className="w-full bg-white font-sans relative">
             {/* TIER 1: TOP BAR */}
-            <div className="border-b border-gray-100 hidden md:block">k">
+            <div className="border-b border-gray-100 hidden md:block">
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center py-2 text-[12px] text-gray-500">
                     <div>Welcome to Worldwide Electronics Store</div>
                     <div className="flex items-center gap-4">
-                        {/* DEBUG TRIGGER */}
-                        <button onClick={handleFixPush} className="text-[10px] font-black text-red-500 hover:text-red-600 bg-red-50 px-3 py-1 rounded-full animate-pulse uppercase tracking-[0.1em]">Fix Notifications</button>
-                        <span className="text-gray-200">|</span>
                         <a href="https://www.google.com/maps?q=23.4055098,90.739426" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-yellow-500"><MapPin size={14} /> Store Locator</a>
                         <span className="text-gray-200">|</span>
                         <Link to="/myorders" className="flex items-center gap-1 hover:text-yellow-500"><Truck size={14} /> Track Your Order</Link>
