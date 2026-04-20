@@ -402,11 +402,10 @@ const Header = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="space-y-6">
-                            <div className="w-24 h-24 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto border-4 border-dashed border-gray-200">
-                                <User size={40} />
+                        <div className="space-y-6 pb-4">
+                            <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-300 mx-auto border-2 border-dashed border-slate-100">
+                                <User size={32} />
                             </div>
-                            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Sign In / Account</p>
                         </div>
                     )}
                 </div>

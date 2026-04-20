@@ -80,6 +80,21 @@ const ProfilePage = () => {
     // Global loader removed to achieve "Instant Loading" for profile identity.
     // The specific data sections (like Orders) will handle their own loading states.
 
+    if (!userInfo) {
+        return (
+            <div className="bg-slate-50 min-h-screen flex items-center justify-center font-sans p-6">
+                <div className="bg-white border border-gray-100 rounded-[3rem] p-12 text-center shadow-xl max-w-md w-full">
+                    <div className="w-24 h-24 bg-yellow-400 rounded-3xl flex items-center justify-center text-slate-900 mx-auto mb-8 shadow-lg rotate-3">
+                        <User size={48} />
+                    </div>
+                    <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight mb-2">Login Required</h1>
+                    <p className="text-sm text-gray-500 mb-10 leading-relaxed">Please sign in to view your profile, track orders, and manage your account settings.</p>
+                    <Link to="/login" className="block w-full py-4 bg-yellow-400 text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-[1.02] transition-transform shadow-lg shadow-yellow-100">Login Now</Link>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-slate-50 min-h-screen pb-32 font-sans">
             {/* CLEAN HEADER SECTION */}
