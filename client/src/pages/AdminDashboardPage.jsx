@@ -13,7 +13,8 @@ import {
     FolderPlus, Tag, Upload, Image,
     LayoutDashboard, TrendingUp, Users, DollarSign,
     Search, Filter, ChevronRight, MoreHorizontal, Zap,
-    Bell, Send, Info, AlertTriangle, CheckCircle, Settings, Menu
+    Bell, Send, Info, AlertTriangle, CheckCircle, Settings, Menu,
+    Smartphone
 } from 'lucide-react';
 
 const AdminDashboardPage = () => {
@@ -32,6 +33,10 @@ const AdminDashboardPage = () => {
     // Notification Form States
     const [notifData, setNotifData] = useState({ title: '', message: '', type: 'info', link: '' });
     const [isSendingNotif, setIsSendingNotif] = useState(false);
+
+    // Push Blast States
+    const [blastData, setBlastData] = useState({ title: '', message: '', url: '/' });
+    const [isBlasting, setIsBlasting] = useState(false);
 
     // Filtering States
     const [productSearch, setProductSearch] = useState('');
@@ -272,6 +277,22 @@ const AdminDashboardPage = () => {
         }
     };
 
+    const handlePushBlast = async (e) => {
+        e.preventDefault();
+        if (!blastData.title || !blastData.message) return toast.error('Fill in title and message');
+
+        try {
+            setIsBlasting(true);
+            const { data } = await api.post('/api/push/blast', blastData);
+            toast.success(`🚀 Blast successful! Sent to ${data.summary.successful} devices.`);
+            setBlastData({ title: '', message: '', url: '/' });
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Push Blast failed. Devices might be offline or keys missing.');
+        } finally {
+            setIsBlasting(false);
+        }
+    };
+
     // Derived Data
     const totalRevenue = Array.isArray(orders) ? orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0) : 0;
     const filteredProducts = products.filter(p => {
@@ -287,7 +308,8 @@ const AdminDashboardPage = () => {
         { id: 'orders history', name: 'Orders', icon: ShoppingCart },
         { id: 'users', name: 'Users', icon: Users },
         { id: 'paid manifest', name: 'Shipment', icon: TrendingUp },
-        { id: 'notifications', name: 'Notif', icon: Bell },
+        { id: 'notifications', name: 'In-App Notif', icon: Bell },
+        { id: 'push blast', name: 'Push Blast', icon: Smartphone },
         { id: 'categories', name: 'Cats', icon: List },
         { id: 'settings', name: 'Settings', icon: Settings },
     ];
@@ -763,6 +785,78 @@ const AdminDashboardPage = () => {
                                         </div>
                                     )}
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========== PUSH BLAST (WHATSAPP STYLE) ========== */}
+                    {activeTab === 'push blast' && (
+                        <div className="space-y-8 animate-in slide-in-from-right duration-500 max-w-4xl mx-auto px-4">
+                            <div className="flex flex-col items-center text-center space-y-4 mb-12">
+                                <div className="w-20 h-20 bg-slate-900 text-yellow-400 rounded-[2rem] flex items-center justify-center shadow-2xl animate-bounce">
+                                    <Smartphone size={32} />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter">Native Push Blast</h2>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Reach users directly on their home screens (Android/PWA)</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-[3rem] border border-slate-200 p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-8 opacity-10">
+                                    <Zap size={100} className="text-slate-200" />
+                                </div>
+
+                                <form onSubmit={handlePushBlast} className="space-y-8 relative z-10">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Notification Title</label>
+                                            <input 
+                                                type="text"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-8 py-5 text-sm font-black outline-none focus:border-yellow-400 transition-all placeholder:text-slate-300"
+                                                placeholder="e.g. MEGA SALE IS LIVE! 🚀"
+                                                value={blastData.title}
+                                                onChange={(e) => setBlastData({...blastData, title: e.target.value})}
+                                            />
+                                        </div>
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Target URL (Optional)</label>
+                                            <input 
+                                                type="text"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-8 py-5 text-sm font-black outline-none focus:border-yellow-400 transition-all placeholder:text-slate-300"
+                                                placeholder="/shop (Leave / for home)"
+                                                value={blastData.url}
+                                                onChange={(e) => setBlastData({...blastData, url: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Main Message Body</label>
+                                        <textarea 
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-[2.5rem] px-8 py-6 text-sm font-bold outline-none focus:border-yellow-400 transition-all min-h-[160px] resize-none"
+                                            placeholder="Write your emergency or marketing message here. Keep it catchy! 🔥"
+                                            value={blastData.message}
+                                            onChange={(e) => setBlastData({...blastData, message: e.target.value})}
+                                        />
+                                    </div>
+
+                                    <div className="pt-6">
+                                        <button 
+                                            disabled={isBlasting}
+                                            className="w-full bg-slate-900 text-white rounded-[2rem] py-6 text-sm font-black uppercase tracking-[0.3em] hover:bg-yellow-500 transition-all flex items-center justify-center gap-4 shadow-xl shadow-slate-200"
+                                        >
+                                            {isBlasting ? (
+                                                <><Loader className="animate-spin text-yellow-400" /> Transmitting Signal...</>
+                                            ) : (
+                                                <><Send size={20} /> Launch Marketing Blast</>
+                                            )}
+                                        </button>
+                                        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-widest mt-6">
+                                            ⚠️ This will send a native notification to ALL devices that have allowed permissions.
+                                        </p>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     )}

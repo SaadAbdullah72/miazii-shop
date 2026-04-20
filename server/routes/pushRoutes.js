@@ -1,12 +1,13 @@
 import express from 'express';
-import { subscribeUser } from '../controllers/pushController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { subscribeUser, blastNotifications } from '../controllers/pushController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Allow guests to subscribe too, so we don't strictly protect it,
-// but we can manually extract token if it exists in the controller using an optional auth middleware if needed.
-// For now, we'll keep it public. 
+// Public: Users/Guests can subscribe to tokens
 router.post('/subscribe', subscribeUser);
+
+// Admin Only: Send mass notifications
+router.post('/blast', protect, admin, blastNotifications);
 
 export default router;

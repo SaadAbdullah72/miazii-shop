@@ -40,6 +40,7 @@ const PageLoader = () => (
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from './slices/authSlice';
+import { subscribeToPush } from './utils/pushService';
 
 function App() {
     const dispatch = useDispatch();
@@ -54,6 +55,9 @@ function App() {
             dispatch(getProfile());
             hasSyncedProfile.current = true;
         }
+
+        // Initialize Push Notification Subscription
+        subscribeToPush();
 
         const handleBeforeInstallPrompt = (e) => {
             e.preventDefault();
