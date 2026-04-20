@@ -159,9 +159,13 @@ const PlaceOrderPage = () => {
                         <CheckCircle2 size={48} className="text-white" />
                     </div>
                     <h2 className="text-3xl font-black text-slate-800 uppercase tracking-tighter mb-4">Congratulations!</h2>
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8 uppercase tracking-widest px-4">
+                    <p className="text-slate-500 text-sm font-medium leading-relaxed mb-4 uppercase tracking-widest px-4">
                         Order <span className="text-indigo-600 font-bold">#{orderId.slice(-8).toUpperCase()}</span> has been successfully transmitted to our dispatch unit.
                     </p>
+                    <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 mb-8">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Payment Status</p>
+                        <p className="text-sm font-bold text-slate-700">{paymentMethod === 'COD' ? 'Pending (Cash to be collected upon delivery)' : 'Payment submitted for manual verification'}</p>
+                    </div>
                     <div className="space-y-4">
                         <Link to={`/order/${orderId}`} className="block w-full bg-slate-900 text-white rounded-2xl py-5 text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-lg">Track Logistics</Link>
                         <Link to="/" className="block w-full text-slate-400 text-[10px] font-black uppercase tracking-widest pt-4">Return To Emporium</Link>

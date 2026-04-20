@@ -29,7 +29,7 @@
     max-width: 100vw;
     position: relative;
     font-style: normal !important; /* Force NO italics globally */
-    overscroll-behavior-y: none; /* PLAY STORE: Prevent overscroll white gap */
+    overscroll-behavior-y: auto; /* PLAY STORE: Allow native pull-to-refresh */
   }
 
   /* PLAY STORE: Remove native web tap highlight glow */
