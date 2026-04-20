@@ -111,8 +111,20 @@ const Header = () => {
 
             try {
                 const registration = await navigator.serviceWorker.ready;
+                
+                // FORCE UPDATE CHECK:
+                // If the user is on their phone, we want to make sure the SW is fresh
+                if (registration.active) {
+                    registration.update();
+                }
+
                 const existingSub = await registration.pushManager.getSubscription();
-                if (existingSub) return;
+                
+                if (existingSub) {
+                    console.log('[Push] Device already subscribed. Endpoint:', existingSub.endpoint.substring(0, 40));
+                    return;
+                }
+                console.log('[Push] No subscription found. Registering...');
 
                 const publicKey = 'BFWSwNjnK-MVVS3oCnq2JczOnbUrTwHTpJ6KjCeepWVvDTX48DsvhajZwufpDorSPMgf7TcVXVGPzpmhBC6VJ34';
                 
@@ -128,9 +140,9 @@ const Header = () => {
                 });
 
                 await api.post('/api/notifications/subscribe', subscription);
-                console.log('[Push] Subscription recorded.');
+                console.log('[Push] NEW Subscription recorded successfully.');
             } catch (err) {
-                console.warn('[Push] Registration skipped:', err.message);
+                console.error('[Push] Browser Error:', err.message);
             }
         };
 

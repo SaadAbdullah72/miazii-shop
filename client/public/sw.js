@@ -75,7 +75,11 @@ self.addEventListener('fetch', (event) => {
 // PUSH NOTIFICATIONS (WEB PUSH API)
 // ==========================================
 self.addEventListener('push', (event) => {
-  if (!event.data) return;
+  console.log('[SW] Push Received Event triggered.');
+  if (!event.data) {
+    console.warn('[SW] Push Received but event.data is empty!');
+    return;
+  }
 
   try {
     const data = event.data.json();

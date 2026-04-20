@@ -32,15 +32,21 @@ const safePushDispatch = async (title, message, link) => {
         });
 
         const pushPromises = subscriptions.map(sub =>
-            webpush.sendNotification(sub, payload).catch(err => {
-                if (err.statusCode === 410 || err.statusCode === 404) {
-                    return Subscription.deleteOne({ _id: sub._id });
-                }
-            })
+            webpush.sendNotification(sub, payload)
+                .then(res => {
+                    console.log(`[Push] SUCCESS | Status: ${res.statusCode} | Endpoint: ${sub.endpoint.substring(0, 30)}...`);
+                    return res;
+                })
+                .catch(err => {
+                    console.error(`[Push] FAILED | Status: ${err.statusCode} | Error: ${err.message}`);
+                    if (err.statusCode === 410 || err.statusCode === 404) {
+                        return Subscription.deleteOne({ _id: sub._id });
+                    }
+                })
         );
         await Promise.all(pushPromises);
     } catch (err) {
-        console.error('[Push] Isolated Error:', err.message);
+        console.error('[Push] Diagnostic Crash:', err.message);
     }
 };
 
