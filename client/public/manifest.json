@@ -20,13 +20,7 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["tabbed", "standalone", "minimal-ui", "window-controls-overlay"],
-  "tab_strip": {
-    "home_tab": "auto",
-    "new_tab_button": {
-      "url": "/?source=new_tab"
-    }
-  },
+  "display_override": ["standalone", "window-controls-overlay"],
   "orientation": "portrait-primary",
   "theme_color": "#fed700",
   "background_color": "#ffffff",
