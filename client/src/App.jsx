@@ -26,6 +26,9 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsConditionsPage = lazy(() => import('./pages/TermsConditionsPage'));
+const RefundPolicyPage = lazy(() => import('./pages/RefundPolicyPage'));
+const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
 
 // High-performance loading fallback
 const PageLoader = () => (
@@ -71,6 +74,9 @@ function App() {
                             <Route path="/myorders" element={<MyOrdersPage />} />
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                            <Route path="/terms-conditions" element={<TermsConditionsPage />} />
+                            <Route path="/refund-policy" element={<RefundPolicyPage />} />
+                            <Route path="/about-us" element={<AboutUsPage />} />
                             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                         </Routes>
                     </Suspense>
