@@ -71,10 +71,6 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-    })
-  );
-});
-
 // BACKGROUND SYNC: Process deferred tasks when connection is restored
 self.addEventListener('sync', (event) => {
   console.log('📱 [PWA] Sync event fired:', event.tag);
