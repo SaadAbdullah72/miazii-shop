@@ -113,14 +113,16 @@ self.addEventListener('push', (event) => {
   const options = {
     body: data.body,
     icon: '/logo.png',
-    badge: '/logo.png', // Small grayscale icon for status bar
-    vibrate: [100, 50, 100],
+    badge: '/logo.png',
+    vibrate: [200, 100, 200], // Professional vibration pattern
+    tag: 'miazii-blast', // Stacks notifications so they don't clutter the tray
+    renotify: true, // Vibrates even if a notification with same tag is already there
     data: {
       url: data.url || '/'
     },
     actions: [
-      { action: 'open', title: 'Open Shop' },
-      { action: 'close', title: 'Close' }
+      { action: 'open', title: 'View Now' },
+      { action: 'close', title: 'Later' }
     ]
   };
 
