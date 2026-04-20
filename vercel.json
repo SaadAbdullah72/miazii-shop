@@ -11,6 +11,10 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/.well-known/(.*)",
+      "destination": "/client/.well-known/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/client/$1"
     },
