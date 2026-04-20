@@ -94,17 +94,21 @@ export const createNotification = asyncHandler(async (req, res) => {
 // @access  Public
 export const subscribeUser = asyncHandler(async (req, res) => {
     const subscription = req.body;
+    console.log('[Push] Registration Attempt received.');
+    
     if (!subscription || !subscription.endpoint) {
+        console.error('[Push] Registration FAILED: No subscription body provided.');
         res.status(400);
         throw new Error('Invalid subscription');
     }
 
-    await Subscription.findOneAndUpdate(
+    const updatedSub = await Subscription.findOneAndUpdate(
         { endpoint: subscription.endpoint },
         { ...subscription, user: req.user?._id || null },
         { upsert: true, new: true }
     );
 
+    console.log('[Push] Registration SUCCESS for endpoint:', subscription.endpoint.substring(0, 30));
     res.status(201).json({ success: true });
 });
 
