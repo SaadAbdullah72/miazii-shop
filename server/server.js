@@ -12,7 +12,6 @@ import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import connectDB from './config/db.js';
 import logger from './utils/logger.js';
-import compression from 'compression';
 
 import userRoutes from './routes/userRoutes.js';
 import productRoutes from './routes/productRoutes.js';
@@ -25,7 +24,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Connect to MongoDB
 logger.info('🚀 [Server] Initializing database connection...');
-connectDB();
+await connectDB();
 
 // Verification of Cloudinary setup
 if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
@@ -40,7 +39,6 @@ const app = express();
 // connectDB() is already called at line 25
 
 // Middleware
-app.use(compression()); // Compress all JSON/Text responses
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(mongoSanitize()); // Prevent NoSQL Injection
