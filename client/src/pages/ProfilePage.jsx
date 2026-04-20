@@ -106,7 +106,7 @@ const ProfilePage = () => {
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-2">
                                 <div className="flex items-center gap-2 text-gray-500">
                                     <Mail size={14} className="text-yellow-500" />
-                                    <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email || 'Guest Session'}</span>
+                                    <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email || 'Sign In Required'}</span>
                                 </div>
                                 <button 
                                     onClick={() => {

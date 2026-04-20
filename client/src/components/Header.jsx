@@ -401,12 +401,10 @@ const Header = () => {
                                 <p className="text-sm font-black text-slate-800 truncate px-4">{userInfo.email}</p>
                             </div>
                         </div>
-                    ) : (
-                        <div className="space-y-6">
-                            <div className="w-24 h-24 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto border-4 border-dashed border-gray-200">
+                                            <div className="w-24 h-24 bg-gray-100 rounded-[2.5rem] flex items-center justify-center text-gray-300 mx-auto border-4 border-dashed border-gray-200">
                                 <User size={40} />
                             </div>
-                            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Guest User</p>
+                            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Sign In / Account</p>
                         </div>
                     )}
                 </div>
