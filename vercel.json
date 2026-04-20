@@ -7,20 +7,12 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/uploads/(.*)",
-      "destination": "/api/index.js"
-    },
-    {
       "source": "/.well-known/(.*)",
-      "destination": "/client/.well-known/$1"
+      "destination": "/.well-known/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/client/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/client/index.html"
+      "destination": "/index.html"
     }
   ]
 }
