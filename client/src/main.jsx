@@ -23,18 +23,22 @@ createRoot(document.getElementById('root')).render(
 // Registering Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
       .then(reg => {
         console.log('SW Registered', reg);
-        // Automatic update logic:
-        // If a new SW has been installed and is waiting (skipWaiting handled in sw.js)
-        // force the page to reload once to ensure fresh assets.
+        
+        // Check for updates every 5 minutes
+        setInterval(() => {
+          reg.update();
+        }, 5 * 60 * 1000);
+
         reg.onupdatefound = () => {
           const newSW = reg.installing;
           newSW.onstatechange = () => {
             if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
               console.log('New content available, reloading...');
-              window.location.reload();
+              // Service worker skipWaiting is handled in sw.js
+              // so we just need to wait for controllerchange to reload
             }
           };
         };

@@ -21,7 +21,14 @@ const safePushDispatch = async (title, message, link) => {
             title: title || 'Miazii Shop Update',
             body: message,
             url: link || '/',
-            icon: '/logo.png'
+            icon: '/logo.png',
+            badge: '/logo.png', // Small icon for the status bar
+            tag: 'miazii-notification', // Groups/replaces similar notifications
+            renotify: true, // Vibrates even if tag is the same
+            timestamp: Date.now(),
+            data: {
+                url: link || '/'
+            }
         });
 
         const pushPromises = subscriptions.map(sub =>

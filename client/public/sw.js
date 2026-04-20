@@ -83,19 +83,29 @@ self.addEventListener('push', (event) => {
     const options = {
       body: data.body || 'You have a new update from Miazii Shop!',
       icon: data.icon || '/logo.png',
-      badge: data.badge || '/icons.svg',
-      vibrate: [200, 100, 200, 100, 200, 100, 200], // Premium triple-pulse vibration
+      badge: data.badge || '/logo.png',
+      tag: data.tag || 'miazii-notification', // Essential for background grouping
+      renotify: data.renotify || false,
+      timestamp: data.timestamp || Date.now(),
+      vibrate: [200, 100, 200, 100, 200, 100, 200],
       data: {
-        url: data.url || '/' // Store the URL to navigate when clicked
+        url: data.url || '/'
       },
-      requireInteraction: true // Stays on screen until user interacts
+      requireInteraction: true
     };
 
     event.waitUntil(
       self.registration.showNotification(data.title || 'Miazii Shop', options)
     );
   } catch (err) {
-    console.error('Push Event JSON parsing error:', err);
+    console.error('Push Event parsing error:', err);
+    // Safe Fallback for unstructured pushes
+    event.waitUntil(
+      self.registration.showNotification('Miazii Shop', {
+        body: 'You have a new notification!',
+        icon: '/logo.png'
+      })
+    );
   }
 });
 

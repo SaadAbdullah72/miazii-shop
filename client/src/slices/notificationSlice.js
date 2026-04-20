@@ -77,6 +77,7 @@ const notificationSlice = createSlice({
             })
             .addCase(deleteNotification.fulfilled, (state, action) => {
                 state.notifications = state.notifications.filter(n => n._id !== action.payload);
+                if (state.count > 0) state.count -= 1;
             });
     },
 });
