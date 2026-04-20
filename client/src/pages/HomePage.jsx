@@ -36,9 +36,6 @@ const HomePage = () => {
   const products = productsData?.products || [];
   const categories = categoriesData || [];
   
-  const trendingProducts = useMemo(() => products.filter(p => p.isTrending), [products]);
-  const bestDealsProducts = useMemo(() => products.filter(p => p.isDeals), [products]);
-  
   const { userInfo } = useSelector((state) => state.auth);
   const [activeTab, setActiveTab] = useState('Featured');
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
