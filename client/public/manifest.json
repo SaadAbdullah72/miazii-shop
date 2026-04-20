@@ -20,7 +20,7 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
+  "display_override": ["tabbed", "standalone", "minimal-ui", "window-controls-overlay"],
   "orientation": "portrait-primary",
   "theme_color": "#fed700",
   "background_color": "#ffffff",
@@ -31,6 +31,60 @@
   "related_applications": [],
   "launch_handler": {
     "client_mode": ["focus-existing", "auto"]
+  },
+  "file_handlers": [
+    {
+      "action": "/?source=file_handler",
+      "accept": {
+        "application/vnd.miazi.order": [".order"],
+        "application/vnd.miazi.product": [".miazi"]
+      },
+      "icons": [
+        {
+          "src": "/logo.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ],
+      "launch_type": "single-client"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+miazi",
+      "url": "/search?keyword=%s&source=protocol"
+    }
+  ],
+  "widgets": [
+    {
+      "name": "Miazi Shop Deals",
+      "short_name": "Deals",
+      "description": "Get the latest electronics deals and cart status.",
+      "tag": "miazi-deals",
+      "template": "widget-template",
+      "ms_ac_template": "widget-template.json",
+      "data": "widget-data.json",
+      "type": "application/json",
+      "screenshot": {
+        "src": "/screenshot-mobile.png",
+        "sizes": "500x3488",
+        "type": "image/png",
+        "label": "Latest Deals Widget"
+      },
+      "icons": [
+        {
+          "src": "/logo.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "/?source=note"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
   },
   "shortcuts": [
     {

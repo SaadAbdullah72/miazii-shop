@@ -74,3 +74,23 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// BACKGROUND SYNC: Process deferred tasks when connection is restored
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-orders') {
+    event.waitUntil(
+      // Mock: In a real app, this would trigger an API call to sync pending orders
+      console.log('📱 [PWA] Background Syncing pending orders...')
+    );
+  }
+});
+
+// PERIODIC BACKGROUND SYNC: Update content (Deals, Categories) daily
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'daily-content-update') {
+    event.waitUntil(
+      // Mock: Refresh cache for deals and categories in the background
+      console.log('📅 [PWA] Periodic Sync: Updating daily offers...')
+    );
+  }
+});
