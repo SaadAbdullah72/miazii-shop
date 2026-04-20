@@ -24,6 +24,8 @@ const HomePage = () => {
   const query = new URLSearchParams(location.search);
   const keyword = query.get('keyword') || '';
   const category = query.get('category') || '';
+  const isTrending = query.get('isTrending') || '';
+  const isDeals = query.get('isDeals') || '';
   
   const [currentSlide, setCurrentSlide] = useState(0);
   const { data: productsData, isLoading: loading, error: productsError } = useGetProductsQuery({ 
