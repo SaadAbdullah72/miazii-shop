@@ -170,22 +170,6 @@ const Header = () => {
                         )}
                     </button>
 
-                    <Link to="/cart" className="relative p-2 text-gray-800">
-                        <ShoppingBag size={24} />
-                        {cartItems.length > 0 && (
-                            <span className="absolute -top-1 -right-2 bg-yellow-400 text-gray-900 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                                {cartItems.reduce((a, c) => a + c.qty, 0)}
-                            </span>
-                        )}
-                    </Link>
-
-                    <button
-                        onClick={() => setIsUserDrawerOpen(true)}
-                        className="p-2 text-gray-800 hover:text-yellow-500 transition-colors"
-                    >
-                        <User size={24} />
-                    </button>
-
                     <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-800 p-2"><Menu size={24} /></button>
                 </div>
 

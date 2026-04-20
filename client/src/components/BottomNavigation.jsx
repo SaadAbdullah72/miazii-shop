@@ -8,11 +8,6 @@ const BottomNavigation = () => {
     const { userInfo } = useSelector((state) => state.auth);
     const { cartItems } = useSelector((state) => state.cart);
 
-    // Hide global navigation on the admin dashboard since it has its own specialized bottom bar
-    if (location.pathname.startsWith('/admin')) {
-        return null;
-    }
-
     const navItems = [
         { icon: Home, label: 'Home', path: '/' },
         { icon: ShoppingBag, label: 'Cart', path: '/cart', badge: cartItems.length },

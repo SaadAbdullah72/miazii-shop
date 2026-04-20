@@ -329,7 +329,7 @@ const AdminDashboardPage = () => {
             </aside>
 
             {/* ========== MOBILE ALL-IN-ONE SCROLLABLE BAR ========== */}
-            <div className="lg:hidden fixed bottom-6 left-6 right-6 h-20 bg-slate-900 border border-slate-800 z-50 px-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] ring-4 ring-white/10">
+            <div className="lg:hidden fixed bottom-20 left-6 right-6 h-20 bg-slate-900 border border-slate-800 z-50 px-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] ring-4 ring-white/10">
                 {sidebarItems.map(item => (
                     <button 
                         key={item.id} 
@@ -343,7 +343,7 @@ const AdminDashboardPage = () => {
             </div>
 
             {/* ========== MAIN CONTENT ========== */}
-            <main className="flex-1 min-w-0">
+            <main className="flex-1 min-w-0 pb-44 lg:pb-0">
                 {/* Top Nav */}
                 <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-40">
                     <div className="flex items-center gap-2 text-slate-900 text-xs font-bold uppercase tracking-widest">
