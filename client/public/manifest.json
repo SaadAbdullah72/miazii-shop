@@ -21,6 +21,12 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["tabbed", "standalone", "minimal-ui", "window-controls-overlay"],
+  "tab_strip": {
+    "home_tab": "auto",
+    "new_tab_button": {
+      "url": "/?source=new_tab"
+    }
+  },
   "orientation": "portrait-primary",
   "theme_color": "#fed700",
   "background_color": "#ffffff",
@@ -63,7 +69,7 @@
       "tag": "miazi-deals",
       "template": "widget-template",
       "ms_ac_template": "widget-template.json",
-      "data": "widget-data.json",
+      "data": "/widget-data.json",
       "type": "application/json",
       "screenshot": {
         "src": "/screenshot-mobile.png",

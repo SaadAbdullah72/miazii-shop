@@ -37,6 +37,19 @@ if ('serviceWorker' in navigator) {
           reg.update();
         }, 5 * 60 * 1000);
 
+        // BACKGROUND SYNC REGISTRATION
+        if ('sync' in reg) {
+          reg.sync.register('sync-orders').catch(err => console.log('Sync Reg Failed', err));
+        }
+
+        // PERIODIC SYNC REGISTRATION
+        if ('periodicSync' in reg) {
+          // Intervals normally around 1 day (86400000 ms)
+          reg.periodicSync.register('daily-content-update', {
+            minInterval: 24 * 60 * 60 * 1000, 
+          }).catch(err => console.log('Periodic Sync Reg Failed', err));
+        }
+
         reg.onupdatefound = () => {
           const newSW = reg.installing;
           newSW.onstatechange = () => {
