@@ -10,7 +10,8 @@ import {
   Smartphone, Laptop, Headphones, Watch, Camera,
   Cpu, Zap, Award, ShieldCheck, ChevronLeft, ChevronRight,
   User, Heart, Star, List, Clock,
-  Truck, Shield, Headphones as HeadphoneIcon, Eye, Plus, Tag, ArrowRight
+  Truck, Shield, Headphones as HeadphoneIcon, Eye, Plus, Tag, ArrowRight,
+  RefreshCcw, Handshake
 } from 'lucide-react';
 import { BASE_URL } from '../utils/axiosConfig';
 import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
