@@ -171,10 +171,14 @@ const Header = () => {
 
                 await api.post('/api/notifications/subscribe', subscription);
                 console.log('[Push] NEW Subscription recorded successfully.');
-                toast.success('Push Status: Subscribed successfully!');
+                toast.success('System Trace: Subscribed successfully!');
             } catch (err) {
                 console.error('[Push] Browser Error:', err.message);
-                toast.error(`Push Status Error: ${err.message}`);
+                if (Notification.permission === 'denied') {
+                    toast.error('Permission Denied! Click the LOCK icon 🔒 in your browser address bar to ALLOW notifications.');
+                } else {
+                    toast.error(`Push Status Error: ${err.message}`);
+                }
             }
         };
 
