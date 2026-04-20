@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v3'; // Incremented version to force update
+const CACHE_NAME = 'miazi-cache-v4'; // Incremented version to force update after logo restoration
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

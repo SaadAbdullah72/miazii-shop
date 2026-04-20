@@ -110,7 +110,7 @@
       "short_name": "Orders",
       "description": "Check the status of your recent orders",
       "url": "/myorders?source=pwa",
-      "icons": [{ "src": "/logo.png", "sizes": "512x512", "type": "image/png" }]
+      "icons": [{ "src": "/logo.png", "sizes": "1024x1024", "type": "image/png" }]
     }
   ],
   "share_target": {
