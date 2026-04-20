@@ -296,7 +296,7 @@ const Header = () => {
                         </button>
                         <div className={`absolute top-full left-0 w-full bg-white border border-gray-100 shadow-xl z-50 transition-all ${isDeptOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
                             <ul className="py-2">
-                                {departments.map(dept => (
+                                {categoryItems.map(dept => (
                                     <li key={dept.id || dept.name}>
                                         <Link to={dept.id ? `/category/${dept.id}` : '#'} className="block px-5 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-yellow-600">
                                             {dept.name}
