@@ -47,10 +47,12 @@ function App() {
 
     const [deferredPrompt, setDeferredPrompt] = React.useState(null);
 
+    const hasSyncedProfile = React.useRef(false);
     // Sync profile data and handle PWA installation prompt
     React.useEffect(() => {
-        if (userInfo) {
+        if (userInfo && !hasSyncedProfile.current) {
             dispatch(getProfile());
+            hasSyncedProfile.current = true;
         }
 
         const handleBeforeInstallPrompt = (e) => {
@@ -69,7 +71,6 @@ function App() {
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
             setDeferredPrompt(null);
-            setShowInstallBanner(false);
         }
     };
 
