@@ -122,9 +122,11 @@ const Header = () => {
                 
                 if (existingSub) {
                     console.log('[Push] Device already subscribed. Endpoint:', existingSub.endpoint.substring(0, 40));
+                    // toast.info('Push Status: Already Active'); // Optional, but let's keep it quiet unless new
                     return;
                 }
                 console.log('[Push] No subscription found. Registering...');
+                toast.info('Push Status: Registering device...');
 
                 const publicKey = 'BFWSwNjnK-MVVS3oCnq2JczOnbUrTwHTpJ6KjCeepWVvDTX48DsvhajZwufpDorSPMgf7TcVXVGPzpmhBC6VJ34';
                 
@@ -141,8 +143,10 @@ const Header = () => {
 
                 await api.post('/api/notifications/subscribe', subscription);
                 console.log('[Push] NEW Subscription recorded successfully.');
+                toast.success('Push Status: Subscribed successfully!');
             } catch (err) {
                 console.error('[Push] Browser Error:', err.message);
+                toast.error(`Push Status Error: ${err.message}`);
             }
         };
 
