@@ -108,6 +108,12 @@ const Header = () => {
     const handleFixPush = async () => {
         toast.info('Diagnostic: Hard Resetting Push System...');
         try {
+            // 0. Request permission again
+            const permission = await Notification.requestPermission();
+            if (permission === 'denied') {
+                toast.error('Browser still reports "Denied". Please reset site settings in Chrome.');
+            }
+
             // 1. Unregister all existing service workers
             const registrations = await navigator.serviceWorker.getRegistrations();
             for (let reg of registrations) {
