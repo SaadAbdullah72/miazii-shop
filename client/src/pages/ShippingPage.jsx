@@ -74,28 +74,42 @@ const ShippingPage = () => {
         } catch (error) {
             console.error('IP failed, fallback to GPS:', error);
             
-            // Tier 2: GPS Detection with "Friendly Prompt" logic
+            // Tier 2: GPS Detection with Reverse Geocoding for Professional "Auto-Fill"
             if (!navigator.geolocation) {
                 toast.error('Browser does not support GPS detection');
                 setDetecting(false);
                 return;
             }
 
-            toast.info('Requesting GPS permission for higher accuracy...', { autoClose: 2000 });
+            toast.info('Synchronizing with Satellites...', { autoClose: 2000 });
 
             navigator.geolocation.getCurrentPosition(
-                (position) => {
+                async (position) => {
                     const { latitude, longitude } = position.coords;
                     setLat(latitude);
                     setLng(longitude);
-                    toast.success('GPS Coordinates Locked!');
+
+                    // Professional Step: Reverse Geocode to get Road/Area
+                    try {
+                        const revResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+                        const revData = await revResponse.json();
+                        if (revData && revData.address) {
+                            const addr = revData.display_name.split(',').slice(0, 3).join(', ');
+                            setAddress(addr);
+                            setCity(revData.address.city || revData.address.town || revData.address.suburb || '');
+                            setPostalCode(revData.address.postcode || '');
+                        }
+                    } catch (e) {
+                        console.log('Reverse Geocode failed, using raw coordinates');
+                    }
+
+                    toast.success('Professional Location Sync Complete!');
                     setDetecting(false);
                 },
                 (err) => {
                     console.error('Geo error:', err);
-                    if (err.code === 1) toast.warning('Permission Denied. Please allow location in your browser settings.');
-                    else toast.error('Detection failed. Please enter address manually.');
                     setDetecting(false);
+                    toast.warning('GPS Denied. Using IP fallback.');
                 },
                 { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
             );

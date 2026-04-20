@@ -512,7 +512,8 @@ const HomePage = () => {
                     )}
                   </div>
                 </div>
-              ))}
+              ))
+            ) : null}
           </div>
 
           {/* DEBUG TOOL: Only shows if no products are found */}

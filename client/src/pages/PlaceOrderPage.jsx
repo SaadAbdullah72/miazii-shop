@@ -52,11 +52,14 @@ const PlaceOrderPage = () => {
     // Distance-based shipping fee brackets defined by user:
     // 1-10km: 50 | 10-20km: 80 | 20-30km: 120 | Above: 150
     const calculateShippingFee = (distance) => {
-        if (distance === null || distance === undefined) return 150; // Manual entry / Unknown distance
-        if (distance <= 10) return 50;
-        if (distance <= 20) return 80;
-        if (distance <= 30) return 120;
-        return 150; // Standard premium for distant orders
+        if (!distance) return 150; // Unknown distance uses flat rate
+        
+        console.log(`[Logistics] Calculated Distance: ${distance.toFixed(2)} km`);
+        
+        if (distance <= 10) return 50;  // 1-10km: 50 TK
+        if (distance <= 20) return 80;  // 10-20km: 80 TK
+        if (distance <= 30) return 120; // 20-30km: 120 TK
+        return 150; // >30km or remote areas: 150 TK
     };
 
     // 1. First, calculate the cost of all items in the cart

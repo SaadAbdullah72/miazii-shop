@@ -111,9 +111,9 @@ const Header = () => {
         toast.success('Notification removed');
     };
 
-    const departments = categories.length > 0
+    const categoryItems = Array.isArray(categories)
         ? categories.map(c => ({ name: c.name, id: c._id }))
-        : [{ name: 'No categories yet', id: '' }];
+        : [];
 
     return (
         <header className="w-full bg-white font-sans relative">
