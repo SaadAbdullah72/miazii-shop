@@ -113,7 +113,7 @@ self.addEventListener('push', (event) => {
   const options = {
     body: data.body,
     icon: '/logo.png', // Large icon (RIGHT side)
-    badge: '/logo.png', // Small icon (LEFT side) - Needs to be monochrome!
+    badge: '/badge.svg', // Professional Monochrome SVG (LEFT side)
     vibrate: [200, 100, 200], // Professional vibration pattern
     tag: 'miazii-blast', // Stacks notifications so they don't clutter the tray
     renotify: true, // Vibrates even if a notification with same tag is already there
