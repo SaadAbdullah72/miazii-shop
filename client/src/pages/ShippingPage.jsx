@@ -29,12 +29,37 @@ const ShippingPage = () => {
         }
     }, [userInfo, navigate]);
 
+    // Auto-detect on mount (Quietly)
+    useEffect(() => {
+        if (!lat || !lng) {
+            autoDetectQuietly();
+        }
+    }, []);
+
+    const autoDetectQuietly = async () => {
+        try {
+            const response = await fetch('https://freeipapi.com/api/json');
+            if (!response.ok) return;
+            const data = await response.json();
+            
+            if (!city) setCity(data.cityName || '');
+            if (!postalCode) setPostalCode(data.zipCode || '');
+            if (!country) setCountry(data.countryName || 'Bangladesh');
+            setLat(data.latitude || null);
+            setLng(data.longitude || null);
+            if (!address) setAddress(`${data.cityName || ''}, ${data.countryName || ''}`);
+        } catch (error) {
+            console.log('Quiet auto-detect failed');
+        }
+    };
+
     const detectLocation = async () => {
         setDetecting(true);
+        
+        // Tier 1: High-Speed IP Detection (Professional, no permission prompt)
         try {
-            // First try IP-based location via freeipapi (No browser permission required, excellent CORS)
             const response = await fetch('https://freeipapi.com/api/json');
-            if (!response.ok) throw new Error('IP lookup failed');
+            if (!response.ok) throw new Error('Network error');
             const data = await response.json();
 
             setCity(data.cityName || '');
@@ -44,36 +69,35 @@ const ShippingPage = () => {
             setLng(data.longitude || null);
             setAddress(`${data.cityName || ''}, ${data.regionName || ''}, ${data.countryName || ''}`);
             
-            toast.success('Location detected automatically!');
+            toast.success('Location synchronized via Network IP');
             setDetecting(false);
         } catch (error) {
-            console.error('IP Location failed, trying GPS:', error);
-            // Fallback to Browser Geolocation if IP API fails
+            console.error('IP failed, fallback to GPS:', error);
+            
+            // Tier 2: GPS Detection with "Friendly Prompt" logic
             if (!navigator.geolocation) {
-                toast.error('Location detection failed. Please enter manually.');
+                toast.error('Browser does not support GPS detection');
                 setDetecting(false);
                 return;
             }
 
+            toast.info('Requesting GPS permission for higher accuracy...', { autoClose: 2000 });
+
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-                    setAddress(mapsLink);
                     setLat(latitude);
                     setLng(longitude);
-                    toast.success('GPS Location detected!');
+                    toast.success('GPS Coordinates Locked!');
                     setDetecting(false);
                 },
                 (err) => {
                     console.error('Geo error:', err);
-                    if (err.code === 1) toast.error('Location Access Denied. Please enter manually.');
-                    else if (err.code === 2) toast.error('Position Unavailable. Please enter manually.');
-                    else if (err.code === 3) toast.error('Location Timeout. Connection might be slow.');
-                    else toast.error('Could not detect location. Please enter manually.');
+                    if (err.code === 1) toast.warning('Permission Denied. Please allow location in your browser settings.');
+                    else toast.error('Detection failed. Please enter address manually.');
                     setDetecting(false);
                 },
-                { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
             );
         }
     };
@@ -165,35 +189,51 @@ const ShippingPage = () => {
                         </div>
                         <div className="p-8">
                             <form onSubmit={submitHandler} className="space-y-6">
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-center">
-                                        <label className="text-xs font-bold uppercase text-gray-500">Address / Location Link</label>
-                                        <button 
-                                            type="button" 
-                                            onClick={detectLocation}
-                                            disabled={detecting}
-                                            className="text-[10px] font-black text-blue-600 uppercase flex items-center gap-1 hover:text-blue-700 disabled:opacity-50"
-                                        >
-                                            {detecting ? <Loader size={12} className="animate-spin" /> : <Navigation size={12} />}
-                                            {detecting ? 'Detecting...' : 'Detect My Location'}
-                                        </button>
+                                {/* Professional Location Interaction Card */}
+                                <div className="space-y-4">
+                                    <div 
+                                        onClick={detectLocation}
+                                        className={`group relative overflow-hidden border-2 rounded-2xl p-6 cursor-pointer transition-all ${detecting ? 'border-blue-400 bg-blue-50' : 'border-slate-100 hover:border-yellow-400 hover:bg-slate-50'}`}
+                                    >
+                                        <div className="flex items-center justify-between relative z-10">
+                                            <div className="flex items-center gap-4">
+                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${detecting ? 'bg-blue-600 text-white animate-pulse' : 'bg-slate-100 text-slate-400 group-hover:bg-yellow-400 group-hover:text-slate-900 group-hover:rotate-12'}`}>
+                                                    <Navigation size={24} />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-tighter">
+                                                        {detecting ? 'Analyzing Satellite Data...' : 'Detect My Location'}
+                                                    </h3>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                                        {lat && lng ? 'Coordinates Locked (Highest Accuracy)' : 'Automated Address Synchronization'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {!detecting && (lat && lng ? <CheckCircle2 size={24} className="text-emerald-500" /> : <ChevronRight size={20} className="text-slate-300 group-hover:translate-x-1 transition-transform" />)}
+                                        </div>
+                                        {detecting && <div className="absolute bottom-0 left-0 h-1 bg-blue-600 animate-progress" style={{ width: '100%' }}></div>}
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter address or auto-detect link"
-                                        className="w-full bg-white border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm font-semibold"
-                                        value={address}
-                                        required
-                                        onChange={(e) => {
-                                            setAddress(e.target.value);
-                                            setLat(null); // Clear coords when user types manually
-                                            setLng(null);
-                                        }}
-                                    />
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Shipping Address</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Building, Street, Area..."
+                                            className="w-full bg-white border-2 border-slate-100 p-4 rounded-xl outline-none focus:border-yellow-400 text-sm font-bold text-slate-700 transition-all shadow-sm"
+                                            value={address}
+                                            required
+                                            onChange={(e) => {
+                                                setAddress(e.target.value);
+                                                setLat(null); 
+                                                setLng(null);
+                                            }}
+                                        />
+                                    </div>
                                 </div>
+
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold uppercase text-gray-500">City</label>
+                                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">City</label>
                                         <input
                                             type="text"
                                             placeholder="Enter city"
@@ -230,32 +270,36 @@ const ShippingPage = () => {
                                         onChange={(e) => setCountry(e.target.value)}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-gray-500">Phone Number</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter phone number"
-                                        className="w-full bg-white border border-gray-200 p-3 rounded-lg outline-none focus:border-yellow-400 text-sm"
-                                        value={phone}
-                                        required
-                                        onChange={(e) => setPhone(e.target.value)}
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    disabled={isResolving}
-                                    className="btn-electro w-full h-12 uppercase mt-6 flex items-center justify-center gap-2"
-                                >
-                                    {isResolving ? (
-                                        <>
-                                            <Loader size={18} className="animate-spin" />
-                                            <span>Analyzing Logistics...</span>
-                                        </>
-                                    ) : (
-                                        'Continue to Order Review'
-                                    )}
-                                </button>
-                            </form>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Phone Number</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Contact phone for courier"
+                                            className="w-full bg-white border-2 border-slate-100 p-4 rounded-xl outline-none focus:border-yellow-400 text-sm font-bold text-slate-700 transition-all shadow-sm"
+                                            value={phone}
+                                            required
+                                            onChange={(e) => setPhone(e.target.value)}
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        disabled={isResolving}
+                                        className="w-full h-14 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-yellow-100 transition-all flex items-center justify-center gap-3 group mt-4 overflow-hidden relative"
+                                    >
+                                        {isResolving ? (
+                                            <>
+                                                <Loader size={20} className="animate-spin" />
+                                                <span>Analyzing Route...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Continue to Checkout</span>
+                                                <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -238,37 +238,6 @@ const HomePage = () => {
         </section>
       )}
 
-      {/* TRUST FEATURES ROW - REFINED */}
-      {!keyword && !category && (
-        <section className="max-w-7xl mx-auto px-4 pb-8">
-          <div className="bg-white border-y md:border border-gray-100 md:rounded-2xl py-8 px-6 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 overflow-hidden">
-            
-            {/* 1. RETURNS */}
-            <Link to="/refund-policy" className="flex items-center gap-5 group">
-              <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 group-hover:bg-blue-600 group-hover:border-blue-600 transition-all duration-300">
-                <RefreshCcw size={24} className="text-blue-600 group-hover:text-white transition-colors" />
-              </div>
-              <div>
-                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-blue-600 transition-colors">7-Day Easy Returns</h4>
-                <p className="text-xs text-gray-500 mt-1 font-medium">Hassle-free 100% money back guarantee</p>
-              </div>
-            </Link>
-
-            {/* 2. PRIVACY */}
-            <Link to="/privacy-policy" className="flex items-center gap-5 group">
-              <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-green-100 group-hover:bg-green-600 group-hover:border-green-600 transition-all duration-300">
-                <ShieldCheck size={24} className="text-green-600 group-hover:text-white transition-colors" />
-              </div>
-              <div>
-                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-green-600 transition-colors">Privacy & Data Security</h4>
-                <p className="text-xs text-gray-500 mt-1 font-medium">Your personal data is 100% protected</p>
-              </div>
-            </Link>
-
-          </div>
-        </section>
-      )}
-
       {/* CATEGORY BANNERS */}
       {!keyword && !category && categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 pb-8">

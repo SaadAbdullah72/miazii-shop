@@ -137,10 +137,7 @@ const Footer = () => {
                                     <Link to={item === 'My Account' ? '/profile' : item === 'Order Tracking' ? '/myorders' : '/contact'} className="hover:text-[#1e1c13]">{item}</Link>
                                 </li>
                             ))}
-                            <li><Link to="/about-us" className="hover:text-[#1e1c13]">About Us</Link></li>
-                            <li><Link to="/privacy-policy" className="hover:text-[#1e1c13]">Privacy Policy</Link></li>
-                            <li><Link to="/terms-conditions" className="hover:text-[#1e1c13]">Terms & Conditions</Link></li>
-                            <li><Link to="/refund-policy" className="hover:text-[#1e1c13]">Refund & Cancellation</Link></li>
+                             <li><Link to="/about-us" className="hover:text-[#1e1c13]">About Us</Link></li>
                         </ul>
                     </div>
                 </div>

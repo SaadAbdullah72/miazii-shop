@@ -256,29 +256,29 @@ const ProductDetailsPage = () => {
                                 </div>
                             )}
 
-                            {/* Trust Badges */}
+                            {/* Policy Quick Links */}
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-auto">
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <Truck size={20} className="text-yellow-500 shrink-0" />
+                                <Link to="/privacy-policy" className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white hover:border-yellow-400 hover:shadow-md transition-all group">
+                                    <ShieldCheck size={20} className="text-yellow-500 shrink-0 group-hover:scale-110 transition-transform" />
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-800 uppercase">Fast Delivery</p>
-                                        <p className="text-[10px] text-gray-400">Nationwide shipping</p>
+                                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-tighter">Privacy Policy</p>
+                                        <p className="text-[9px] text-slate-400 font-bold uppercase">Data Security</p>
                                     </div>
-                                </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <ShieldCheck size={20} className="text-yellow-500 shrink-0" />
+                                </Link>
+                                <Link to="/terms-conditions" className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white hover:border-yellow-400 hover:shadow-md transition-all group">
+                                    <Info size={20} className="text-yellow-500 shrink-0 group-hover:scale-110 transition-transform" />
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-800 uppercase">Genuine Product</p>
-                                        <p className="text-[10px] text-gray-400">100% authentic</p>
+                                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-tighter">Terms of Service</p>
+                                        <p className="text-[9px] text-slate-400 font-bold uppercase">Legal Protocol</p>
                                     </div>
-                                </div>
-                                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <Info size={20} className="text-yellow-500 shrink-0" />
+                                </Link>
+                                <Link to="/refund-policy" className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-white hover:border-yellow-400 hover:shadow-md transition-all group">
+                                    <Truck size={20} className="text-yellow-500 shrink-0 group-hover:scale-110 transition-transform" />
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-800 uppercase">Easy Returns</p>
-                                        <p className="text-[10px] text-gray-400">7-day return policy</p>
+                                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-tighter">Returns Policy</p>
+                                        <p className="text-[9px] text-slate-400 font-bold uppercase">7-Day Guarantee</p>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
