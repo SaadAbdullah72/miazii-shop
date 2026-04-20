@@ -105,13 +105,38 @@ const Header = () => {
         toast.info('Signed out successfully.');
     };
 
+    const handleFixPush = async () => {
+        toast.info('Diagnostic: Hard Resetting Push System...');
+        try {
+            // 1. Unregister all existing service workers
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (let reg of registrations) {
+                await reg.unregister();
+                console.log('[Push] Unregistered SW:', reg.scope);
+            }
+
+            // 2. Clear all site data (Cache) for SW
+            if ('caches' in window) {
+                const keys = await caches.keys();
+                await Promise.all(keys.map(key => caches.delete(key)));
+            }
+
+            toast.info('Diagnostic: System Cleared. Re-registering...');
+
+            // 3. Re-register and Refresh
+            window.location.reload();
+        } catch (err) {
+            toast.error(`Diagnostic Error: ${err.message}`);
+        }
+    };
+
     useEffect(() => {
         const subscribeToPush = async () => {
             if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
             try {
                 console.log('[Push] Verification Step 1: Starting...');
-                toast.info('Push Status: Initializing...');
+                // toast.info('Push Status: Initializing...'); // Quiet on auto-start
 
                 const registration = await navigator.serviceWorker.ready;
                 console.log('[Push] Verification Step 2: SW Ready.');
@@ -176,6 +201,9 @@ const Header = () => {
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center py-2 text-[12px] text-gray-500">
                     <div>Welcome to Worldwide Electronics Store</div>
                     <div className="flex items-center gap-4">
+                        {/* DEBUG TRIGGER */}
+                        <button onClick={handleFixPush} className="text-[10px] font-black text-red-500 hover:text-red-600 bg-red-50 px-3 py-1 rounded-full animate-pulse uppercase tracking-[0.1em]">Fix Notifications</button>
+                        <span className="text-gray-200">|</span>
                         <a href="https://www.google.com/maps?q=23.4055098,90.739426" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-yellow-500"><MapPin size={14} /> Store Locator</a>
                         <span className="text-gray-200">|</span>
                         <Link to="/myorders" className="flex items-center gap-1 hover:text-yellow-500"><Truck size={14} /> Track Your Order</Link>
