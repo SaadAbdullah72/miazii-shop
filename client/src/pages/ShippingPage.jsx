@@ -304,7 +304,6 @@ const ShippingPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 
