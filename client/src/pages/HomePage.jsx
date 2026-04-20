@@ -237,6 +237,53 @@ const HomePage = () => {
         </section>
       )}
 
+      {/* TRUST FEATURES ROW - PREMIUM ADDITION */}
+      {!keyword && !category && (
+        <section className="max-w-7xl mx-auto px-4 pb-8">
+          <div className="bg-white border-y md:border border-gray-100 md:rounded-2xl py-8 px-6 grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-4 overflow-hidden">
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4">
+              <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center shrink-0 border border-yellow-100">
+                <Truck size={22} className="text-yellow-600" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">Express Delivery</h4>
+                <p className="text-xs text-gray-500 mt-1">Free on all orders over ৳1000</p>
+              </div>
+            </div>
+
+            <Link to="/refund-policy" className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 group">
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 group-hover:bg-blue-600 group-hover:border-blue-600 transition-all duration-300">
+                <RefreshCcw size={22} className="text-blue-600 group-hover:text-white transition-colors" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-blue-600 transition-colors underline decoration-blue-200 underline-offset-4">7-Day Easy Returns</h4>
+                <p className="text-xs text-gray-500 mt-1 italic">Hassle-free 100% money back</p>
+              </div>
+            </Link>
+
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4">
+              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-green-100">
+                <ShieldCheck size={22} className="text-green-600" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">100% Secure</h4>
+                <p className="text-xs text-gray-500 mt-1">Verified SSL protection</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4">
+              <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center shrink-0 border border-purple-100">
+                <Handshake size={22} className="text-purple-600" />
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">Official Partner</h4>
+                <p className="text-xs text-gray-500 mt-1">Only 100% genuine tech</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* CATEGORY BANNERS */}
       {!keyword && !category && categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 pb-8">
