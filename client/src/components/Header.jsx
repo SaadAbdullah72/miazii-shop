@@ -153,6 +153,10 @@ const Header = () => {
 
                 {/* Mobile Icons Action Bar */}
                 <div className="flex items-center gap-1 sm:gap-3 md:hidden">
+                    <Link to="/profile" className="p-2 text-gray-700 hover:text-yellow-500 transition-colors">
+                        <User size={22} />
+                    </Link>
+
                     <button
                         onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                         className={`p-2 transition-colors ${isMobileSearchOpen ? 'text-yellow-500' : 'text-gray-700'}`}
