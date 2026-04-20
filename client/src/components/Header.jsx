@@ -111,6 +111,46 @@ const Header = () => {
         toast.success('Notification removed');
     };
 
+    // --- Web Push Subscription Logic ---
+    const urlBase64ToUint8Array = (base64String) => {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    };
+
+    const subscribeToPushNotifications = async () => {
+        try {
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+            const registration = await navigator.serviceWorker.ready;
+            
+            // Check if already subscribed
+            const existingSubscription = await registration.pushManager.getSubscription();
+            if (existingSubscription) return; // Do not bother hitting API if already synced locally
+
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') return;
+
+            const publicVapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+            if (!publicVapidKey) return; 
+
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+            });
+
+            // Send to Backend
+            await api.post('/api/push/subscribe', subscription);
+        } catch (error) {
+            console.error('Push Subscription failed:', error);
+        }
+    };
+    // -----------------------------------
+
     const departments = categories.length > 0
         ? categories.map(c => ({ name: c.name, id: c._id }))
         : [{ name: 'No categories yet', id: '' }];
@@ -159,7 +199,7 @@ const Header = () => {
                     </button>
 
                     <button
-                        onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); }}
+                        onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); subscribeToPushNotifications(); }}
                         className="p-2 text-gray-700 hover:text-yellow-500 transition-colors relative"
                     >
                         <Bell size={22} />
@@ -229,7 +269,7 @@ const Header = () => {
 
                 <div className="hidden md:flex items-center gap-5 text-gray-700">
                     <button
-                        onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); }}
+                        onClick={() => { setIsNotifOpen(true); dispatch(resetCount()); subscribeToPushNotifications(); }}
                         className="relative p-2 text-gray-700 hover:text-yellow-500 transition-colors group/bell"
                     >
                         <Bell size={22} className="group-hover/bell:animate-ring" />
