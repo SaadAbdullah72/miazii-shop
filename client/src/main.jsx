@@ -12,10 +12,15 @@ initializeMobileApp();
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor } from './store.js'
+
 createRoot(document.getElementById('root')).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Provider store={store}>
-      <App />
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   </GoogleOAuthProvider>,
 )

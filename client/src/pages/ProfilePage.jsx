@@ -77,12 +77,8 @@ const ProfilePage = () => {
         }
     }, [userInfo]);
 
-    if (loading) return (
-        <div className="flex flex-col justify-center items-center py-64 bg-slate-50 h-screen text-center">
-            <Loader size={40} className="animate-spin text-yellow-500 mb-4" />
-            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Synchronizing Account Data...</p>
-        </div>
-    );
+    // Global loader removed to achieve "Instant Loading" for profile identity.
+    // The specific data sections (like Orders) will handle their own loading states.
 
     return (
         <div className="bg-slate-50 min-h-screen pb-32 font-sans">
@@ -139,7 +135,12 @@ const ProfilePage = () => {
                     </div>
                 </div>
 
-                {orders.length === 0 ? (
+                {loading ? (
+                    <div className="bg-white border border-gray-100 rounded-3xl p-20 text-center shadow-sm">
+                        <Loader size={30} className="animate-spin text-yellow-500 mx-auto mb-4" />
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Loading Purchases...</p>
+                    </div>
+                ) : orders.length === 0 ? (
                     <div className="bg-white border border-gray-100 rounded-3xl p-20 text-center shadow-sm">
                         <p className="text-xs font-black text-gray-300 uppercase tracking-widest mb-2">No Orders Yet</p>
                         <p className="text-sm text-gray-400">You haven't placed any orders yet.</p>
