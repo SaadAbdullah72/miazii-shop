@@ -5,13 +5,25 @@ import productReducer from './slices/productSlice';
 import categoryReducer from './slices/categorySlice';
 import notificationReducer from './slices/notificationSlice';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import storage from 'redux-persist/lib/storage/index.js'; // More reliable ESM import
 import { apiSlice } from './slices/apiSlice';
+
+// IRON-CLAD STORAGE WRAPPER: Ensures zero 'getItem is not a function' errors by using native window.localStorage
+const webStorage = {
+    getItem: (key) => Promise.resolve(window.localStorage.getItem(key)),
+    setItem: (key, value) => {
+        window.localStorage.setItem(key, value);
+        return Promise.resolve();
+    },
+    removeItem: (key) => {
+        window.localStorage.removeItem(key);
+        return Promise.resolve();
+    }
+};
 
 const persistConfig = {
     key: 'root',
     version: 1,
-    storage,
+    storage: webStorage,
     whitelist: ['auth', 'cart', 'category'],
 };
 
