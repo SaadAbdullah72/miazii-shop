@@ -789,76 +789,68 @@ const AdminDashboardPage = () => {
                         </div>
                     )}
 
-                    {/* ========== PUSH BLAST (PROFESSIONAL CONTROL) ========== */}
+                    {/* ========== PUSH BLAST (MINIMALIST PRO) ========== */}
                     {activeTab === 'push blast' && (
-                        <div className="space-y-8 animate-in slide-in-from-right duration-500 max-w-4xl mx-auto px-4">
-                            <div className="flex flex-col items-center text-center space-y-4 mb-10">
-                                <div className="w-16 h-16 bg-slate-900 text-yellow-400 rounded-2xl flex items-center justify-center shadow-xl">
-                                    <Smartphone size={28} />
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-3xl mx-auto">
+                            <div className="mb-8 flex items-center gap-3">
+                                <div className="p-2 bg-slate-900 text-white rounded-lg">
+                                    <Smartphone size={18} />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tighter">Native Push Master</h2>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Broadcast priority signals to all installed devices</p>
+                                    <h2 className="text-xl font-bold text-slate-800">Push Notification System</h2>
+                                    <p className="text-xs text-slate-500">Send native browser alerts to all subscribed devices.</p>
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-3xl border border-slate-200 p-8 md:p-12 shadow-xl relative overflow-hidden">
-                                <div className="absolute top-0 right-0 p-8 opacity-5">
-                                    <Smartphone size={150} className="text-slate-900" />
-                                </div>
-
-                                <form onSubmit={handlePushBlast} className="space-y-8 relative z-10">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Notification Title</label>
+                            <div className="bg-white border border-slate-200 rounded-xl p-6 md:p-8 shadow-sm">
+                                <form onSubmit={handlePushBlast} className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-slate-700">Notification Title</label>
                                             <input 
                                                 type="text"
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-bold outline-none focus:border-slate-900 transition-all placeholder:text-slate-300"
-                                                placeholder="e.g. FLASH SALE LIVE 🚀"
+                                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 transition-all"
+                                                placeholder="Enter title (e.g. Flash Sale Live)"
                                                 value={blastData.title}
                                                 onChange={(e) => setBlastData({...blastData, title: e.target.value})}
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Direct Target URL</label>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-slate-700">Destination URL</label>
                                             <input 
                                                 type="text"
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-4 text-sm font-bold outline-none focus:border-slate-900 transition-all placeholder:text-slate-300"
-                                                placeholder="/shop (Use / for Home)"
+                                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 transition-all"
+                                                placeholder="/shop"
                                                 value={blastData.url}
                                                 onChange={(e) => setBlastData({...blastData, url: e.target.value})}
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Notification Content</label>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-slate-700">Message Payload</label>
                                         <textarea 
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl px-6 py-5 text-sm font-medium outline-none focus:border-slate-900 transition-all min-h-[140px] resize-none"
-                                            placeholder="Write your broadcast message. Keep it concise for better visibility..."
+                                            className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 transition-all min-h-[120px] resize-none"
+                                            placeholder="Details of the notification..."
                                             value={blastData.message}
                                             onChange={(e) => setBlastData({...blastData, message: e.target.value})}
                                         />
                                     </div>
 
-                                    <div className="pt-4">
+                                    <div className="pt-4 border-t border-slate-50">
                                         <button 
                                             disabled={isBlasting}
-                                            className="w-full bg-slate-900 text-white rounded-xl py-5 text-xs font-black uppercase tracking-[0.3em] hover:bg-slate-800 transition-all flex items-center justify-center gap-4 shadow-lg shadow-slate-200"
+                                            className="w-full md:w-auto bg-slate-900 hover:bg-slate-800 text-white rounded-lg px-10 py-3 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                                         >
                                             {isBlasting ? (
-                                                <><Loader className="animate-spin text-yellow-400" /> Dispatching Signal...</>
+                                                <><Loader className="animate-spin text-white" size={14} /> Dispatching...</>
                                             ) : (
-                                                <><Send size={18} /> Launch Global Blast</>
+                                                <><Send size={14} /> Send Broadcast</>
                                             )}
                                         </button>
-                                        <div className="flex items-center justify-center gap-2 mt-6 opacity-30">
-                                            <div className="h-[1px] w-12 bg-slate-300"></div>
-                                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center">
-                                                Broadcast will target all permitted device tokens
-                                            </p>
-                                            <div className="h-[1px] w-12 bg-slate-300"></div>
-                                        </div>
+                                        <p className="mt-4 text-[10px] text-slate-400">
+                                            * This action will broadcast a native notification alert to all active device tokens in the database.
+                                        </p>
                                     </div>
                                 </form>
                             </div>
