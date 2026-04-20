@@ -1,7 +1,7 @@
 {
   "id": "/?source=pwa",
-  "short_name": "Miazi Shop",
   "name": "Miazi Shop | Premium Electronics & Tech",
+  "short_name": "Miazi Shop",
   "description": "Premium electronics and tech store offering high-quality gadgets at best prices in Bangladesh.",
   "icons": [
     {
@@ -18,11 +18,45 @@
     }
   ],
   "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": ["standalone", "minimal-ui", "window-controls-overlay"],
+  "orientation": "portrait-primary",
   "theme_color": "#fed700",
   "background_color": "#ffffff",
   "categories": ["shopping", "electronics", "technology"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  },
+  "shortcuts": [
+    {
+      "name": "Open Cart",
+      "short_name": "Cart",
+      "description": "View items in your shopping cart",
+      "url": "/cart?source=pwa",
+      "icons": [{ "src": "/logo.png", "sizes": "1024x1024", "type": "image/png" }]
+    },
+    {
+      "name": "Track Orders",
+      "short_name": "Orders",
+      "description": "Check the status of your recent orders",
+      "url": "/myorders?source=pwa",
+      "icons": [{ "src": "/logo.png", "sizes": "1024x1024", "type": "image/png" }]
+    }
+  ],
+  "share_target": {
+    "action": "/?source=share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
