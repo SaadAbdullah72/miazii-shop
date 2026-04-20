@@ -45,12 +45,38 @@ function App() {
     const dispatch = useDispatch();
     const { userInfo } = useSelector((state) => state.auth);
 
-    // Sync profile data on app mount to ensure cross-device consistency
+    const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+    const [showInstallBanner, setShowInstallBanner] = React.useState(false);
+
+    // Sync profile data and handle PWA installation prompt
     React.useEffect(() => {
         if (userInfo) {
             dispatch(getProfile());
         }
-    }, [dispatch]); // Only on mount, don't depend on userInfo to avoid loops
+
+        const handleBeforeInstallPrompt = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+            // Only show banner if not already in standalone mode
+            if (!window.matchMedia('(display-mode: standalone)').matches && !window.matchMedia('(display-mode: fullscreen)').matches) {
+                setShowInstallBanner(true);
+            }
+        };
+
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+        return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    }, [dispatch, userInfo]);
+
+    const handleInstallClick = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            setDeferredPrompt(null);
+            setShowInstallBanner(false);
+        }
+    };
 
     return (
         <Router>
@@ -86,6 +112,38 @@ function App() {
                 </Suspense>
                 <BottomNavigation />
                 <ToastContainer position="bottom-right" autoClose={3000} />
+                
+                {/* PWA INSTALL PROMPT BANNER - THE "CHROME TAB" FIX */}
+                {showInstallBanner && (
+                    <div className="fixed bottom-24 left-4 right-4 z-[1000] animate-in fade-in slide-in-from-bottom-5 duration-500">
+                        <div className="bg-slate-900 border-2 border-yellow-400 rounded-3xl p-6 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative group">
+                            <div className="absolute inset-0 bg-yellow-400/5 group-hover:bg-yellow-400/10 transition-colors" />
+                            <div className="flex items-center gap-5 relative z-10">
+                                <div className="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-slate-900 text-2xl font-black shadow-lg">
+                                    M
+                                </div>
+                                <div>
+                                    <h3 className="text-white font-black text-sm uppercase tracking-wider mb-1">Remove Browser Bar</h3>
+                                    <p className="text-gray-400 text-[10px] uppercase font-bold tracking-widest leading-none">Install MIAZI for Fullscreen Mode</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 w-full md:w-auto relative z-10">
+                                <button 
+                                    onClick={() => setShowInstallBanner(false)}
+                                    className="px-6 py-4 text-gray-400 hover:text-white transition-colors uppercase font-black text-[10px] tracking-widest"
+                                >
+                                    Dismiss
+                                </button>
+                                <button 
+                                    onClick={handleInstallClick}
+                                    className="flex-1 md:flex-none px-8 py-4 bg-yellow-400 text-slate-900 rounded-xl font-black uppercase text-[10px] tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all"
+                                >
+                                    Install App
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </Router>
     );
