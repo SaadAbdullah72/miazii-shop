@@ -16,6 +16,7 @@ import { BASE_URL } from '../utils/axiosConfig';
 import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { ProductSkeleton } from '../components/Skeleton';
+import { addToCart } from '../slices/cartSlice';
 
 const HomePage = () => {
   const dispatch = useDispatch();
