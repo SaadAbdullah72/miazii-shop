@@ -17,6 +17,7 @@ import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { ProductSkeleton } from '../components/Skeleton';
 
+const HomePage = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
