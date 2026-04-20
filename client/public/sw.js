@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v4'; // Incremented version to force update after logo restoration
+const CACHE_NAME = 'miazi-cache-v5'; // Forced update for professional badge
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
