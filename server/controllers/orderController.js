@@ -1,5 +1,5 @@
-import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
+import Product from '../models/productModel.js';
 import sendEmail from '../utils/emailUtils.js';
 import { v2 as cloudinary } from 'cloudinary';
 import logger from '../utils/logger.js';
@@ -19,17 +19,49 @@ const addOrderItems = asyncHandler(async (req, res) => {
         orderItems,
         shippingAddress,
         paymentMethod,
-        itemsPrice,
-        taxPrice,
-        shippingPrice,
-        totalPrice,
         paymentScreenshot,
     } = req.body;
 
-    if (orderItems && orderItems.length === 0) {
+    if (!orderItems || orderItems.length === 0) {
         res.status(400);
         throw new Error('No order items');
     } else {
+        // SERVER-SIDE PRICE CALCULATION (Security Hardening)
+        let itemsPrice = 0;
+        const dbOrderItems = [];
+
+        for (const item of orderItems) {
+            const productFromDB = await Product.findById(item.product);
+            
+            if (!productFromDB) {
+                res.status(404);
+                throw new Error(`Product not found: ${item.name}`);
+            }
+
+            // Use the actual DB price (or discount price if it exists)
+            const actualPrice = productFromDB.discountPrice > 0 
+                ? productFromDB.discountPrice 
+                : productFromDB.price;
+
+            itemsPrice += actualPrice * item.qty;
+
+            // Push verified data to a new array to prevent injection of fake fields
+            dbOrderItems.push({
+                name: productFromDB.name,
+                qty: item.qty,
+                image: productFromDB.images[0],
+                price: actualPrice,
+                product: productFromDB._id,
+            });
+        }
+
+        // Tiered Shipping Logic (Matching Frontend for consistency)
+        // Note: You can also use fixed values or dynamic distance here
+        // For now, we'll keep it simple or use the one sent by client IF it matches a known range
+        // BUT to be safe, let's re-calculate shipping or use a sensible default
+        const shippingPrice = req.body.shippingPrice || 0; // In a real world app, calculate this via maps API
+        const taxPrice = 0; 
+        const totalPrice = itemsPrice + Number(shippingPrice) + taxPrice;
         let finalScreenshotUrl = paymentScreenshot || null;
 
         // If paymentScreenshot is a base64 string, upload to Cloudinary
@@ -47,7 +79,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
         const order = new Order({
             user: req.user._id,
-            orderItems,
+            orderItems: dbOrderItems, // Use the verified DB items
             shippingAddress,
             paymentMethod,
             itemsPrice,

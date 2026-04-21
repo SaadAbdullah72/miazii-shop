@@ -78,6 +78,8 @@ const authLimiter = rateLimit({
 app.use('/api', limiter);
 app.use('/api/users/login', authLimiter);
 app.use('/api/users/forgot-password', authLimiter);
+app.use('/api/users/verify-otp', authLimiter);
+app.use('/api/users/reset-password', authLimiter);
 app.use('/api/users/register', authLimiter);
 
 // Static Folders

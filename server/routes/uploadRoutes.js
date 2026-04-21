@@ -1,10 +1,11 @@
 import express from 'express';
 import { generateSignature } from '../utils/cloudinary.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // Secure Signature Generation for Frontend Direct Upload
-router.get('/signature', (req, res) => {
+router.get('/signature', protect, (req, res) => {
     try {
         const folder = req.query.folder || 'products/images';
         const sigData = generateSignature(folder);
@@ -19,7 +20,7 @@ router.get('/signature', (req, res) => {
 });
 
 // Diagnostic route to check server configuration (Safe Version)
-router.get('/check-config', (req, res) => {
+router.get('/check-config', protect, admin, (req, res) => {
     const config = {
         cloudName: process.env.CLOUDINARY_CLOUD_NAME ? '✅ Configured' : '❌ MISSING',
         apiKey: process.env.CLOUDINARY_API_KEY ? '✅ Configured' : '❌ MISSING',

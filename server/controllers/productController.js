@@ -187,10 +187,11 @@ const createProductReview = asyncHandler(async (req, res) => {
     }
 
     if (product) {
-        // STRICT LOGIC: Verify the user has placed an order for this product
+        // STRICT LOGIC: Verify the user has placed a PAID order for this product
         const hasOrder = await Order.findOne({
             user: req.user._id,
-            'orderItems.product': product._id
+            'orderItems.product': product._id,
+            isPaid: true // Security: Only verified customers can review
         });
 
         if (!hasOrder) {
