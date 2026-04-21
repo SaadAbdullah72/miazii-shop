@@ -12,14 +12,7 @@ const Skeleton = ({ className, width, height, circle }) => {
             className={`animate-pulse bg-slate-100 relative overflow-hidden ${className}`}
             style={style}
         >
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-            <style dangerouslySetInnerHTML={{ __html: `
-                @keyframes shimmer {
-                    100% {
-                        transform: translateX(100%);
-                    }
-                }
-            `}} />
+            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/50 to-transparent" />
         </div>
     );
 };

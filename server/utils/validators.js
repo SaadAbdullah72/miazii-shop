@@ -30,6 +30,23 @@ export const resetPasswordSchema = z.object({
     })
 });
 
+export const verifyOTPSchema = z.object({
+    body: z.object({
+        email: z.string().email('Invalid email address'),
+        otp: z.string().length(6, 'OTP must be exactly 6 digits'),
+    })
+});
+
+export const contactUsSchema = z.object({
+    body: z.object({
+        name: z.string().min(2, 'Name is required'),
+        email: z.string().email('Invalid email address'),
+        phone: z.string().optional().nullable(),
+        subject: z.string().optional().nullable(),
+        message: z.string().min(10, 'Message must be at least 10 characters'),
+    })
+});
+
 // Order Schema
 export const createOrderSchema = z.object({
     body: z.object({

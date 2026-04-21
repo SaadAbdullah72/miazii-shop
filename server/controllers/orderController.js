@@ -27,32 +27,33 @@ const addOrderItems = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('No order items');
     } else {
-        // SERVER-SIDE PRICE CALCULATION (Security Hardening)
+        // SERVER-SIDE PRICE CALCULATION (Optimized with Batch Query)
+        const productIds = orderItems.map(i => i.product);
+        const productsFromDB = await Product.find({ _id: { $in: productIds } }).lean();
+
         let itemsPrice = 0;
         const dbOrderItems = [];
 
         for (const item of orderItems) {
-            const productFromDB = await Product.findById(item.product);
+            const productDoc = productsFromDB.find(p => p._id.toString() === item.product.toString());
             
-            if (!productFromDB) {
+            if (!productDoc) {
                 res.status(404);
-                throw new Error(`Product not found: ${item.name}`);
+                throw new Error(`Product not found or removed: ${item.name}`);
             }
 
-            // Use the actual DB price (or discount price if it exists)
-            const actualPrice = productFromDB.discountPrice > 0 
-                ? productFromDB.discountPrice 
-                : productFromDB.price;
+            const actualPrice = productDoc.discountPrice > 0 
+                ? productDoc.discountPrice 
+                : productDoc.price;
 
             itemsPrice += actualPrice * item.qty;
 
-            // Push verified data to a new array to prevent injection of fake fields
             dbOrderItems.push({
-                name: productFromDB.name,
+                name: productDoc.name,
                 qty: item.qty,
-                image: productFromDB.images[0],
+                image: productDoc.images[0],
                 price: actualPrice,
-                product: productFromDB._id,
+                product: productDoc._id,
             });
         }
 

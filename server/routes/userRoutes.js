@@ -19,7 +19,9 @@ import {
     registerUserSchema, 
     authUserSchema, 
     forgotPasswordSchema, 
-    resetPasswordSchema 
+    resetPasswordSchema,
+    verifyOTPSchema,
+    contactUsSchema
 } from '../utils/validators.js';
 
 const router = express.Router();
@@ -34,8 +36,8 @@ router.route('/profile')
     .delete(protect, deleteUserAccount);
 
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);
-router.post('/verify-otp', verifyOTP);
+router.post('/verify-otp', validateRequest(verifyOTPSchema), verifyOTP);
 router.post('/reset-password', validateRequest(resetPasswordSchema), resetPassword);
-router.post('/contact', contactUs);
+router.post('/contact', validateRequest(contactUsSchema), contactUs);
 
 export default router;

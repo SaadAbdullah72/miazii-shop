@@ -5,6 +5,7 @@ import Category from '../models/categoryModel.js';
 import generateToken from '../utils/generateToken.js';
 import bcrypt from 'bcryptjs';
 import sendEmail from '../utils/emailUtils.js';
+import crypto from 'crypto';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -155,7 +156,7 @@ const googleAuth = asyncHandler(async (req, res) => {
         user = await User.create({
             name,
             email,
-            password: Math.random().toString(36).slice(-10), // Random password for social login
+            password: crypto.randomBytes(20).toString('hex'), // SECURITY: Cryptographically secure random password
             isAdmin: false,
         });
     }

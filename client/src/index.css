@@ -225,3 +225,17 @@
   color: #dc2626 !important;
   border-left: 4px solid #dc2626 !important;
 }
+
+/* SKELETON SHIMMER ANIMATION (Security Hardened - Moved from Inline dangerouslySetInnerHTML) */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}

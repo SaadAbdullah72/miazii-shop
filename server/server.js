@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import compression from 'compression';
 import connectDB from './config/db.js';
 import logger from './utils/logger.js';
 
@@ -57,7 +58,14 @@ app.use(helmet({
     crossOriginResourcePolicy: false,
     crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
 }));
-app.use(morgan('dev'));
+
+// SECURITY: Compression optimizes payload delivery (Gzip/Brotli)
+app.use(compression());
+
+// SECURITY: Logging only active in development to prevent info leakage in prod logs
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 app.use(cookieParser());
 
 // Rate limiting
