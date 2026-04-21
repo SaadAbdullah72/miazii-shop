@@ -29,12 +29,12 @@ export const safePushDispatch = async (title, message, link) => {
         
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
         const payload = JSON.stringify({
-            title: title || 'Miazii Shop Update',
+            title: title || 'Miazi Shop Update',
             body: message,
             url: link || '/',
             icon: '/logo.png',
             badge: '/logo.png', // Small icon for the status bar
-            tag: 'miazii-notification', // Groups/replaces similar notifications
+            tag: 'miazi-notification', // Groups/replaces similar notifications
             renotify: true, // Vibrates even if tag is the same
             timestamp: Date.now(),
             data: {

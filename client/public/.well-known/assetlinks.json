@@ -2,7 +2,7 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "app.vercel.miazii_shop.twa",
+    "package_name": "app.vercel.miazi_shop.twa",
     "sha256_cert_fingerprints": ["DF:02:D1:53:1F:24:29:91:D3:12:5B:57:88:41:B7:D0:1C:50:E7:2D:2D:BE:70:CC:41:E0:3B:D3:DF:DD:00:04"]
   }
 }]

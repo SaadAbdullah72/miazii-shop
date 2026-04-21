@@ -101,7 +101,7 @@ self.addEventListener('push', (event) => {
   console.log('🔔 [PWA] Push Received.');
   
   let data = { 
-    title: 'Miazii Shop', 
+    title: 'Miazi Shop', 
     body: 'New updates available!', 
     url: '/',
     icon: '/logo.png',
@@ -124,7 +124,7 @@ self.addEventListener('push', (event) => {
     icon: '/logo.png', // Large icon (RIGHT side)
     badge: '/badge.svg', // Professional Monochrome SVG (LEFT side)
     vibrate: [200, 100, 200], // Professional vibration pattern
-    tag: 'miazii-blast', // Stacks notifications so they don't clutter the tray
+    tag: 'miazi-blast', // Stacks notifications so they don't clutter the tray
     renotify: true, // Vibrates even if a notification with same tag is already there
     data: {
       url: data.url || '/'

@@ -20,19 +20,19 @@ const AboutUsPage = () => {
                             <Info size={24} />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-black uppercase tracking-tight text-slate-800">About Miazii Shop</h1>
+                            <h1 className="text-2xl font-black uppercase tracking-tight text-slate-800">About Miazi Shop</h1>
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Our Story & Mission</p>
                         </div>
                     </div>
 
                     <div className="prose prose-slate max-w-none text-gray-600 space-y-6 text-sm">
-                        <p>Welcome to Miazii Shop, your number one source for all things related to Consumer Electronics, Smartwatches, Smartphones, and premium tech accessories.</p>
+                        <p>Welcome to Miazi Shop, your number one source for all things related to Consumer Electronics, Smartwatches, Smartphones, and premium tech accessories.</p>
                         
                         <p>We're dedicated to providing you the very best of genuine electronic products, with an emphasis on authentic quality, fast nationwide delivery, and top-tier customer service.</p>
 
                         <section>
                             <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight mb-2 mt-8">Our Mission</h2>
-                            <p>Founded with a passion for technology, Miazii Shop has come a long way from its beginnings. When we first started out, our passion for "bringing premium technology closer to everyone" drove us to start our own business.</p>
+                            <p>Founded with a passion for technology, Miazi Shop has come a long way from its beginnings. When we first started out, our passion for "bringing premium technology closer to everyone" drove us to start our own business.</p>
                             <p>We now serve customers all over the country and are thrilled that we're able to turn our passion into our own application and website.</p>
                         </section>
 

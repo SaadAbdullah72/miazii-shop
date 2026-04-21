@@ -21,15 +21,15 @@
   "dir": "ltr",
   "iarc_rating_id": "00000000-0000-0000-0000-000000000000",
   "scope_extensions": [
-    { "origin": "https://miazii-shop.vercel.app" },
+    { "origin": "https://miazi-shop.vercel.app" },
     { "origin": "https://miazi-shop.vercel.app" }
   ],
   "prefer_related_applications": false,
   "related_applications": [
     {
       "platform": "play",
-      "id": "app.vercel.miazii_shop.twa",
-      "url": "https://play.google.com/store/apps/details?id=app.vercel.miazii_shop.twa"
+      "id": "app.vercel.miazi_shop.twa",
+      "url": "https://play.google.com/store/apps/details?id=app.vercel.miazi_shop.twa"
     }
   ],
   "launch_handler": {
@@ -120,14 +120,14 @@
       "sizes": "500x3488",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Miazii Shop Mobile Experience"
+      "label": "Miazi Shop Mobile Experience"
     },
     {
       "src": "/screenshot-desktop.png",
       "sizes": "1370x2119",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Miazii Shop Desktop Gallery"
+      "label": "Miazi Shop Desktop Gallery"
     }
   ]
 }

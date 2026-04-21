@@ -64,7 +64,7 @@ const registerUser = asyncHandler(async (req, res) => {
         // ASYNC: Send Welcome Email
         sendEmail({
             email: user.email,
-            subject: 'Welcome to Miazii Shop!',
+            subject: 'Welcome to Miazi Shop!',
             html: getWelcomeTemplate(user.name),
         }).catch((err) => console.error('Welcome Email Error:', err));
     } else {
@@ -177,7 +177,7 @@ const googleAuth = asyncHandler(async (req, res) => {
         if (isNewUser) {
             sendEmail({
                 email: user.email,
-                subject: 'Welcome to Miazii Shop!',
+                subject: 'Welcome to Miazi Shop!',
                 html: getWelcomeTemplate(user.name),
             }).catch((err) => console.error('Google Welcome Email Error:', err));
         }
@@ -232,7 +232,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     try {
         await sendEmail({
             email: user.email,
-            subject: 'Password Reset OTP - Miazii Shop',
+            subject: 'Password Reset OTP - Miazi Shop',
             html: `
                 <h1>Password Reset</h1>
                 <p>You requested a password reset. Here is your 6-digit OTP:</p>

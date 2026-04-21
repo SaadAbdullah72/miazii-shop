@@ -129,7 +129,7 @@ const ShippingPage = () => {
                 const query = `${address}, ${city}, Bangladesh`.trim();
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bd`, {
                     headers: {
-                        'User-Agent': 'Miazii-Shop-Logistics-Bot'
+                        'User-Agent': 'Miazi-Shop-Logistics-Bot'
                     }
                 });
                 const data = await response.json();

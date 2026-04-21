@@ -52,7 +52,7 @@ const Footer = () => {
                     <div className="lg:col-span-4">
                         <Link to="/" className="inline-block mb-8 group">
                             <div className="h-16 flex items-center justify-start">
-                                <img src="/logo.png" alt="Miazii Shop Logo" className="h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" />
+                                <img src="/logo.png" alt="Miazi Shop Logo" className="h-full w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" />
                             </div>
                         </Link>
 

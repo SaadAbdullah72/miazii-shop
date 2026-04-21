@@ -26,12 +26,12 @@ const RefundPolicyPage = () => {
                     </div>
 
                     <div className="prose prose-slate max-w-none text-gray-600 space-y-6 text-sm">
-                        <p>Thank you for shopping at Miazii Shop.</p>
+                        <p>Thank you for shopping at Miazi Shop.</p>
                         
                         <div className="bg-blue-50 border-l-4 border-blue-600 p-6 my-8 rounded-r-xl">
                             <h3 className="text-blue-900 font-black uppercase tracking-tight mb-2 flex items-center gap-2">
                                 <RefreshCcw size={20} />
-                                The Miazii 7-Day Quality Promise
+                                The Miazi 7-Day Quality Promise
                             </h3>
                             <p className="text-blue-800 font-medium">
                                 We want you to love your tech. If you are not 100% satisfied with your purchase, you can return your item for a full refund within 7 days of delivery. No hidden catches, just simple and fair.

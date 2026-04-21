@@ -233,7 +233,7 @@ const ProfilePage = () => {
                                 <Trash2 size={16} className="text-red-500" /> Permanent Data Removal
                             </h3>
                             <p className="text-xs text-gray-500 leading-relaxed mb-6">
-                                If you no longer wish to use Miazii Shop, you can permanently delete your account and all associated data. This action is irreversible.
+                                If you no longer wish to use Miazi Shop, you can permanently delete your account and all associated data. This action is irreversible.
                             </p>
                             <button 
                                 onClick={handleDeleteAccount}

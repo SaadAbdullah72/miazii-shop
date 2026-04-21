@@ -28,12 +28,12 @@ const TermsConditionsPage = () => {
                     <div className="prose prose-slate max-w-none text-gray-600 space-y-6 text-sm">
                         <section>
                             <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">1. Agreement to Terms</h2>
-                            <p>By accessing or using the Miazii Shop web application and related mobile applications, you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you may not access the service.</p>
+                            <p>By accessing or using the Miazi Shop web application and related mobile applications, you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you may not access the service.</p>
                         </section>
 
                         <section>
                             <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">2. Intellectual Property</h2>
-                            <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Miazii Shop and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Miazii Shop.</p>
+                            <p>The Service and its original content, features, and functionality are and will remain the exclusive property of Miazi Shop and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Miazi Shop.</p>
                         </section>
 
                         <section>
@@ -43,7 +43,7 @@ const TermsConditionsPage = () => {
 
                         <section>
                             <h2 className="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">4. Digital Products & Billing</h2>
-                            <p>Miazii Shop operates exclusively as an online retailer for physical goods. We do not sell digital products or subscriptions that circumvent Google Play Billing policies. All physical goods are delivered offline.</p>
+                            <p>Miazi Shop operates exclusively as an online retailer for physical goods. We do not sell digital products or subscriptions that circumvent Google Play Billing policies. All physical goods are delivered offline.</p>
                         </section>
 
                         <section>

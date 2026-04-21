@@ -321,9 +321,9 @@ const AdminDashboardPage = () => {
                 <div className="p-8">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-md overflow-hidden">
-                            <img src="/logo.png" alt="Miazii Shop" className="w-full h-full object-cover" />
+                            <img src="/logo.png" alt="Miazi Shop" className="w-full h-full object-cover" />
                         </div>
-                        <span className="font-black text-lg tracking-tighter text-slate-800 uppercase">Miazii <span className="text-yellow-500">Shop</span></span>
+                        <span className="font-black text-lg tracking-tighter text-slate-800 uppercase">Miazi <span className="text-yellow-500">Shop</span></span>
                     </div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Admin Console</p>
                 </div>

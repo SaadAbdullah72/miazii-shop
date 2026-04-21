@@ -49,7 +49,7 @@ app.use(xss()); // Filter XSS attacks
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'https://miazii-shop.vercel.app',
+        'https://miazi-shop.vercel.app',
         process.env.CLIENT_URL
     ].filter(Boolean),
     credentials: true,
