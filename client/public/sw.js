@@ -100,12 +100,21 @@ self.addEventListener('periodicsync', (event) => {
 self.addEventListener('push', (event) => {
   console.log('🔔 [PWA] Push Received.');
   
-  let data = { title: 'Miazii Shop', body: 'New updates available!', url: '/' };
+  let data = { 
+    title: 'Miazii Shop', 
+    body: 'New updates available!', 
+    url: '/',
+    icon: '/logo.png',
+    badge: '/logo.png'
+  };
   
   if (event.data) {
     try {
-      data = event.data.json();
+      // Try to parse JSON payload
+      const jsonPayload = event.data.json();
+      data = { ...data, ...jsonPayload };
     } catch (e) {
+      // Fallback for simple text payloads
       data.body = event.data.text();
     }
   }

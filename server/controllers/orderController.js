@@ -4,6 +4,7 @@ import Product from '../models/productModel.js';
 import sendEmail from '../utils/emailUtils.js';
 import { v2 as cloudinary } from 'cloudinary';
 import logger from '../utils/logger.js';
+import { safePushDispatch } from './notificationController.js';
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -238,6 +239,14 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
             email_address: req.body.email_address,
         };
         const updatedOrder = await order.save();
+
+        // AUTOMATION: Push Notification for Payment Success
+        safePushDispatch(
+            'Payment Received! ✅',
+            `Your order #${order._id.toString().slice(-6).toUpperCase()} has been successfully paid.`,
+            `/order/${order._id}`
+        ).catch(err => console.error('[Push] Payment Alert Error:', err));
+
         res.json(updatedOrder);
     } else {
         res.status(404);
@@ -258,6 +267,14 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
             order.deliveredAt = Date.now();
         }
         const updatedOrder = await order.save();
+
+        // AUTOMATION: Push Notification for Status Update
+        safePushDispatch(
+            `Order ${updatedOrder.orderStatus}! 📦`,
+            `Status for order #${order._id.toString().slice(-6).toUpperCase()} changed to: ${updatedOrder.orderStatus}.`,
+            `/order/${order._id}`
+        ).catch(err => console.error('[Push] Status Alert Error:', err));
+
         res.json(updatedOrder);
     } else {
         res.status(404);

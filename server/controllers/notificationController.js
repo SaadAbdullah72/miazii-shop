@@ -4,7 +4,7 @@ import Subscription from '../models/subscriptionModel.js';
 import logger from '../utils/logger.js';
 
 // Safe dispatch helper using dynamic imports
-const safePushDispatch = async (title, message, link) => {
+export const safePushDispatch = async (title, message, link) => {
     const publicKey = process.env.VAPID_PUBLIC_KEY;
     const privateKey = process.env.VAPID_PRIVATE_KEY;
     const mailEmail = process.env.VAPID_EMAIL || 'mailto:miazistore.bd@gmail.com';
@@ -85,8 +85,10 @@ export const createNotification = asyncHandler(async (req, res) => {
 
     const createdNotification = await notification.save();
     
-    // System Push Dispatch is disabled per user request
-    // safePushDispatch(title, message, link);
+    // RESTORED: Trigger Push Notification to all devices
+    safePushDispatch(title, message, link).catch(err => {
+        console.error('[Push] Automation Error:', err.message);
+    });
 
     res.status(201).json(createdNotification);
 });
