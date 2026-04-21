@@ -10,7 +10,7 @@ import {
     Bell, Check, X as CloseIcon, Info, AlertTriangle, ChevronRight,
     Trash2, Camera
 } from 'lucide-react';
-import { fetchNotifications, resetCount, deleteNotification } from '../slices/notificationSlice';
+import { fetchNotifications, resetCount, deleteNotification, clearNotifications } from '../slices/notificationSlice';
 import { updateProfile } from '../slices/authSlice';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
 import { toast } from 'react-toastify';
@@ -101,6 +101,7 @@ const Header = () => {
     };
     const logoutHandler = () => {
         dispatch(logout());
+        dispatch(clearNotifications());
         navigate('/');
         toast.info('Signed out successfully.');
     };
@@ -312,38 +313,74 @@ const Header = () => {
 
             {/* SIDE DRAWERS - PLACED AT ROOT FOR RELIABLE MOBILE VISIBILITY */}
 
-            {/* NOTIFICATION DRAWER */}
+            {/* NOTIFICATION DRAWER - ELECTRO PREMIUM REDESIGN */}
             {isNotifOpen && (
-                <div className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-md" onClick={() => setIsNotifOpen(false)} />
+                <div className="fixed inset-0 z-[1000] bg-slate-900/40 backdrop-blur-[4px] transition-all" onClick={() => setIsNotifOpen(false)} />
             )}
-            <div className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[1001] shadow-2xl transform transition-transform duration-500 ease-out flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-yellow-400 shrink-0">
-                    <div>
-                        <h3 className="text-sm font-black uppercase tracking-widest text-gray-900 leading-none">Notifications</h3>
-                        <p className="text-[10px] text-gray-800 font-bold mt-1.5 opacity-80">{notifications.length} Updates</p>
+            <div className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-[1001] shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.1)] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                {/* Header */}
+                <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-slate-900 relative overflow-hidden shrink-0">
+                    {/* Decorative accent */}
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-yellow-400" />
+                    <div className="relative z-10">
+                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white leading-none">Notifications Center</h3>
+                        <div className="flex items-center gap-2 mt-2.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{userInfo ? `${notifications.length} Active System Updates` : 'Awaiting Authentication'}</p>
+                        </div>
                     </div>
-                    <button onClick={() => setIsNotifOpen(false)} className="p-2 hover:bg-black/10 rounded-full transition-colors text-gray-900">
-                        <CloseIcon size={20} />
+                    <button 
+                        onClick={() => setIsNotifOpen(false)} 
+                        className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-white border border-white/10 group active:scale-95"
+                    >
+                        <CloseIcon size={20} className="group-hover:rotate-90 transition-transform duration-300" />
                     </button>
                 </div>
-                <div className="flex-1 overflow-y-auto custom-scrollbar">
-                    {notifications.length > 0 ? (
-                        <div className="divide-y divide-gray-50">
+
+                <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30">
+                    {!userInfo ? (
+                        /* Guest State */
+                        <div className="h-full flex flex-col items-center justify-center p-12 text-center">
+                            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl shadow-yellow-500/10 border border-gray-100 relative group">
+                                <div className="absolute inset-0 bg-yellow-400/5 rounded-[2.5rem] scale-110 group-hover:scale-125 transition-transform duration-700" />
+                                <Bell size={40} className="text-gray-300 relative z-10" />
+                            </div>
+                            <h4 className="text-lg font-black text-slate-800 uppercase tracking-tight">Stay Updated</h4>
+                            <p className="text-xs text-slate-500 mt-4 leading-relaxed font-medium">Please sign in to access your personal notification stream and order updates.</p>
+                            <Link 
+                                to="/login" 
+                                onClick={() => setIsNotifOpen(false)}
+                                className="mt-10 btn-electro w-full max-w-[240px] shadow-xl shadow-yellow-500/20"
+                            >
+                                Sign in To View
+                            </Link>
+                        </div>
+                    ) : notifications.length > 0 ? (
+                        /* Notifications List */
+                        <div className="p-4 space-y-4">
                             {notifications.map((n) => (
-                                <div key={n._id} className="p-6 hover:bg-slate-50 transition-colors group relative">
-                                    <div className="flex gap-4 text-left">
-                                        <div className={`w-10 h-10 rounded-2xl shrink-0 flex items-center justify-center shadow-sm ${n.type === 'warning' ? 'bg-amber-100 text-amber-600' : n.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>
-                                            {n.type === 'warning' ? <AlertTriangle size={18} /> : n.type === 'success' ? <Check size={18} /> : <Info size={18} />}
+                                <div key={n._id} className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
+                                     {/* Type indicator */}
+                                     <div className={`absolute top-0 left-0 w-1 h-full ${n.type === 'warning' ? 'bg-amber-400' : n.type === 'success' ? 'bg-emerald-400' : 'bg-blue-400'}`} />
+                                     
+                                    <div className="flex gap-5 text-left">
+                                        <div className={`w-12 h-12 rounded-2xl shrink-0 flex items-center justify-center shadow-inner ${n.type === 'warning' ? 'bg-amber-50 text-amber-600' : n.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}`}>
+                                            {n.type === 'warning' ? <AlertTriangle size={20} /> : n.type === 'success' ? <Check size={20} /> : <Info size={20} />}
                                         </div>
-                                        <div className="flex-1 min-w-0 pr-8">
-                                            <p className={`text-[9px] font-black uppercase tracking-widest ${n.type === 'warning' ? 'text-amber-500' : n.type === 'success' ? 'text-emerald-500' : 'text-blue-500'}`}>{n.type} ALERT</p>
-                                            <h4 className="text-sm font-black text-slate-800 mt-1 uppercase tracking-tight">{n.title}</h4>
-                                            <p className="text-xs text-slate-500 mt-2 leading-relaxed">{n.message}</p>
+                                        <div className="flex-1 min-w-0 pr-6 pt-1">
+                                            <div className="flex items-center justify-between">
+                                                <p className={`text-[10px] font-black uppercase tracking-widest ${n.type === 'warning' ? 'text-amber-500' : n.type === 'success' ? 'text-emerald-500' : 'text-blue-500'}`}>{n.type} Signal</p>
+                                                <span className="text-[9px] font-bold text-gray-300 uppercase letter-spacing-1">System Node</span>
+                                            </div>
+                                            <h4 className="text-base font-black text-slate-800 mt-2 uppercase tracking-tight leading-tight">{n.title}</h4>
+                                            <div className="mt-3 p-3 bg-slate-50 rounded-2xl border border-slate-100/50">
+                                                <p className="text-xs text-slate-600 leading-relaxed font-medium">{n.message}</p>
+                                            </div>
                                         </div>
                                     </div>
                                     <button
                                         onClick={(e) => handleDeleteNotification(e, n._id)}
-                                        className="absolute top-6 right-6 p-2 text-gray-300 hover:text-red-500 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                                        className="absolute top-6 right-6 p-2 text-gray-200 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-90"
                                     >
                                         <Trash2 size={16} />
                                     </button>
@@ -351,15 +388,27 @@ const Header = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center p-12 text-center opacity-40">
-                            <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6 border border-slate-100/50">
-                                <Bell size={32} className="text-slate-300" />
+                        /* All Clear State */
+                        <div className="h-full flex flex-col items-center justify-center p-12 text-center">
+                            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mb-8 border border-gray-100 shadow-sm shadow-slate-200/50 relative">
+                                <div className="absolute inset-0 bg-slate-50 rounded-[2.5rem] animate-pulse" />
+                                <Check size={36} className="text-emerald-500 relative z-10" />
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 font-sans">All Clear</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-2">No new notifications</p>
+                            <h4 className="text-base font-black uppercase tracking-[0.4em] text-slate-800">Operational</h4>
+                            <div className="mt-4 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 inline-block">
+                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Protocol: All Clear</p>
+                            </div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-6">System state optimized / 0 New Events</p>
                         </div>
                     )}
                 </div>
+                
+                {/* Footer Status Bar */}
+                {userInfo && (
+                     <div className="p-4 bg-gray-50/80 backdrop-blur-sm border-t border-gray-100 flex items-center justify-center">
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Encryption: Active / {notifications.length} Records</p>
+                    </div>
+                )}
             </div>
 
             {/* ACCOUNT DRAWER */}
