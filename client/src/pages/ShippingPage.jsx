@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { saveShippingAddress } from '../slices/cartSlice';
 import { ChevronRight, Truck, MapPin, CheckCircle2, Navigation, Loader } from 'lucide-react';
 import { toast } from 'react-toastify';
+import LocationPickerModal from '../components/LocationPickerModal';
 
 const ShippingPage = () => {
     const cart = useSelector((state) => state.cart || {});
@@ -18,6 +19,7 @@ const ShippingPage = () => {
     const [lng, setLng] = useState(shippingAddress?.lng || null);
     const [detecting, setDetecting] = useState(false);
     const [isResolving, setIsResolving] = useState(false);
+    const [isMapOpen, setIsMapOpen] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -244,6 +246,20 @@ const ShippingPage = () => {
                                         {detecting && <div className="absolute bottom-0 left-0 h-1 bg-blue-600 animate-progress" style={{ width: '100%' }}></div>}
                                     </div>
 
+                                    {/* Manual Map Picker Option */}
+                                    <div 
+                                        onClick={() => setIsMapOpen(true)}
+                                        className="group border-2 border-dashed border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-between"
+                                    >
+                                        <div className="flex items-center gap-3 text-slate-500 group-hover:text-blue-600">
+                                            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-100">
+                                                <MapPin size={18} />
+                                            </div>
+                                            <span className="text-xs font-black uppercase tracking-widest">Select manually on map</span>
+                                        </div>
+                                        <ChevronRight size={18} className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                                    </div>
+
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Shipping Address</label>
                                         <input
@@ -334,7 +350,22 @@ const ShippingPage = () => {
                     </div>
                 </div>
             </div>
-    );
+
+            <LocationPickerModal 
+                isOpen={isMapOpen}
+                onClose={() => setIsMapOpen(false)}
+                initialPos={lat && lng ? [lat, lng] : null}
+                onSave={(data) => {
+                    setAddress(data.address);
+                    setCity(data.city);
+                    setPostalCode(data.postalCode);
+                    setCountry(data.country);
+                    setLat(data.lat);
+                    setLng(data.lng);
+                    toast.success('Location synced from Map pin!');
+                }}
+            />
+        </div>
 };
 
 export default ShippingPage;
