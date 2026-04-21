@@ -349,23 +349,22 @@ const ShippingPage = () => {
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <LocationPickerModal 
-                isOpen={isMapOpen}
-                onClose={() => setIsMapOpen(false)}
-                initialPos={lat && lng ? [lat, lng] : null}
-                onSave={(data) => {
-                    setAddress(data.address);
-                    setCity(data.city);
-                    setPostalCode(data.postalCode);
-                    setCountry(data.country);
-                    setLat(data.lat);
-                    setLng(data.lng);
-                    toast.success('Location synced from Map pin!');
-                }}
-            />
-        </div>
+                <LocationPickerModal 
+                    isOpen={isMapOpen}
+                    onClose={() => setIsMapOpen(false)}
+                    initialPos={lat && lng ? [lat, lng] : null}
+                    onSave={(data) => {
+                        setAddress(data.address);
+                        setCity(data.city);
+                        setPostalCode(data.postalCode);
+                        setCountry(data.country);
+                        setLat(data.lat);
+                        setLng(data.lng);
+                        toast.success('Location synced from Map pin!');
+                    }}
+                />
+            </div>
     );
 };
 
