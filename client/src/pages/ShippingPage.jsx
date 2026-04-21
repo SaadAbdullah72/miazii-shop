@@ -223,41 +223,35 @@ const ShippingPage = () => {
                             <form onSubmit={submitHandler} className="space-y-6">
                                 {/* Professional Location Interaction Card */}
                                 <div className="space-y-4">
-                                    <div 
-                                        onClick={detectLocation}
-                                        className={`group relative overflow-hidden border-2 rounded-2xl p-6 cursor-pointer transition-all ${detecting ? 'border-blue-400 bg-blue-50' : 'border-slate-100 hover:border-yellow-400 hover:bg-slate-50'}`}
-                                    >
-                                        <div className="flex items-center justify-between relative z-10">
-                                            <div className="flex items-center gap-4">
-                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${detecting ? 'bg-blue-600 text-white animate-pulse' : 'bg-slate-100 text-slate-400 group-hover:bg-yellow-400 group-hover:text-slate-900 group-hover:rotate-12'}`}>
-                                                    <Navigation size={24} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-sm font-black text-slate-800 uppercase tracking-tighter">
-                                                        {detecting ? 'Analyzing Satellite Data...' : 'Detect My Location'}
-                                                    </h3>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
-                                                        {lat && lng ? 'Coordinates Locked (Highest Accuracy)' : 'Automated Address Synchronization'}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            {!detecting && (lat && lng ? <CheckCircle2 size={24} className="text-emerald-500" /> : <ChevronRight size={20} className="text-slate-300 group-hover:translate-x-1 transition-transform" />)}
-                                        </div>
-                                        {detecting && <div className="absolute bottom-0 left-0 h-1 bg-blue-600 animate-progress" style={{ width: '100%' }}></div>}
-                                    </div>
-
-                                    {/* Manual Map Picker Option */}
+                                    {/* Elite Logistics-Grade Pinpoint Card */}
                                     <div 
                                         onClick={() => setIsMapOpen(true)}
-                                        className="group border-2 border-dashed border-slate-200 rounded-2xl p-5 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-between"
+                                        className="group relative overflow-hidden bg-slate-900 rounded-[32px] p-8 cursor-pointer transition-all duration-500 hover:scale-[1.02] active:scale-95 shadow-[0_20px_50px_rgba(0,0,0,0.2)] border border-white/5"
                                     >
-                                        <div className="flex items-center gap-3 text-slate-500 group-hover:text-blue-600">
-                                            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-100">
-                                                <MapPin size={18} />
+                                        {/* Animated Background Accent */}
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 blur-[60px] group-hover:bg-yellow-400/20 transition-all duration-700" />
+                                        
+                                        <div className="flex items-center justify-between relative z-10">
+                                            <div className="flex items-center gap-6">
+                                                <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-3xl flex items-center justify-center text-slate-900 shadow-[0_10px_20px_rgba(251,191,36,0.3)] group-hover:rotate-12 transition-all duration-500">
+                                                    <Navigation size={32} className="fill-current" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-lg font-black text-white uppercase tracking-tighter">
+                                                        Pinpoint Delivery Location
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <div className={`w-2 h-2 rounded-full ${lat && lng ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
+                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                                                            {lat && lng ? 'Satellite Lock Secured' : 'Precision Sync Required'}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <span className="text-xs font-black uppercase tracking-widest">Select manually on map</span>
+                                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white/20 group-hover:bg-white/10 group-hover:text-yellow-400 transition-all">
+                                                <ChevronRight size={24} />
+                                            </div>
                                         </div>
-                                        <ChevronRight size={18} className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                                     </div>
 
                                     <div className="space-y-2">

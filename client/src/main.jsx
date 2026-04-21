@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import store from './store.js'
 import './index.css'
 import App from './App.jsx'
+import 'leaflet/dist/leaflet.css';
 
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { initializeMobileApp } from './utils/mobileFixes.js'
