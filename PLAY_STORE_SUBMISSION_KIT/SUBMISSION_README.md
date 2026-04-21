@@ -1,4 +1,4 @@
-# 📦 Miazii Shop | Play Store Submission Kit
+# 📦 Miazi Shop | Play Store Submission Kit
 
 This kit contains all the required assets and technical details for your Google Play Store submission.
 
@@ -7,15 +7,15 @@ This kit contains all the required assets and technical details for your Google 
 ## 📄 Store Listing Metadata
 
 ### 🏷️ App Title
-**Miazii Shop: Premium Tech Store**
+**Miazi Shop: Premium Tech Store**
 
 ### 📝 Short Description (ASO Optimized)
 The ultimate global destination for flagship smartphones, pro laptops, and premium tech.
 
 ### 📖 Full Description
-**Master Your Lifestyle with Miazii Shop**
+**Master Your Lifestyle with Miazi Shop**
 
-Discover a curated selection of world-class electronics at your fingertips. Miazii Shop is a premium eCommerce destination built for the high-end tech enthusiast. From the latest flagship smartphones and professional-grade laptops to cutting-edge accessories, we bring the future to your doorstep.
+Discover a curated selection of world-class electronics at your fingertips. Miazi Shop is a premium eCommerce destination built for the high-end tech enthusiast. From the latest flagship smartphones and professional-grade laptops to cutting-edge accessories, we bring the future to your doorstep.
 
 **Key Features:**
 - **Premium Curation**: Every product is verified for quality and performance.
@@ -24,7 +24,7 @@ Discover a curated selection of world-class electronics at your fingertips. Miaz
 - **Secure Fulfillment**: Real-time order tracking and verified manual billing.
 - **Interactive Maps**: Pinpoint your delivery location with our high-precision map picker.
 
-Elevate your tech game today. Discover Miazii Shop.
+Elevate your tech game today. Discover Miazi Shop.
 
 ---
 
@@ -42,8 +42,8 @@ Elevate your tech game today. Discover Miazii Shop.
 ## 🖼️ Assets Directory Guide
 
 - `App_Icon_1024.png`: High-resolution logo for the store.
-- `Feature_Graphic.png`: Premium tech-themed banner (1024x500).
-- `Screenshots/`: 6 High-resolution mobile frames (1080x1920) showcasing the app's core flows.
+- `Feature_Graphic.png`: Premium tech-themed banner (1024x500) - **Fixed Spelling**.
+- `01_home_page.png` to `06_profile_center.png`: 6 High-resolution mobile frames (1080x1920) showcasing the app's core flows.
 
 ---
 
@@ -53,4 +53,4 @@ Elevate your tech game today. Discover Miazii Shop.
 3. Paste the **Privacy Policy URL** exactly as shown above.
 4. Verify the **SHA-256 Fingerprint** in Play Console matches the one in this README.
 
-*Generated with ❤️ for Miazii Shop.*
+*Generated with ❤️ for Miazi Shop.*

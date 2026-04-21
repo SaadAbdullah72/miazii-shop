@@ -78,6 +78,8 @@ const CategoryPage = () => {
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
                             </div>
+                        ) : (products && products.length > 0) ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {(Array.isArray(products) ? products : []).map(p => (
                                     <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
                                         <div className="relative bg-gray-50 p-4 aspect-square">
