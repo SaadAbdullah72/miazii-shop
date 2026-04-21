@@ -4,7 +4,7 @@ import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
 import generateToken from '../utils/generateToken.js';
 import bcrypt from 'bcryptjs';
-import sendEmail from '../utils/emailUtils.js';
+import sendEmail, { getWelcomeTemplate } from '../utils/emailUtils.js';
 import crypto from 'crypto';
 
 // @desc    Auth user & get token
@@ -60,6 +60,13 @@ const registerUser = asyncHandler(async (req, res) => {
             isAdmin: user.isAdmin,
             avatar: user.avatar,
         });
+
+        // ASYNC: Send Welcome Email
+        sendEmail({
+            email: user.email,
+            subject: 'Welcome to Miazii Shop!',
+            html: getWelcomeTemplate(user.name),
+        }).catch((err) => console.error('Welcome Email Error:', err));
     } else {
         res.status(400);
         throw new Error('Invalid user data');
@@ -151,6 +158,8 @@ const googleAuth = asyncHandler(async (req, res) => {
     // Optimized lookup: Only fetching required fields
     let user = await User.findOne({ email }).select('-password');
 
+    const isNewUser = !user; // Check if we are creating a new user
+
     if (!user) {
         // Create new user if they don't exist
         user = await User.create({
@@ -163,6 +172,15 @@ const googleAuth = asyncHandler(async (req, res) => {
 
     if (user) {
         generateToken(res, user._id);
+
+        // Send Welcome Email if it's a new user creation
+        if (isNewUser) {
+            sendEmail({
+                email: user.email,
+                subject: 'Welcome to Miazii Shop!',
+                html: getWelcomeTemplate(user.name),
+            }).catch((err) => console.error('Google Welcome Email Error:', err));
+        }
 
         res.status(200).json({
             _id: user._id,
