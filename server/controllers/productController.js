@@ -53,8 +53,8 @@ const getProductById = asyncHandler(async (req, res) => {
     if (isObjectId) {
         product = await Product.findById(id).populate('category', 'name slug');
     } else {
-        // Sanitize slug to prevent invalid regex or query issues
-        const safeSlug = String(id).replace(/[^a-z0-9-]/g, '');
+        // Relaxed sanitization to allow characters like parentheses which are common in product names/slugs
+        const safeSlug = String(id).replace(/[^a-z0-9-()]/gi, '');
         product = await Product.findOne({ slug: safeSlug }).populate('category', 'name slug');
     }
 
