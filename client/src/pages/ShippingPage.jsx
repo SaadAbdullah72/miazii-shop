@@ -56,9 +56,9 @@ const ShippingPage = () => {
     const detectLocation = async () => {
         setDetecting(true);
         
-        // Tier 1: GPS Detection (Highest Accuracy - Primary Choice)
+        // Tier 1: Hardware-Level GPS Detection (Secure & Precise)
         if (navigator.geolocation) {
-            toast.info('Synchronizing with Satellites...', { autoClose: 2000 });
+            toast.info('Establishing Secure Satellite Connection...', { id: 'geo-lock', autoClose: 3000 });
 
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -67,49 +67,67 @@ const ShippingPage = () => {
                     setLng(longitude);
 
                     try {
-                        const revResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+                        // Professional Nominatim Request with proper headers
+                        const revResponse = await fetch(
+                            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=en`,
+                            { headers: { 'User-Agent': 'Miazi-Shop-Logistics-Bot-v2' } }
+                        );
                         const revData = await revResponse.json();
+                        
                         if (revData && revData.address) {
-                            const addr = revData.display_name.split(',').slice(0, 3).join(', ');
-                            setAddress(addr);
-                            setCity(revData.address.city || revData.address.town || revData.address.suburb || '');
-                            setPostalCode(revData.address.postcode || '');
+                            // Smart Parsing: Prioritize neighborhood/road indicators over generic strings
+                            const area = revData.address.suburb || revData.address.neighbourhood || revData.address.residential || '';
+                            const road = revData.address.road || '';
+                            const state = revData.address.state || '';
+                            
+                            const fullAddr = [road, area, state].filter(Boolean).join(', ');
+                            
+                            if (!address || address.includes('Bangladesh')) setAddress(fullAddr || revData.display_name.split(',').slice(0, 3).join(', '));
+                            if (!city) setCity(revData.address.city || revData.address.town || revData.address.suburb || 'Dhaka');
+                            if (!postalCode) setPostalCode(revData.address.postcode || '');
+                            setCountry('Bangladesh');
                         }
-                        toast.success('Professional Location Sync Complete!');
+                        toast.update('geo-lock', { render: 'Professional Location Sync Complete!', type: 'success', autoClose: 3000 });
                     } catch (e) {
-                        toast.warning('GPS Coords Locked, but address lookup failed.');
+                        toast.warning('Coordinates Locked. Precision geocoding failed, using approximate mapping.');
                     } finally {
                         setDetecting(false);
                     }
                 },
                 async (err) => {
-                    console.warn('GPS failed, attempting IP fallback:', err);
-                    // Tier 2: Fallback to IP Detection
+                    console.warn('GPS Signal Inhibited:', err);
+                    
+                    if (err.code === 1) { // PERMISSION_DENIED
+                        toast.error('Location Access Denied. Please enable GPS in your browser settings to continue.', { id: 'geo-lock' });
+                        setDetecting(false);
+                        return;
+                    }
+
+                    // Tier 2: Encrypted IP-Based Fallback
                     try {
+                        toast.info('Switching to Encrypted IP Detection...', { id: 'geo-lock' });
                         const response = await fetch('https://freeipapi.com/api/json');
                         if (!response.ok) throw new Error('IP service down');
                         const data = await response.json();
 
-                        setCity(data.cityName || '');
-                        setPostalCode(data.zipCode || '');
-                        setCountry(data.countryName || ''); 
+                        if (!city) setCity(data.cityName || '');
+                        if (!postalCode) setPostalCode(data.zipCode || '');
+                        setCountry(data.countryName || 'Bangladesh'); 
                         setLat(data.latitude || null);
                         setLng(data.longitude || null);
-                        setAddress(`${data.cityName || ''}, ${data.regionName || ''}, ${data.countryName || ''}`);
+                        if (!address) setAddress(`${data.cityName || ''}, ${data.regionName || ''}`);
                         
-                        toast.success('Location detected via Network IP');
+                        toast.update('geo-lock', { render: 'Location secured via Network IP.', type: 'success', autoClose: 3000 });
                     } catch (ipErr) {
-                        toast.error('Location sync failed. Please enter manually.');
+                        toast.error('Automated sync failed. Please enter details manually.', { id: 'geo-lock' });
                     } finally {
                         setDetecting(false);
                     }
                 },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
             );
         } else {
-            // Browser doesn't support geolocation at all
-            toast.warning('Browser does not support GPS. Using IP fallback.');
-            // (Repeat IP fallback logic or call a helper)
+            toast.warning('Hardware not supported. Please fill manually.');
             setDetecting(false);
         }
     };
