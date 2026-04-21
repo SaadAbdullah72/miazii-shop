@@ -43,7 +43,7 @@ export const contactUsSchema = z.object({
         email: z.string().email('Invalid email address'),
         phone: z.string().optional().nullable(),
         subject: z.string().optional().nullable(),
-        message: z.string().min(10, 'Message must be at least 10 characters'),
+        message: z.string().min(2, 'Message must be at least 2 characters'),
     })
 });
 

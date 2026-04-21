@@ -16,7 +16,7 @@ const CategoryPage = () => {
     const { products, loading } = useSelector((state) => state.product);
     const { categories } = useSelector((state) => state.category);
 
-    const currentCategory = categories.find(c => c.slug === slug || c._id === slug);
+    const currentCategory = (Array.isArray(categories) ? categories : []).find(c => c.slug === slug || c._id === slug);
 
     useEffect(() => {
         dispatch(listCategories());
@@ -52,7 +52,7 @@ const CategoryPage = () => {
                             <Tag size={14} /> Categories
                         </div>
                         <div className="border border-gray-200 rounded-b-lg overflow-hidden">
-                            {categories.map(cat => (
+                            {(Array.isArray(categories) ? categories : []).map(cat => (
                                 <Link 
                                     key={cat._id} 
                                     to={`/category/${cat._id}`}
@@ -61,7 +61,7 @@ const CategoryPage = () => {
                                     {cat.name}
                                 </Link>
                             ))}
-                            {categories.length === 0 && (
+                            {(!categories || categories.length === 0) && (
                                 <p className="px-4 py-6 text-xs text-gray-400 text-center">No categories yet</p>
                             )}
                         </div>
@@ -71,16 +71,14 @@ const CategoryPage = () => {
                     <div className="flex-1">
                         <div className="flex items-center justify-between mb-6 border-b-2 border-gray-200 pb-3">
                             <h1 className="text-lg font-bold text-gray-800">{currentCategory?.name || 'Category'}</h1>
-                            <span className="text-xs text-gray-400">{products.length} product(s)</span>
+                            <span className="text-xs text-gray-400">{products?.length || 0} product(s)</span>
                         </div>
 
                         {loading ? (
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 {[...Array(8)].map((_, i) => <ProductSkeleton key={i} />)}
                             </div>
-                        ) : products.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {products.map(p => (
+                                {(Array.isArray(products) ? products : []).map(p => (
                                     <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
                                         <div className="relative bg-gray-50 p-4 aspect-square">
                                             <img 

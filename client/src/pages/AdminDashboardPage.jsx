@@ -204,11 +204,9 @@ const AdminDashboardPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const manualImages = formData.images ? formData.images.split(',').map(img => img.trim()).filter(img => img) : [];
-            const allImages = [...uploadedImages, ...manualImages];
             const productData = { 
                 ...formData, 
-                images: allImages.length > 0 ? allImages : ['/uploads/placeholder.png']
+                images: uploadedImages.length > 0 ? uploadedImages : ['/uploads/placeholder.png']
             };
             
             if (editingProduct) {
@@ -860,7 +858,7 @@ const AdminDashboardPage = () => {
                     {/* ========== CATEGORIES TAB ========== */}
                     {activeTab === 'categories' && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in zoom-in-95 duration-500">
-                            {categories.map(cat => (
+                            {(Array.isArray(categories) ? categories : []).map(cat => (
                                 <div key={cat._id} className="bg-white rounded-[2rem] border border-slate-200 p-8 flex flex-col items-center justify-center text-center group hover:bg-slate-900 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-slate-400">
                                     <div className="w-16 h-16 bg-yellow-400 rounded-3xl flex items-center justify-center text-slate-900 mb-6 shadow-xl shadow-yellow-200 group-hover:rotate-12 transition-transform">
                                         <Tag size={28} />
@@ -900,7 +898,7 @@ const AdminDashboardPage = () => {
                             </div>
 
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6">
-                                {orders.filter(o => o.isPaid).map(order => (
+                                {(Array.isArray(orders) ? orders : []).filter(o => o.isPaid).map(order => (
                                     <div key={order._id} className="bg-white rounded-[2rem] md:rounded-[2.5rem] border border-slate-200 p-6 md:p-8 shadow-sm hover:shadow-2xl hover:shadow-slate-200 transition-all group flex flex-col md:flex-row gap-6 md:gap-8">
                                         {/* Left: Customer & Address */}
                                         <div className="flex-1 space-y-6">

@@ -136,7 +136,7 @@ const ProductDetailsPage = () => {
                             
                             {product.images?.length > 1 && (
                                 <div className="flex gap-4 overflow-x-auto pb-2">
-                                    {product.images.map((img, idx) => (
+                                    {(Array.isArray(product.images) ? product.images : []).map((img, idx) => (
                                         <button 
                                             key={idx} 
                                             onClick={() => setSelectedImage(idx)}
@@ -384,7 +384,7 @@ const ProductDetailsPage = () => {
                                 </div>
                             ) : (
                                 <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                                    {product.reviews.map((review) => (
+                                    {(Array.isArray(product.reviews) ? product.reviews : []).map((review) => (
                                         <div key={review._id} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-2">
