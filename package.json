@@ -9,7 +9,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "seed": "cd server && node seeder.js",
     "build": "cd client && npm install && npm run build",
-    "vercel-build": "cd client && npm install && npm run build",
+    "vercel-build": "cd client && npm install --include=dev && npm run build",
     "mobile:sync": "cd client && npm run build && npx cap sync",
     "mobile:open": "cd client && npx cap open android"
   },
