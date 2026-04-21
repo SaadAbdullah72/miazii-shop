@@ -35,9 +35,6 @@ const FloatingContactForm = () => {
         }
     }, [userInfo]);
 
-    if (location.pathname !== "/") {
-        return null;
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
