@@ -164,8 +164,8 @@ const seedData = async () => {
                 category: categories[item.category],
                 slug: slug,
                 discountPrice: 0,
-                rating: 4.5 + Math.random() * 0.5,
-                numReviews: Math.floor(Math.random() * 50) + 10,
+                rating: 0,
+                numReviews: 0,
             });
             console.log(`✅ Product created: ${item.name}`);
         }
