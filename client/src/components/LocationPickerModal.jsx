@@ -112,8 +112,8 @@ const LocationPickerModal = ({ isOpen, onClose, onSave, initialPos }) => {
                                 <Navigation size={28} className="fill-current" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Pinpoint Precise Location</h2>
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Satellite Verified Delivery Point</p>
+                                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Set Delivery Location</h2>
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Select your exact location for delivery</p>
                             </div>
                         </div>
                         <button 
@@ -149,7 +149,7 @@ const LocationPickerModal = ({ isOpen, onClose, onSave, initialPos }) => {
                                 className="h-14 px-6 bg-white text-slate-900 rounded-3xl shadow-2xl border border-slate-100 flex items-center gap-3 font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all hover:-translate-y-1 active:translate-y-0"
                             >
                                 <Crosshair size={20} className="text-blue-600" />
-                                Synchronize GPS
+                                Use Current Location
                             </button>
                         </div>
 
@@ -162,7 +162,7 @@ const LocationPickerModal = ({ isOpen, onClose, onSave, initialPos }) => {
                                 {isResolving ? (
                                     <div className="flex items-center gap-4 text-slate-400 py-2">
                                         <div className="w-2 h-2 bg-blue-600 rounded-full animate-ping" />
-                                        <span className="text-xs font-black uppercase tracking-[0.3em] animate-pulse">Establishing Secure Lock...</span>
+                                        <span className="text-xs font-black uppercase tracking-[0.3em] animate-pulse">Finding address...</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-5">
@@ -170,9 +170,9 @@ const LocationPickerModal = ({ isOpen, onClose, onSave, initialPos }) => {
                                             <MapPin size={24} className="text-yellow-600" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Detected Address</p>
+                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Selected Address</p>
                                             <p className="text-sm font-black text-slate-800 leading-tight truncate">
-                                                {addressData?.display_name || 'Searching for coordinates...'}
+                                                {addressData?.display_name || 'Select a point on the map...'}
                                             </p>
                                         </div>
                                     </div>
@@ -188,8 +188,8 @@ const LocationPickerModal = ({ isOpen, onClose, onSave, initialPos }) => {
                                 <Check size={28} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Precision Coordinates</p>
-                                <p className="text-sm font-mono font-black text-white/90">{position[0].toFixed(6)}, {position[1].toFixed(6)}</p>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Location Details</p>
+                                <p className="text-sm font-mono font-black text-white/90">Lat: {position[0].toFixed(4)} | Lng: {position[1].toFixed(4)}</p>
                             </div>
                         </div>
                         <button 
@@ -197,7 +197,7 @@ const LocationPickerModal = ({ isOpen, onClose, onSave, initialPos }) => {
                             disabled={isResolving}
                             className="w-full md:w-auto bg-yellow-400 text-slate-900 px-12 h-16 rounded-[22px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-yellow-400/20 hover:bg-white transition-all duration-500 flex items-center justify-center gap-4 disabled:opacity-50 disabled:grayscale group"
                         >
-                            Sync Logistics Details
+                            Confirm Location
                         </button>
                     </div>
                 </motion.div>

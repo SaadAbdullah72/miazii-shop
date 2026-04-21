@@ -60,7 +60,7 @@ const ShippingPage = () => {
         
         // Tier 1: Hardware-Level GPS Detection (Secure & Precise)
         if (navigator.geolocation) {
-            toast.info('Establishing Secure Satellite Connection...', { id: 'geo-lock', autoClose: 3000 });
+            toast.info('Finding your location...', { id: 'geo-lock', autoClose: 3000 });
 
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -89,9 +89,9 @@ const ShippingPage = () => {
                             if (!postalCode) setPostalCode(revData.address.postcode || '');
                             if (!country) setCountry(revData.address.country || '');
                         }
-                        toast.update('geo-lock', { render: 'Professional Location Sync Complete!', type: 'success', autoClose: 3000 });
+                        toast.update('geo-lock', { render: 'Location updated!', type: 'success', autoClose: 3000 });
                     } catch (e) {
-                        toast.warning('Coordinates Locked. Precision geocoding failed, using approximate mapping.');
+                        toast.warning('Using approximate location details.');
                     } finally {
                         setDetecting(false);
                     }
@@ -105,9 +105,9 @@ const ShippingPage = () => {
                         return;
                     }
 
-                    // Tier 2: Encrypted IP-Based Fallback
+                    // Tier 2: IP-Based Fallback
                     try {
-                        toast.info('Switching to Encrypted IP Detection...', { id: 'geo-lock' });
+                        toast.info('Locating via network...', { id: 'geo-lock' });
                         const response = await fetch('https://freeipapi.com/api/json');
                         if (!response.ok) throw new Error('IP service down');
                         const data = await response.json();
@@ -119,7 +119,7 @@ const ShippingPage = () => {
                         setLng(data.longitude || null);
                         if (!address) setAddress(`${data.cityName || ''}, ${data.regionName || ''}`);
                         
-                        toast.update('geo-lock', { render: 'Location secured via Network IP.', type: 'success', autoClose: 3000 });
+                        toast.update('geo-lock', { render: 'Location found.', type: 'success', autoClose: 3000 });
                     } catch (ipErr) {
                         toast.error('Automated sync failed. Please enter details manually.', { id: 'geo-lock' });
                     } finally {
@@ -238,12 +238,12 @@ const ShippingPage = () => {
                                                 </div>
                                                 <div>
                                                     <h3 className="text-lg font-black text-white uppercase tracking-tighter">
-                                                        Pinpoint Delivery Location
+                                                        Delivery Location
                                                     </h3>
                                                     <div className="flex items-center gap-2 mt-1">
                                                         <div className={`w-2 h-2 rounded-full ${lat && lng ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`} />
                                                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                                                            {lat && lng ? 'Satellite Lock Secured' : 'Precision Sync Required'}
+                                                            {lat && lng ? 'Location Saved' : 'Tap to set location'}
                                                         </p>
                                                     </div>
                                                 </div>
