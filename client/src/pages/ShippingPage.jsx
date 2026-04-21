@@ -44,7 +44,7 @@ const ShippingPage = () => {
             
             if (!city) setCity(data.cityName || '');
             if (!postalCode) setPostalCode(data.zipCode || '');
-            if (!country) setCountry(data.countryName || 'Bangladesh');
+            if (!country) setCountry(data.countryName || '');
             setLat(data.latitude || null);
             setLng(data.longitude || null);
             if (!address) setAddress(`${data.cityName || ''}, ${data.countryName || ''}`);
@@ -85,7 +85,7 @@ const ShippingPage = () => {
                             if (!address || address.includes('Bangladesh')) setAddress(fullAddr || revData.display_name.split(',').slice(0, 3).join(', '));
                             if (!city) setCity(revData.address.city || revData.address.town || revData.address.suburb || 'Dhaka');
                             if (!postalCode) setPostalCode(revData.address.postcode || '');
-                            setCountry('Bangladesh');
+                            if (!country) setCountry(revData.address.country || '');
                         }
                         toast.update('geo-lock', { render: 'Professional Location Sync Complete!', type: 'success', autoClose: 3000 });
                     } catch (e) {
@@ -112,7 +112,7 @@ const ShippingPage = () => {
 
                         if (!city) setCity(data.cityName || '');
                         if (!postalCode) setPostalCode(data.zipCode || '');
-                        setCountry(data.countryName || 'Bangladesh'); 
+                        setCountry(data.countryName || ''); 
                         setLat(data.latitude || null);
                         setLng(data.longitude || null);
                         if (!address) setAddress(`${data.cityName || ''}, ${data.regionName || ''}`);
@@ -142,8 +142,8 @@ const ShippingPage = () => {
         if (!finalLat || !finalLng) {
             setIsResolving(true);
             try {
-                const query = `${address}, ${city}, Bangladesh`.trim();
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=bd`, {
+                const query = `${address}, ${city}, ${country}`.trim();
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`, {
                     headers: {
                         'User-Agent': 'Miazi-Shop-Logistics-Bot'
                     }
@@ -156,8 +156,8 @@ const ShippingPage = () => {
                     toast.success('Address coordinates resolved successfully!');
                 } else {
                     // Fallback Tier 2: Search just the city
-                    console.log('Tier 1 failed, trying Tier 2 (City only)');
-                    const fallbackResponse = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city + ", Bangladesh")}&format=json&limit=1&countrycodes=bd`);
+                    const query2 = `${city}, ${country}`.trim();
+                    const fallbackResponse = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query2)}&format=json&limit=1`);
                     const fallbackData = await fallbackResponse.json();
                     
                     if (fallbackData && fallbackData.length > 0) {
