@@ -366,6 +366,7 @@ const ShippingPage = () => {
                 }}
             />
         </div>
+    );
 };
 
 export default ShippingPage;
