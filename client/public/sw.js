@@ -65,6 +65,9 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
         }
         return networkResponse;
+      }).catch(err => {
+        console.log('🔔 [SW] Background fetch failed (likely offline/CSP):', request.url);
+        // Fallback is handled by the initial cachedResponse return
       });
       return cachedResponse || fetchPromise;
     })
