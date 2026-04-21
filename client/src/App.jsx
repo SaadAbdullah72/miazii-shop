@@ -38,9 +38,8 @@ const PageLoader = () => (
     </div>
 );
 
-import { useDispatch, useSelector } from 'react-redux';
-import { getProfile } from './slices/authSlice';
-import { subscribeToPush } from './utils/pushService';
+import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
     const dispatch = useDispatch();
@@ -85,6 +84,7 @@ function App() {
                 <main className="flex-grow">
                     <Suspense fallback={<PageLoader />}>
                         <Routes>
+                            {/* Public Routes */}
                             <Route path="/" element={<HomePage />} />
                             <Route path="/category/:slug" element={<CategoryPage />} />
                             <Route path="/product/:id" element={<ProductDetailsPage />} />
@@ -94,16 +94,24 @@ function App() {
                             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                             <Route path="/verify-otp" element={<OtpVerificationPage />} />
                             <Route path="/reset-password" element={<ResetPasswordPage />} />
-                            <Route path="/shipping" element={<ShippingPage />} />
-                            <Route path="/placeorder" element={<PlaceOrderPage />} />
-                            <Route path="/order/:id" element={<OrderDetailsPage />} />
-                            <Route path="/myorders" element={<MyOrdersPage />} />
-                            <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                             <Route path="/terms-conditions" element={<TermsConditionsPage />} />
                             <Route path="/refund-policy" element={<RefundPolicyPage />} />
                             <Route path="/about-us" element={<AboutUsPage />} />
-                            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+
+                            {/* Registered User Protected Routes */}
+                            <Route path="" element={<PrivateRoute />}>
+                                <Route path="/shipping" element={<ShippingPage />} />
+                                <Route path="/placeorder" element={<PlaceOrderPage />} />
+                                <Route path="/order/:id" element={<OrderDetailsPage />} />
+                                <Route path="/myorders" element={<MyOrdersPage />} />
+                                <Route path="/profile" element={<ProfilePage />} />
+                            </Route>
+
+                            {/* Admin ONLY Protected Routes */}
+                            <Route path="" element={<AdminRoute />}>
+                                <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+                            </Route>
                         </Routes>
                     </Suspense>
                 </main>
