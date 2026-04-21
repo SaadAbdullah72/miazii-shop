@@ -38,6 +38,14 @@ export const toCDN = (url, width) => {
         }
     }
 
+    // Critical Fix: Vercel does not serve local /uploads/ files after deployment.
+    // Detect local uploads and return a placeholder if not in development mode.
+    if (url.startsWith('/uploads/') || url.startsWith('uploads/')) {
+        // If we are on production (miazi-shop.vercel.app), these will 404.
+        // Return a professional placeholder instead of a broken icon.
+        return ERROR_IMAGE;
+    }
+
     // Fallback for local assets or unoptimized links
     return url;
 };
