@@ -53,9 +53,23 @@ const getProductById = asyncHandler(async (req, res) => {
     if (isObjectId) {
         product = await Product.findById(id).populate('category', 'name slug');
     } else {
-        // Relaxed sanitization to allow characters like parentheses which are common in product names/slugs
-        const safeSlug = String(id).replace(/[^a-z0-9-()]/gi, '');
-        product = await Product.findOne({ slug: safeSlug }).populate('category', 'name slug');
+        // 1. Try Exact Slug lookup
+        product = await Product.findOne({ slug: id }).populate('category', 'name slug');
+        
+        // 2. Fallback: Try Name lookup (robust for links generated from raw names)
+        if (!product) {
+            const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // Try matching Name exactly or with hyphens replaced by spaces
+            const nameSearch = id.replace(/-/g, ' ');
+            const escapedName = nameSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            
+            product = await Product.findOne({
+                $or: [
+                    { name: { $regex: new RegExp(`^${escapedId}$`, 'i') } },
+                    { name: { $regex: new RegExp(`^${escapedName}$`, 'i') } }
+                ]
+            }).populate('category', 'name slug');
+        }
     }
 
     if (product) {
