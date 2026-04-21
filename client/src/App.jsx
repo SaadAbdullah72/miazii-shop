@@ -38,6 +38,9 @@ const PageLoader = () => (
     </div>
 );
 
+import { useDispatch, useSelector } from 'react-redux';
+import { getProfile } from './slices/authSlice';
+import { subscribeToPush } from './utils/pushService';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 
