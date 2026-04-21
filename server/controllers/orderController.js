@@ -43,6 +43,12 @@ const addOrderItems = asyncHandler(async (req, res) => {
                 throw new Error(`Product not found or removed: ${item.name}`);
             }
 
+            // [STRICT CHECK] Check stock availability
+            if (productDoc.countInStock < item.qty) {
+                res.status(400);
+                throw new Error(`Insufficient stock for ${productDoc.name}. Available: ${productDoc.countInStock}`);
+            }
+
             const actualPrice = productDoc.discountPrice > 0 
                 ? productDoc.discountPrice 
                 : productDoc.price;
@@ -94,6 +100,15 @@ const addOrderItems = asyncHandler(async (req, res) => {
         });
 
         const createdOrder = await order.save();
+
+        // [STRICT UPDATE] Decrement stock from database
+        for (const item of createdOrder.orderItems) {
+            await Product.updateOne(
+                { _id: item.product },
+                { $inc: { countInStock: -item.qty } }
+            );
+            logger.info(`Stock Decremented: ${item.name} (-${item.qty})`);
+        }
 
         // Send order notification email to admin
         try {
@@ -241,11 +256,14 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
         const updatedOrder = await order.save();
 
         // AUTOMATION: Push Notification for Payment Success
-        safePushDispatch(
-            'Payment Received! ✅',
-            `Your order #${order._id.toString().slice(-6).toUpperCase()} has been successfully paid.`,
-            `/order/${order._id}`
-        ).catch(err => console.error('[Push] Payment Alert Error:', err));
+        // [MODIFICATION] Skip broadcasting to everyone for automated COD system updates
+        if (req.body.id !== 'COD_SYSTEM_AUTO') {
+            safePushDispatch(
+                'Payment Received! ✅',
+                `Your order #${order._id.toString().slice(-6).toUpperCase()} has been successfully paid.`,
+                `/order/${order._id}`
+            ).catch(err => console.error('[Push] Payment Alert Error:', err));
+        }
 
         res.json(updatedOrder);
     } else {
@@ -305,6 +323,15 @@ const deleteOrder = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
 
     if (order) {
+        // [AUTO-RESTOCK] Return items to inventory when order is deleted by Admin
+        for (const item of order.orderItems) {
+            await Product.updateOne(
+                { _id: item.product },
+                { $inc: { countInStock: item.qty } }
+            );
+            logger.info(`Stock Restored: ${item.name} (+${item.qty}) due to deletion`);
+        }
+
         await order.deleteOne();
         logger.info(`Order ${req.params.id} deleted by Admin: ${req.user.email}`);
         res.json({ message: 'Order removed' });

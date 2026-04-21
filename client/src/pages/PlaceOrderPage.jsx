@@ -111,6 +111,15 @@ const PlaceOrderPage = () => {
         try {
             setIsPlacing(true);
 
+            // [STRICT CHECK] Verify stock before allowing order
+            for (const item of cart.cartItems) {
+                if (item.qty > item.countInStock) {
+                    toast.error(`Out of Stock: Only ${item.countInStock} units available for ${item.name}`);
+                    setIsPlacing(false);
+                    return;
+                }
+            }
+
             if (paymentMethod === 'Online' && !image) {
                 toast.error('Please upload your payment screenshot first');
                 setIsPlacing(false);
