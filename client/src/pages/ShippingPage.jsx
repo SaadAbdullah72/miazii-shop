@@ -56,31 +56,8 @@ const ShippingPage = () => {
     const detectLocation = async () => {
         setDetecting(true);
         
-        // Tier 1: High-Speed IP Detection (Professional, no permission prompt)
-        try {
-            const response = await fetch('https://freeipapi.com/api/json');
-            if (!response.ok) throw new Error('Network error');
-            const data = await response.json();
-
-            setCity(data.cityName || '');
-            setPostalCode(data.zipCode || '');
-            setCountry(data.countryName || ''); 
-            setLat(data.latitude || null);
-            setLng(data.longitude || null);
-            setAddress(`${data.cityName || ''}, ${data.regionName || ''}, ${data.countryName || ''}`);
-            
-            toast.success('Location synchronized via Network IP');
-            setDetecting(false);
-        } catch (error) {
-            console.error('IP failed, fallback to GPS:', error);
-            
-            // Tier 2: GPS Detection with Reverse Geocoding for Professional "Auto-Fill"
-            if (!navigator.geolocation) {
-                toast.error('Browser does not support GPS detection');
-                setDetecting(false);
-                return;
-            }
-
+        // Tier 1: GPS Detection (Highest Accuracy - Primary Choice)
+        if (navigator.geolocation) {
             toast.info('Synchronizing with Satellites...', { autoClose: 2000 });
 
             navigator.geolocation.getCurrentPosition(
@@ -89,7 +66,6 @@ const ShippingPage = () => {
                     setLat(latitude);
                     setLng(longitude);
 
-                    // Professional Step: Reverse Geocode to get Road/Area
                     try {
                         const revResponse = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
                         const revData = await revResponse.json();
@@ -99,20 +75,42 @@ const ShippingPage = () => {
                             setCity(revData.address.city || revData.address.town || revData.address.suburb || '');
                             setPostalCode(revData.address.postcode || '');
                         }
+                        toast.success('Professional Location Sync Complete!');
                     } catch (e) {
-                        console.log('Reverse Geocode failed, using raw coordinates');
+                        toast.warning('GPS Coords Locked, but address lookup failed.');
+                    } finally {
+                        setDetecting(false);
                     }
+                },
+                async (err) => {
+                    console.warn('GPS failed, attempting IP fallback:', err);
+                    // Tier 2: Fallback to IP Detection
+                    try {
+                        const response = await fetch('https://freeipapi.com/api/json');
+                        if (!response.ok) throw new Error('IP service down');
+                        const data = await response.json();
 
-                    toast.success('Professional Location Sync Complete!');
-                    setDetecting(false);
+                        setCity(data.cityName || '');
+                        setPostalCode(data.zipCode || '');
+                        setCountry(data.countryName || ''); 
+                        setLat(data.latitude || null);
+                        setLng(data.longitude || null);
+                        setAddress(`${data.cityName || ''}, ${data.regionName || ''}, ${data.countryName || ''}`);
+                        
+                        toast.success('Location detected via Network IP');
+                    } catch (ipErr) {
+                        toast.error('Location sync failed. Please enter manually.');
+                    } finally {
+                        setDetecting(false);
+                    }
                 },
-                (err) => {
-                    console.error('Geo error:', err);
-                    setDetecting(false);
-                    toast.warning('GPS Denied. Using IP fallback.');
-                },
-                { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
+        } else {
+            // Browser doesn't support geolocation at all
+            toast.warning('Browser does not support GPS. Using IP fallback.');
+            // (Repeat IP fallback logic or call a helper)
+            setDetecting(false);
         }
     };
 
