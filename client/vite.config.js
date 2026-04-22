@@ -8,6 +8,7 @@ export default defineConfig({
       react(),
       tailwindcss(),
   ],
+  publicDir: 'public', // Explicitly ensure public assets are copied to dist
   server: {
     host: '0.0.0.0',
     port: 5173,
