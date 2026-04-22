@@ -66,7 +66,8 @@ export const blastNotifications = asyncHandler(async (req, res) => {
         title,
         body: message,
         url: url || '/',
-        icon: '/logo.png', // Default icon
+        icon: '/logo.png', // Large icon
+        badge: '/badge-monochrome.png', // Status bar badge
     });
 
     const results = await Promise.allSettled(

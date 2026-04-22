@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v7'; // Forced bump for new monochrome badge
+const CACHE_NAME = 'miazi-cache-v22'; // EXTREME BUMP TO KILL CACHE
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
