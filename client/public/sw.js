@@ -127,7 +127,7 @@ self.addEventListener('push', (event) => {
   const options = {
     body: data.body,
     icon: '/logo.png', // Large icon (RIGHT side)
-    badge: '/logo.png', // Android requires PNG/monochrome for the status bar icon
+    badge: '/badge-monochrome.png', // Corrected monochrome badge to prevent 'white square' bug
     vibrate: [300, 100, 300, 100, 300], // More noticeable pattern
     tag: 'miazi-blast', 
     renotify: true, 
