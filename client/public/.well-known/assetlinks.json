@@ -3,6 +3,9 @@
   "target": {
     "namespace": "android_app",
     "package_name": "app.vercel.miazi_shop.twa",
-    "sha256_cert_fingerprints": ["F8:B2:8F:4A:6B:E7:F6:09:B6:AD:37:19:E5:AD:94:A7:D5:E6:36:0B:9F:19:AA:AA:1C:B7:1E:CA:56:7A:AC:66"]
+    "sha256_cert_fingerprints": [
+      "B6:DC:20:F3:A3:76:06:F1:C9:04:26:37:6C:61:82:AC:C0:DB:FE:08:CE:04:E9:BB:C1:55:4E:EB:66:6E:B9:4F",
+      "F8:B2:8F:4A:6B:E7:F6:09:B6:AD:37:19:E5:AD:94:A7:D5:E6:36:0B:9F:19:AA:AA:1C:B7:1E:CA:56:7A:AC:66"
+    ]
   }
 }]
