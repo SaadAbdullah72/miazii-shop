@@ -1,10 +1,11 @@
-const CACHE_NAME = 'miazi-cache-v5'; // Forced update for professional badge
+const CACHE_NAME = 'miazi-cache-v7'; // Forced bump for new monochrome badge
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/offline.html',
   '/manifest.json',
   '/logo.png',
+  '/badge-monochrome.png',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'
 ];
 
@@ -110,7 +111,7 @@ self.addEventListener('push', (event) => {
     body: 'New updates available!', 
     url: '/',
     icon: '/logo.png',
-    badge: '/logo.png'
+    badge: '/badge-monochrome.png'
   };
   
   if (event.data) {
