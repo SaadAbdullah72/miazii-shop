@@ -127,10 +127,10 @@ self.addEventListener('push', (event) => {
   const options = {
     body: data.body,
     icon: '/logo.png', // Large icon (RIGHT side)
-    badge: '/badge.svg', // Professional Monochrome SVG (LEFT side)
-    vibrate: [200, 100, 200], // Professional vibration pattern
-    tag: 'miazi-blast', // Stacks notifications so they don't clutter the tray
-    renotify: true, // Vibrates even if a notification with same tag is already there
+    badge: '/logo.png', // Android requires PNG/monochrome for the status bar icon
+    vibrate: [300, 100, 300, 100, 300], // More noticeable pattern
+    tag: 'miazi-blast', 
+    renotify: true, 
     data: {
       url: data.url || '/'
     },
