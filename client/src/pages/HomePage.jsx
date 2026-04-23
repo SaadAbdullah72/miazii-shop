@@ -514,17 +514,18 @@ const HomePage = () => {
               ))}
           </div>
 
-          {/* DEBUG TOOL: Only shows if no products are found */}
+          {/* PREMIUM EMPTY STATE: Shown when no products match a category tab */}
           {products?.filter(p => {
             const productCatName = p.category?.name?.toLowerCase() || "";
             const activeLabel = activeDealCategory.toLowerCase();
             if (activeLabel === 'best deals') return true;
             return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
           }).length === 0 && (
-              <div className="text-center py-10 bg-gray-50 rounded-xl mt-4">
-                <p className="text-gray-500 text-sm mb-2">No products found for "{activeDealCategory}"</p>
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest">
-                  Hint: Check if your database category names match the labels exactly.
+              <div className="text-center py-12 bg-white border-2 border-dashed border-gray-100 rounded-2xl mt-4">
+                <Clock size={40} className="mx-auto text-yellow-400 mb-4 opacity-50" />
+                <h3 className="text-gray-800 font-bold mb-1">Restocking Soon</h3>
+                <p className="text-xs text-gray-400 uppercase tracking-widest font-medium">
+                  Our premium selection for "{activeDealCategory}" is currently being curated.
                 </p>
               </div>
             )}
