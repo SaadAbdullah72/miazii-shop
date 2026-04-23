@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v26';
+const CACHE_NAME = 'miazi-cache-v35';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -107,10 +107,19 @@ self.addEventListener('push', function (event) {
   }
   const title = data.title || 'Miazi Shop';
   const options = {
-    body: data.body || '',
+    body: data.body || 'New update from Miazi Shop!',
     icon: data.icon || '/icons/icon-192x192.png',
     badge: '/badge-miazi-v1.png',
-    data: { url: data.url || '/' }
+    vibrate: [100, 50, 100],
+    data: { 
+      url: data.url || '/',
+      timestamp: Date.now()
+    },
+    tag: 'miazi-notification-group',
+    renotify: true,
+    actions: [
+      { action: 'open', title: 'Open Shop' }
+    ]
   };
   event.waitUntil(
     self.registration.showNotification(title, options)
