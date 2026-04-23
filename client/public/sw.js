@@ -1,11 +1,11 @@
-const CACHE_NAME = 'miazi-cache-v25';
+const CACHE_NAME = 'miazi-cache-v26';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/offline.html',
   '/manifest.json',
   '/logo.png',
-  '/badge-monochrome.png',
+  '/badge-miazi-v1.png',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'
 ];
 
@@ -109,7 +109,7 @@ self.addEventListener('push', function (event) {
   const options = {
     body: data.body || '',
     icon: data.icon || '/icons/icon-192x192.png',
-    badge: '/badge-monochrome.png', // BLACK BACKGROUND WALI FILE
+    badge: '/badge-miazi-v1.png',
     data: { url: data.url || '/' }
   };
   event.waitUntil(
