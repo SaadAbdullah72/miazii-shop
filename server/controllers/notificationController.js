@@ -34,7 +34,7 @@ export const safePushDispatch = async (title, message, link) => {
             body: message,
             url: link || '/',
             icon: `${APP_URL}/icons/icon-192x192.png`,
-            badge: `${APP_URL}/badge-miazi-v1.png`,
+            badge: `${APP_URL}/badge-miazi-v50.png`,
             tag: 'miazi-notification',
             renotify: true,
             timestamp: Date.now(),

@@ -1,11 +1,11 @@
-const CACHE_NAME = 'miazi-cache-v35';
+const CACHE_NAME = 'miazi-cache-v40';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/offline.html',
   '/manifest.json',
   '/logo.png',
-  '/badge-miazi-v1.png',
+  '/badge-miazi-v50.png',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'
 ];
 
@@ -109,7 +109,7 @@ self.addEventListener('push', function (event) {
   const options = {
     body: data.body || 'New update from Miazi Shop!',
     icon: data.icon || '/icons/icon-192x192.png',
-    badge: '/badge-miazi-v1.png',
+    badge: '/badge-miazi-v50.png',
     vibrate: [100, 50, 100],
     data: { 
       url: data.url || '/',
