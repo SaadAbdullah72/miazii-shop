@@ -3,6 +3,8 @@ import Notification from '../models/notificationModel.js';
 import Subscription from '../models/subscriptionModel.js';
 import logger from '../utils/logger.js';
 
+const APP_URL = 'https://miazi-shop.vercel.app';
+
 // Safe dispatch helper using dynamic imports
 export const safePushDispatch = async (title, message, link) => {
     const publicKey = process.env.VAPID_PUBLIC_KEY;
@@ -23,19 +25,19 @@ export const safePushDispatch = async (title, message, link) => {
             return;
         }
 
-        // Robust Dynamic Import for Vercel Environment
         const webpushModule = await import('web-push');
         const webpush = webpushModule.default || webpushModule;
-        
+
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
+
         const payload = JSON.stringify({
-            title: title || 'Miazi Shop Update',
+            title: title || 'Miazi Shop',
             body: message,
             url: link || '/',
-            icon: '/icons/icon-192x192.png',
-            badge: '/icons/icon-96x96.png', // Status bar badge (monochrome)
-            tag: 'miazi-notification', // Groups/replaces similar notifications
-            renotify: true, // Vibrates even if tag is the same
+            icon: `${APP_URL}/icons/icon-192x192.png`,
+            badge: `${APP_URL}/icons/icon-96x96.png`,
+            tag: 'miazi-notification',
+            renotify: true,
             timestamp: Date.now(),
             data: {
                 url: link || '/'
@@ -84,8 +86,7 @@ export const createNotification = asyncHandler(async (req, res) => {
     });
 
     const createdNotification = await notification.save();
-    
-    // RESTORED: Trigger Push Notification to all devices
+
     safePushDispatch(title, message, link).catch(err => {
         console.error('[Push] Automation Error:', err.message);
     });
@@ -99,7 +100,7 @@ export const createNotification = asyncHandler(async (req, res) => {
 export const subscribeUser = asyncHandler(async (req, res) => {
     const subscription = req.body;
     console.log('[Push] Registration Attempt received.');
-    
+
     if (!subscription || !subscription.endpoint) {
         console.error('[Push] Registration FAILED: No subscription body provided.');
         res.status(400);
