@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v71';
+const CACHE_NAME = 'miazi-cache-v72';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -26,11 +26,15 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
-      );
-    })
+    Promise.all([
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
+        );
+      }),
+      // Enable navigation preload if supported
+      self.registration.navigationPreload ? self.registration.navigationPreload.enable() : Promise.resolve()
+    ])
   );
   self.clients.claim();
 });
@@ -50,15 +54,22 @@ self.addEventListener('fetch', (event) => {
 
   if (request.mode === 'navigate' || url.pathname === '/index.html' || url.pathname === '/') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (request.method === 'GET' && response.status === 200) {
-            const copy = response.clone();
+      (async () => {
+        // Try the preloaded response first
+        const preloadResponse = await event.preloadResponse;
+        if (preloadResponse) return preloadResponse;
+
+        try {
+          const networkResponse = await fetch(request);
+          if (request.method === 'GET' && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
-          return response;
-        })
-        .catch(() => caches.match('/offline.html'))
+          return networkResponse;
+        } catch (e) {
+          return caches.match('/offline.html');
+        }
+      })()
     );
     return;
   }
