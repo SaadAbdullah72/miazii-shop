@@ -103,25 +103,28 @@ self.addEventListener('periodicsync', (event) => {
 
 // PUSH NOTIFICATIONS
 self.addEventListener('push', function(event) {
-  let data = {};
-  if (event.data) {
-    try { data = event.data.json(); } 
-    catch (e) { data = { body: event.data.text() }; }
-  }
-
-  const title = data.title || 'Miazi Shop';
-  const options = {
-    body: data.body || 'New update from Miazi Shop!',
-    icon: data.icon || '/icons/icon-192x192.png',
-    badge: '/badge-monochrome.png',
-    vibrate: [200, 100, 200],
-    tag: data.tag || 'miazi-notif-' + Date.now(),
-    renotify: true,
-    requireInteraction: true,
-    data: { url: data.url || '/' }
-  };
-
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(
+    (async () => {
+      let data = {};
+      if (event.data) {
+        try { data = event.data.json(); }
+        catch (e) { data = { body: event.data.text() }; }
+      }
+      const title = data.title || 'Miazi Shop';
+      const options = {
+        body: data.body || '',
+        icon: data.icon || '/icons/icon-192x192.png',
+        badge: '/badge-monochrome.png',
+        data: { url: data.url || '/' },
+        requireInteraction: true,
+        silent: false,
+        vibrate: [200, 100, 200],
+        tag: 'miazi-notification',
+        renotify: true,
+      };
+      return self.registration.showNotification(title, options);
+    })()
+  );
 });
 
 self.addEventListener('notificationclick', function(event) {

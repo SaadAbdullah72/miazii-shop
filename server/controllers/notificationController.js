@@ -43,18 +43,13 @@ export const safePushDispatch = async (title, message, link) => {
             }
         });
 
-        const options = {
-            vapidDetails: {
-                subject: mailEmail,
-                publicKey: publicKey,
-                privateKey: privateKey
-            },
-            TTL: 86400,
-            urgency: 'high'
-        };
 
         const pushPromises = subscriptions.map(sub =>
-            webpush.sendNotification(sub, payload, options)
+            webpush.sendNotification(sub, payload, {
+                TTL: 86400,
+                urgency: 'high',
+                topic: 'miazi-notification'
+            })
                 .then(res => {
                     console.log(`[Push] SUCCESS | Status: ${res.statusCode} | Endpoint: ${sub.endpoint.substring(0, 30)}...`);
                     return res;

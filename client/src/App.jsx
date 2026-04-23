@@ -61,6 +61,14 @@ function App() {
         // Initialize Push Notification Subscription
         subscribeToPush();
 
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            navigator.serviceWorker.ready.then(reg => {
+                if (reg.active) {
+                    reg.active.postMessage({ type: 'KEEP_ALIVE' });
+                }
+            });
+        }
+
         const handleBeforeInstallPrompt = (e) => {
             e.preventDefault();
             setDeferredPrompt(e);
