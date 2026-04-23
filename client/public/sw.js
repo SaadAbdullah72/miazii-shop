@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v23'; // BUMPED
+const CACHE_NAME = 'miazi-cache-v24';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -104,7 +104,7 @@ self.addEventListener('push', function (event) {
   const options = {
     body: data.body || '',
     icon: data.icon || '/icons/icon-192x192.png',
-    // badge removed - fixes white square issue
+    badge: '/badge-monochrome.png', // BLACK BACKGROUND WALI FILE
     data: { url: data.url || '/' }
   };
   event.waitUntil(

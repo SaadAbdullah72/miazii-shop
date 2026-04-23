@@ -5,16 +5,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Configure VAPID keys for Web Push
+const APP_URL = 'https://miazi-shop.vercel.app';
+
 webpush.setVapidDetails(
     process.env.VAPID_SUBJECT || 'mailto:miazi.shop@gmail.com',
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
 );
 
-// @desc    Subscribe to push notifications
-// @route   POST /api/push/subscribe
-// @access  Public
 export const subscribeUser = asyncHandler(async (req, res) => {
     const subscription = req.body;
 
@@ -45,9 +43,6 @@ export const subscribeUser = asyncHandler(async (req, res) => {
     res.status(201).json({ message: 'Push subscription successfully captured.' });
 });
 
-// @desc    Blast push notifications to all subscribers
-// @route   POST /api/push/blast
-// @access  Private/Admin
 export const blastNotifications = asyncHandler(async (req, res) => {
     const { title, message, url } = req.body;
 
@@ -66,14 +61,13 @@ export const blastNotifications = asyncHandler(async (req, res) => {
         title,
         body: message,
         url: url || '/',
-        icon: '/icons/icon-192x192.png',
-        badge: '/icons/icon-96x96.png',
+        icon: `${APP_URL}/icons/icon-192x192.png`,
+        badge: `${APP_URL}/badge-monochrome.png`,
     });
 
     const results = await Promise.allSettled(
         subscriptions.map((sub) =>
             webpush.sendNotification(sub, notificationPayload).catch(async (err) => {
-                // If subscription has expired or is no longer valid, remove it from DB
                 if (err.statusCode === 410 || err.statusCode === 404) {
                     await Subscription.deleteOne({ endpoint: sub.endpoint });
                 }
