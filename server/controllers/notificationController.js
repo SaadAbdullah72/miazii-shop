@@ -49,7 +49,7 @@ export const safePushDispatch = async (title, message, link) => {
                 publicKey: publicKey,
                 privateKey: privateKey
             },
-            TTL: 3600,
+            TTL: 86400,
             urgency: 'high'
         };
 
