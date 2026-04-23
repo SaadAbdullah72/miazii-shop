@@ -5,7 +5,6 @@ import logger from '../utils/logger.js';
 
 const APP_URL = 'https://miazi-shop.vercel.app';
 
-// Safe dispatch helper using dynamic imports
 export const safePushDispatch = async (title, message, link) => {
     const publicKey = process.env.VAPID_PUBLIC_KEY;
     const privateKey = process.env.VAPID_PRIVATE_KEY;
@@ -35,7 +34,6 @@ export const safePushDispatch = async (title, message, link) => {
             body: message,
             url: link || '/',
             icon: `${APP_URL}/icons/icon-192x192.png`,
-            badge: `${APP_URL}/icons/icon-96x96.png`,
             tag: 'miazi-notification',
             renotify: true,
             timestamp: Date.now(),
@@ -63,17 +61,11 @@ export const safePushDispatch = async (title, message, link) => {
     }
 };
 
-// @desc    Get all active notifications
-// @route   GET /api/notifications
-// @access  Public
 export const getActiveNotifications = asyncHandler(async (req, res) => {
     const notifications = await Notification.find({ isActive: true }).sort({ createdAt: -1 }).limit(10);
     res.json(notifications);
 });
 
-// @desc    Create a new notification
-// @route   POST /api/notifications
-// @access  Private/Admin
 export const createNotification = asyncHandler(async (req, res) => {
     const { title, message, type, link } = req.body;
 
@@ -94,9 +86,6 @@ export const createNotification = asyncHandler(async (req, res) => {
     res.status(201).json(createdNotification);
 });
 
-// @desc    Subscribe for Push Notifications
-// @route   POST /api/notifications/subscribe
-// @access  Public
 export const subscribeUser = asyncHandler(async (req, res) => {
     const subscription = req.body;
     console.log('[Push] Registration Attempt received.');
@@ -117,9 +106,6 @@ export const subscribeUser = asyncHandler(async (req, res) => {
     res.status(201).json({ success: true });
 });
 
-// @desc    Delete a notification
-// @route   DELETE /api/notifications/:id
-// @access  Private/Admin
 export const deleteNotification = asyncHandler(async (req, res) => {
     const notification = await Notification.findById(req.params.id);
 
