@@ -47,7 +47,7 @@
   "display_override": ["fullscreen", "standalone"],
   "orientation": "portrait",
   "theme_color": "#fed700",
-  "background_color": "#ffffff",
+  "background_color": "#fed700",
   "categories": ["shopping", "electronics", "technology"],
   "lang": "en-US",
   "dir": "ltr",

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v72';
+const CACHE_NAME = 'miazi-cache-v73';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -98,6 +98,12 @@ self.addEventListener('sync', (event) => {
         console.log('✅ [PWA] Background Syncing pending orders/tasks success.');
       })
     );
+  }
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'KEEP_ALIVE') {
+    console.log('✅ [SW] Keep-Alive Pulse Received');
   }
 });
 
