@@ -67,7 +67,7 @@ export const blastNotifications = asyncHandler(async (req, res) => {
 
     const results = await Promise.allSettled(
         subscriptions.map((sub) =>
-            webpush.sendNotification(sub, notificationPayload).catch(async (err) => {
+            webpush.sendNotification(sub, notificationPayload, { urgency: 'high', TTL: 3600 }).catch(async (err) => {
                 if (err.statusCode === 410 || err.statusCode === 404) {
                     await Subscription.deleteOne({ endpoint: sub.endpoint });
                 }
