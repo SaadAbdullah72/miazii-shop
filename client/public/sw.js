@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v24';
+const CACHE_NAME = 'miazi-cache-v25';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -33,7 +33,12 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  if (!url.origin.includes(self.location.origin) || url.pathname.includes('/api/')) {
+  // Skip APIs, /admin routes, and cross-origin requests
+  if (
+    !url.origin.includes(self.location.origin) || 
+    url.pathname.includes('/api/') || 
+    url.pathname.includes('/admin')
+  ) {
     return;
   }
 
