@@ -103,70 +103,31 @@ self.addEventListener('periodicsync', (event) => {
 });
 
 // PUSH NOTIFICATIONS: Handle incoming marketing blasts
-self.addEventListener('push', (event) => {
-  console.log('🔔 [PWA] Push Received.');
-  
-  let data = { 
-    title: 'Miazi Shop', 
-    body: 'New updates available!', 
-    url: '/',
-    icon: '/logo.png',
-    badge: '/badge-monochrome.png'
-  };
-  
+self.addEventListener('push', function(event) {
+  let data = {};
   if (event.data) {
     try {
-      // Try to parse JSON payload
-      const jsonPayload = event.data.json();
-      data = { ...data, ...jsonPayload };
+      data = event.data.json();
     } catch (e) {
-      // Fallback for simple text payloads
-      data.body = event.data.text();
+      data = { body: event.data.text() };
     }
   }
-
+  const title = data.title || 'Miazi Shop';
   const options = {
-    body: data.body,
-    icon: '/logo.png', // Large icon (RIGHT side)
-    badge: '/badge-monochrome.png', // Corrected monochrome badge to prevent 'white square' bug
-    vibrate: [300, 100, 300, 100, 300], // More noticeable pattern
-    tag: 'miazi-blast', 
-    renotify: true, 
-    data: {
-      url: data.url || '/'
-    },
-    actions: [
-      { action: 'open', title: 'View Now' },
-      { action: 'close', title: 'Later' }
-    ]
+    body: data.body || '',
+    icon: data.icon || '/icons/icon-192x192.png',
+    badge: data.badge || '/icons/icon-96x96.png',
+    data: { url: data.url || '/' }
   };
-
   event.waitUntil(
-    self.registration.showNotification(data.title, options)
+    self.registration.showNotification(title, options)
   );
 });
 
 // NOTIFICATION CLICK: Open the app when user taps the notification
-self.addEventListener('notificationclick', (event) => {
+self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-
-  if (event.action === 'close') return;
-
-  const urlToOpen = event.notification.data.url || '/';
-
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // Check if there is already a window open
-      for (let i = 0; i < windowClients.length; i++) {
-        const client = windowClients[i];
-        if (client.url === urlToOpen && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      // If no window is open, open a new one
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
+    clients.openWindow(event.notification.data.url || '/')
   );
 });

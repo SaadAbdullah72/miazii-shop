@@ -32,8 +32,8 @@ export const safePushDispatch = async (title, message, link) => {
             title: title || 'Miazi Shop Update',
             body: message,
             url: link || '/',
-            icon: '/logo.png',
-            badge: '/logo.png', // Small icon for the status bar
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-96x96.png', // Status bar badge (monochrome)
             tag: 'miazi-notification', // Groups/replaces similar notifications
             renotify: true, // Vibrates even if tag is the same
             timestamp: Date.now(),
