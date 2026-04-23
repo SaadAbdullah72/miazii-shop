@@ -63,7 +63,30 @@ function App() {
                 }
             });
         }
+    }, [dispatch, userInfo]);
 
+    React.useEffect(() => {
+        // Premium Fade-out of the Native Mask
+        const mask = document.getElementById('root-mask');
+        if (mask) {
+            setTimeout(() => {
+                mask.classList.add('mask-hidden');
+                document.body.style.overflow = 'auto';
+                document.documentElement.style.overflow = 'auto';
+            }, 500);
+        }
+
+        // Keep-Alive Ping for Service Worker
+        const keepAlive = () => {
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'KEEP_ALIVE' });
+            }
+        };
+        const interval = setInterval(keepAlive, 50000);
+        return () => clearInterval(interval);
+    }, []);
+
+    React.useEffect(() => {
         const handleBeforeInstallPrompt = (e) => {
             e.preventDefault();
             setDeferredPrompt(e);
