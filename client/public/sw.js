@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v70';
+const CACHE_NAME = 'miazi-cache-v71';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -136,10 +136,11 @@ self.addEventListener('notificationclick', function(event) {
       // Check if there's already a window open with this URL and focus it
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
-        if (client.visibilityState === 'visible' || 'focus' in client) {
-          if (client.url.includes(self.location.origin)) {
-            return client.focus();
-          }
+        const clientUrl = new URL(client.url);
+        const targetUrl = new URL(urlToOpen, self.location.origin);
+        
+        if (clientUrl.pathname === targetUrl.pathname && 'focus' in client) {
+          return client.focus();
         }
       }
       if (clients.openWindow) {
