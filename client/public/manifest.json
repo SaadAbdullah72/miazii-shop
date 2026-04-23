@@ -1,5 +1,5 @@
 {
-  "id": "/?source=pwa",
+  "id": "/",
   "name": "Miazi Shop",
   "short_name": "Miazi Shop",
   "description": "Premium electronics and tech store offering high-quality gadgets at best prices in Bangladesh.",
@@ -44,7 +44,7 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": ["standalone", "fullscreen"],
   "orientation": "portrait",
   "theme_color": "#fed700",
   "background_color": "#ffffff",

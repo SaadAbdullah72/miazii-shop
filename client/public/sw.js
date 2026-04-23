@@ -136,11 +136,12 @@ self.addEventListener('notificationclick', function(event) {
       // Check if there's already a window open with this URL and focus it
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
-          return client.focus();
+        if (client.visibilityState === 'visible' || 'focus' in client) {
+          if (client.url.includes(self.location.origin)) {
+            return client.focus();
+          }
         }
       }
-      // If not, open a new one
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }

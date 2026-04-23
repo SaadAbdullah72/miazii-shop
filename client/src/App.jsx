@@ -31,12 +31,7 @@ const RefundPolicyPage = lazy(() => import('./pages/RefundPolicyPage'));
 const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
 
 // High-performance loading fallback
-const PageLoader = () => (
-    <div className="flex flex-col justify-center items-center py-64 bg-slate-50 min-h-screen text-center">
-        <Loader size={40} className="animate-spin text-yellow-500 mb-4" />
-        <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Loading App Experience...</p>
-    </div>
-);
+const PageLoader = () => <div className="min-h-screen bg-[#f5f5f5]" />;
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from './slices/authSlice';
