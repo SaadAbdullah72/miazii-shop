@@ -9,8 +9,8 @@ import { SplashScreen } from '@capacitor/splash-screen';
 export const initializeMobileApp = async () => {
     try {
         // 1. Configure Status Bar to match Electro Premium Theme
-        await StatusBar.setStyle({ style: Style.Dark });
-        await StatusBar.setBackgroundColor({ color: '#0f172a' }); // Deep Dark Slate (Electro Theme)
+        await StatusBar.setStyle({ style: Style.Light }); // Use Light style for dark text on yellow
+        await StatusBar.setBackgroundColor({ color: '#fed700' }); // Electro Yellow
 
         // 2. Hide Splash Screen automatically after app loads
         await SplashScreen.hide();

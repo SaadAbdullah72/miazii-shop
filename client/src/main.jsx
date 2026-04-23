@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')).render(
 // Registering Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=22', { updateViaCache: 'none' })
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
       .then(reg => {
         console.log('SW Registered', reg);
         
