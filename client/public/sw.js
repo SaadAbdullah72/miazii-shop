@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v73';
+const CACHE_NAME = 'miazi-cache-v74';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -67,13 +67,16 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         } catch (e) {
-          return caches.match('/offline.html');
+          const cache = await caches.open(CACHE_NAME);
+          const offlineResponse = await cache.match('/offline.html');
+          return offlineResponse || caches.match('/offline.html');
         }
       })()
     );
     return;
   }
 
+  // Assets (Images, scripts, etc.) - Cache first, then network
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request).then((networkResponse) => {
@@ -83,7 +86,10 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(err => {
-        console.log('🔔 [SW] Background fetch failed (likely offline/CSP):', request.url);
+        // If an image fails, we just let it fail or return a placeholder
+        if (request.destination === 'image') {
+          return caches.match('/logo-192.png');
+        }
       });
       return cachedResponse || fetchPromise;
     })
