@@ -64,12 +64,16 @@ export const blastNotifications = asyncHandler(async (req, res) => {
         throw new Error('Please provide both title and message for the blast.');
     }
 
-    const appId = process.env.ONESIGNAL_APP_ID?.trim();
-    const apiKey = process.env.ONESIGNAL_API_KEY?.trim();
+    const appId = (process.env.ONESIGNAL_APP_ID || '').trim();
+    const apiKey = (process.env.ONESIGNAL_API_KEY || '').trim();
+
+    // DIAGNOSTIC LOG (Masked)
+    console.log(`[Push Debug] AppID Length: ${appId.length} | APIKey Length: ${apiKey.length}`);
+    console.log(`[Push Debug] AppID Start: ${appId.substring(0, 4)}... | APIKey Start: ${apiKey.substring(0, 8)}...`);
 
     if (!appId || !apiKey) {
         res.status(500);
-        throw new Error('OneSignal configuration missing on server.');
+        throw new Error(`OneSignal config missing! Found AppID: ${!!appId}, APIKey: ${!!apiKey}`);
     }
 
     try {
@@ -97,7 +101,7 @@ export const blastNotifications = asyncHandler(async (req, res) => {
             const errorMsg = Array.isArray(data.errors) ? data.errors.join(', ') : JSON.stringify(data.errors);
             console.error('[OneSignal] Blast Rejected:', errorMsg);
             return res.status(400).json({ 
-                message: `OneSignal Rejected: ${errorMsg}`, 
+                message: `OneSignal Rejected: ${errorMsg} (Debug: AppID_Len=${appId.length}, Start=${appId.substring(0, 4)})`, 
                 errors: data.errors 
             });
         }
