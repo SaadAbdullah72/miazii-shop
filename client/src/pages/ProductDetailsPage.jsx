@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetails } from '../slices/productSlice';
 import { addToCart } from '../slices/cartSlice';
 import { toast } from 'react-toastify';
-import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle, Upload, X, ImageIcon } from 'lucide-react';
+import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle, Upload, X, ImageIcon, Trash2 } from 'lucide-react';
 import api, { BASE_URL } from '../utils/axiosConfig';
 import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
@@ -82,6 +82,17 @@ const ProductDetailsPage = () => {
             toast.error(err.response?.data?.message || 'Failed to submit review');
         } finally {
             setReviewLoading(false);
+        }
+    };
+
+    const deleteReviewHandler = async (reviewId) => {
+        if (!window.confirm('Are you sure you want to delete your review?')) return;
+        try {
+            await api.delete(`/api/products/${id}/reviews/${reviewId}`);
+            toast.success('Review deleted');
+            dispatch(getProductDetails(id));
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to delete review');
         }
     };
 
@@ -457,7 +468,18 @@ const ProductDetailsPage = () => {
                                                     </div>
                                                     <span className="font-bold text-sm text-gray-800">{review.name}</span>
                                                 </div>
-                                                <span className="text-xs text-gray-400">{review.createdAt.substring(0, 10)}</span>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{review.createdAt.substring(0, 10)}</span>
+                                                    {(userInfo?._id === review.user || userInfo?.isAdmin) && (
+                                                        <button 
+                                                            onClick={() => deleteReviewHandler(review._id)}
+                                                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                            title="Delete Review"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                             <div className="flex items-center gap-1 mb-2">
                                                 {[...Array(5)].map((_, i) => (

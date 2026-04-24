@@ -188,25 +188,30 @@ const createProductReview = asyncHandler(async (req, res) => {
     }
 
     if (product) {
-        // STRICT LOGIC: Verify the user has placed a PAID order for this product
-        const hasOrder = await Order.findOne({
+        // [STRICT LOGIC]: Count how many times this user has ordered and PAID for this product
+        const orders = await Order.find({
             user: req.user._id,
             'orderItems.product': product._id,
-            isPaid: true // Security: Only verified customers can review
+            isPaid: true
         });
 
-        if (!hasOrder) {
+        const totalPurchased = orders.reduce((acc, order) => {
+            const item = order.orderItems.find(i => i.product.toString() === product._id.toString());
+            return acc + (item ? item.qty : 0);
+        }, 0);
+
+        if (totalPurchased === 0) {
             res.status(400);
-            throw new Error('You must order this product to review it');
+            throw new Error('You must order and pay for this product to review it');
         }
 
-        const alreadyReviewed = product.reviews.find(
+        const existingReviewsCount = product.reviews.filter(
             (r) => r.user.toString() === req.user._id.toString()
-        );
+        ).length;
 
-        if (alreadyReviewed) {
+        if (existingReviewsCount >= totalPurchased) {
             res.status(400);
-            throw new Error('Product already reviewed');
+            throw new Error(`You have already reviewed this product ${existingReviewsCount} time(s) (Matching your total purchase count).`);
         }
 
         const review = {
@@ -227,6 +232,48 @@ const createProductReview = asyncHandler(async (req, res) => {
 
         await product.save();
         res.status(201).json({ message: 'Review added' });
+    } else {
+        res.status(404);
+        throw new Error('Product not found');
+    }
+});
+
+// @desc    Delete a review
+// @route   DELETE /api/products/:id/reviews/:reviewId
+// @access  Private
+const deleteProductReview = asyncHandler(async (req, res) => {
+    const { id, reviewId } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (product) {
+        const review = product.reviews.id(reviewId);
+
+        if (!review) {
+            res.status(404);
+            throw new Error('Review not found');
+        }
+
+        // Only the owner or an admin can delete the review
+        if (review.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+            res.status(401);
+            throw new Error('Not authorized to delete this review');
+        }
+
+        product.reviews = product.reviews.filter((r) => r._id.toString() !== reviewId);
+
+        product.numReviews = product.reviews.length;
+
+        if (product.numReviews > 0) {
+            product.rating =
+                product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+                product.reviews.length;
+        } else {
+            product.rating = 0;
+        }
+
+        await product.save();
+        res.json({ message: 'Review deleted' });
     } else {
         res.status(404);
         throw new Error('Product not found');
@@ -261,5 +308,6 @@ export {
     updateProduct,
     deleteProduct,
     createProductReview,
+    deleteProductReview,
     getProductSuggestions,
 };

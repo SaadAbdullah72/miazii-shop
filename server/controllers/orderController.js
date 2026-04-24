@@ -96,7 +96,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
             shippingPrice,
             totalPrice,
             paymentScreenshot: finalScreenshotUrl,
-            paymentStatus: (paymentMethod === 'Online' || paymentMethod === 'bKash/Nagad Manual') ? 'Pending Approval' : 'None',
+            paymentStatus: 'Pending Approval',
         });
 
         const createdOrder = await order.save();
@@ -187,8 +187,12 @@ const addOrderItems = asyncHandler(async (req, res) => {
                     </div>
                     <div style="padding:30px;">
                         <p>Hello <strong>${shippingAddress.fullName || req.user.name}</strong>,</p>
-                        <p>Thank you for your order! We have received your manual payment receipt and your order is now <strong>PENDING APPROVAL</strong>.</p>
-                        <p>Our team is currently verifying your transaction. You will receive a confirmation email once your payment is verified and your order is confirmed.</p>
+                        ${paymentMethod === 'Cash on Delivery' || paymentMethod === 'COD' 
+                            ? `<p>Thank you for choosing Cash on Delivery! Your order is now <strong>PENDING APPROVAL</strong> by our logistics team.</p>
+                               <p>Once our team verifies your delivery address and contact details, your order will be confirmed and processed for shipment.</p>`
+                            : `<p>Thank you for your order! We have received your manual payment receipt and your order is now <strong>PENDING APPROVAL</strong>.</p>
+                               <p>Our team is currently verifying your transaction. You will receive a confirmation email once your payment is verified and your order is confirmed.</p>`
+                        }
                         <div style="background:#fffbeb;padding:20px;border-radius:12px;margin:20px 0;border:1px solid #fef3c7;text-align:center;">
                             <p style="margin:0;font-size:12px;color:#d97706;text-transform:uppercase;font-weight:bold;">Total Amount to Verify</p>
                             <p style="margin:5px 0 0;font-size:32px;font-weight:900;color:#92400e;">৳${totalPrice}</p>
