@@ -79,7 +79,7 @@ export const blastNotifications = asyncHandler(async (req, res) => {
             contents: { en: message },
             url: url || "https://miazi-shop.vercel.app/",
             chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
-            included_segments: ["Subscribed Users"]
+            included_segments: ["Total Subscriptions"]
         };
 
         const response = await fetch('https://onesignal.com/api/v1/notifications', {
