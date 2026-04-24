@@ -66,6 +66,8 @@ if ('serviceWorker' in navigator) {
   });
 
   // Listen for the controlling service worker changing (on skipWaiting() success)
+  // [MODIFICATION] Disabled auto-reload to prevent infinite loops during OneSignal/SW conflict
+  /*
   let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (!refreshing) {
@@ -73,4 +75,5 @@ if ('serviceWorker' in navigator) {
       refreshing = true;
     }
   });
+  */
 }
