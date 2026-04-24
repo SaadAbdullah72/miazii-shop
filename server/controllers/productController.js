@@ -184,7 +184,22 @@ const createProductReview = asyncHandler(async (req, res) => {
     if (isObjectId) {
         product = await Product.findById(id);
     } else {
+        // 1. Try Exact Slug lookup
         product = await Product.findOne({ slug: id });
+        
+        // 2. Fallback: Try Name lookup (robust for links generated from raw names with parentheses/spaces)
+        if (!product) {
+            const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const nameSearch = id.replace(/-/g, ' ');
+            const escapedName = nameSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            
+            product = await Product.findOne({
+                $or: [
+                    { name: { $regex: new RegExp(`^${escapedId}$`, 'i') } },
+                    { name: { $regex: new RegExp(`^${escapedName}$`, 'i') } }
+                ]
+            });
+        }
     }
 
     if (product) {
@@ -250,7 +265,22 @@ const deleteProductReview = asyncHandler(async (req, res) => {
     if (isObjectId) {
         product = await Product.findById(id);
     } else {
+        // 1. Try Exact Slug lookup
         product = await Product.findOne({ slug: id });
+        
+        // 2. Fallback: Try Name lookup
+        if (!product) {
+            const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const nameSearch = id.replace(/-/g, ' ');
+            const escapedName = nameSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            
+            product = await Product.findOne({
+                $or: [
+                    { name: { $regex: new RegExp(`^${escapedId}$`, 'i') } },
+                    { name: { $regex: new RegExp(`^${escapedName}$`, 'i') } }
+                ]
+            });
+        }
     }
 
     if (product) {
