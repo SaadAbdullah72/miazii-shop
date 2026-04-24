@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v74';
+const CACHE_NAME = 'miazi-cache-v81';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -68,8 +68,8 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         } catch (e) {
           const cache = await caches.open(CACHE_NAME);
-          const offlineResponse = await cache.match('/offline.html');
-          return offlineResponse || caches.match('/offline.html');
+          // Return the cached root index as a universal fallback
+          return (await cache.match('/')) || (await cache.match('/index.html'));
         }
       })()
     );
@@ -124,7 +124,6 @@ self.addEventListener('periodicsync', (event) => {
   }
 });
 
-// PUSH NOTIFICATIONS
 self.addEventListener('push', function(event) {
   event.waitUntil(
     (async () => {
@@ -133,18 +132,32 @@ self.addEventListener('push', function(event) {
         try { data = event.data.json(); }
         catch (e) { data = { body: event.data.text() }; }
       }
-      const title = data.title || 'Miazi Shop';
+
+      const title = data.title || '🛍️ Miazi Shop';
       const options = {
-        body: data.body || '',
+        body: data.body || 'You have a new update!',
         icon: data.icon || '/icons/icon-192x192.png',
         badge: '/badge-monochrome.png',
-        data: { url: data.url || '/' },
+        image: data.image || '/logo.png',
+        tag: data.tag || 'miazi-notification',
+        renotify: true,
         requireInteraction: true,
         silent: false,
-        vibrate: [200, 100, 200],
-        tag: 'miazi-notification',
-        renotify: true,
+        vibrate: [200, 100, 200, 100, 200],
+        timestamp: Date.now(),
+        actions: [
+          { action: 'view', title: '🛒 View Now' },
+          { action: 'close', title: '✕ Dismiss' }
+        ],
+        data: { url: data.url || data?.data?.url || '/' }
       };
+
+      // Keep service worker alive
+      const allClients = await clients.matchAll({
+        includeUncontrolled: true,
+        type: 'window'
+      });
+
       return self.registration.showNotification(title, options);
     })()
   );
@@ -152,23 +165,22 @@ self.addEventListener('push', function(event) {
 
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-  const urlToOpen = event.notification.data.url || '/';
+  
+  const url = event.notification.data?.url || '/';
+  
+  if (event.action === 'close') return;
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
-      // Check if there's already a window open with this URL and focus it
-      for (let i = 0; i < windowClients.length; i++) {
-        const client = windowClients[i];
-        const clientUrl = new URL(client.url);
-        const targetUrl = new URL(urlToOpen, self.location.origin);
-        
-        if (clientUrl.pathname === targetUrl.pathname && 'focus' in client) {
-          return client.focus();
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(clientList => {
+        for (const client of clientList) {
+          if (client.url === url && 'focus' in client) {
+            return client.focus();
+          }
         }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
   );
 });

@@ -109,6 +109,9 @@ function App() {
     return (
         <Router>
             <div className="flex flex-col min-h-screen bg-[#f5f5f5]">
+                <div className="bg-[#fed700] text-black text-center py-2 px-4 text-sm font-medium">
+                    ⚡ For best experience: Settings &gt; Apps &gt; Chrome &gt; Battery &gt; Set <b>Unrestricted</b>
+                </div>
                 <Header />
                 <main className="flex-grow">
                     <Suspense fallback={<PageLoader />}>

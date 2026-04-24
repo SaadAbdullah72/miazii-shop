@@ -5,6 +5,22 @@ import logger from '../utils/logger.js';
 
 const APP_URL = 'https://miazi-shop.vercel.app';
 
+const sendWithRetry = async (webpush, sub, payload, options, retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await webpush.sendNotification(sub, payload, options);
+            return true;
+        } catch (err) {
+            if (err.statusCode === 410 || err.statusCode === 404) {
+                await Subscription.deleteOne({ endpoint: sub.endpoint });
+                return false;
+            }
+            if (i === retries - 1) throw err;
+            await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+        }
+    }
+};
+
 export const safePushDispatch = async (title, message, link) => {
     const publicKey = process.env.VAPID_PUBLIC_KEY;
     const privateKey = process.env.VAPID_PRIVATE_KEY;
@@ -30,42 +46,44 @@ export const safePushDispatch = async (title, message, link) => {
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
 
         const payload = JSON.stringify({
-            title: title || 'Miazi Shop',
+            title: "🛍️ Miazi Shop",
             body: message,
-            url: link || '/',
-            icon: `${APP_URL}/icons/icon-192x192.png`,
-            badge: `${APP_URL}/badge-miazi-v50.png`,
-            tag: 'miazi-notification',
+            url: link || "/",
+            icon: "https://miazi-shop.vercel.app/icons/icon-192x192.png",
+            badge: "https://miazi-shop.vercel.app/badge-monochrome.png",
+            image: "https://miazi-shop.vercel.app/logo.png",
+            tag: "miazi-notification",
             renotify: true,
-            timestamp: Date.now(),
+            requireInteraction: true,
+            vibrate: [200, 100, 200, 100, 200],
+            actions: [
+              {
+                action: "view",
+                title: "🛒 View Now"
+              },
+              {
+                action: "close", 
+                title: "✕ Dismiss"
+              }
+            ],
             data: {
-                url: link || '/'
+              url: link || "/"
             }
         });
 
+        const options = {
+            TTL: 86400,
+            urgency: 'very-high',
+            topic: 'miazi-shop'
+        };
 
-        const pushPromises = subscriptions.map(sub =>
-            webpush.sendNotification(sub, payload, {
-                TTL: 86400,
-                urgency: 'high',
-                topic: 'miazi-notification'
-            })
-                .then(res => {
-                    console.log(`[Push] SUCCESS | Status: ${res.statusCode} | Endpoint: ${sub.endpoint.substring(0, 30)}...`);
-                    return res;
-                })
-                .catch(err => {
-                    console.error(`[Push] FAILED | Status: ${err.statusCode} | Error: ${err.message}`);
-                    if (err.statusCode === 410 || err.statusCode === 404) {
-                        return Subscription.deleteOne({ _id: sub._id });
-                    }
-                })
-        );
-        await Promise.all(pushPromises);
+        const pushPromises = subscriptions.map(sub => sendWithRetry(webpush, sub, payload, options));
+        await Promise.allSettled(pushPromises);
     } catch (err) {
         console.error('[Push] Diagnostic Crash:', err.message);
     }
 };
+
 
 export const getActiveNotifications = asyncHandler(async (req, res) => {
     const notifications = await Notification.find({ isActive: true }).sort({ createdAt: -1 }).limit(10);

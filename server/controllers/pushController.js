@@ -43,6 +43,22 @@ export const subscribeUser = asyncHandler(async (req, res) => {
     res.status(201).json({ message: 'Push subscription successfully captured.' });
 });
 
+const sendWithRetry = async (sub, payload, options, retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await webpush.sendNotification(sub, payload, options);
+            return true;
+        } catch (err) {
+            if (err.statusCode === 410 || err.statusCode === 404) {
+                await Subscription.deleteOne({ endpoint: sub.endpoint });
+                return false;
+            }
+            if (i === retries - 1) throw err;
+            await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+        }
+    }
+};
+
 export const blastNotifications = asyncHandler(async (req, res) => {
     const { title, message, url } = req.body;
 
@@ -58,27 +74,41 @@ export const blastNotifications = asyncHandler(async (req, res) => {
     }
 
     const notificationPayload = JSON.stringify({
-        title,
+        title: "🛍️ Miazi Shop",
         body: message,
-        url: url || '/',
-        icon: `${APP_URL}/icons/icon-192x192.png`,
-        badge: `${APP_URL}/badge-miazi-v50.png`,
+        url: url || "/",
+        icon: "https://miazi-shop.vercel.app/icons/icon-192x192.png",
+        badge: "https://miazi-shop.vercel.app/badge-monochrome.png",
+        image: "https://miazi-shop.vercel.app/logo.png",
+        tag: "miazi-notification",
+        renotify: true,
+        requireInteraction: true,
+        vibrate: [200, 100, 200, 100, 200],
+        actions: [
+          {
+            action: "view",
+            title: "🛒 View Now"
+          },
+          {
+            action: "close", 
+            title: "✕ Dismiss"
+          }
+        ],
+        data: {
+          url: url || "/"
+        }
     });
 
+    const options = {
+        TTL: 86400,
+        urgency: 'very-high',
+        topic: 'miazi-shop'
+    };
+
     const results = await Promise.allSettled(
-        subscriptions.map((sub) =>
-            webpush.sendNotification(sub, notificationPayload, {
-                TTL: 86400,
-                urgency: 'high',
-                topic: 'miazi-notification'
-            }).catch(async (err) => {
-                if (err.statusCode === 410 || err.statusCode === 404) {
-                    await Subscription.deleteOne({ endpoint: sub.endpoint });
-                }
-                throw err;
-            })
-        )
+        subscriptions.map((sub) => sendWithRetry(sub, notificationPayload, options))
     );
+
 
     const successful = results.filter((r) => r.status === 'fulfilled').length;
     const failed = results.filter((r) => r.status === 'rejected').length;
