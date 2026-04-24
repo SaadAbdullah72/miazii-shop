@@ -1,4 +1,4 @@
-// OneSignal Service Worker Sync v1.0.0
+// OneSignal Service Worker Sync v1.0.1
 const CACHE_NAME = 'miazi-cache-v84';
 const ASSETS_TO_CACHE = [
   '/',
