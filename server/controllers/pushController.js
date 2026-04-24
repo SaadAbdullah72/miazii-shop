@@ -94,8 +94,12 @@ export const blastNotifications = asyncHandler(async (req, res) => {
         const data = await response.json();
 
         if (data.errors) {
-            console.error('[OneSignal] Blast Rejected:', data.errors);
-            return res.status(400).json({ message: 'OneSignal Blast Rejected', errors: data.errors });
+            const errorMsg = Array.isArray(data.errors) ? data.errors.join(', ') : JSON.stringify(data.errors);
+            console.error('[OneSignal] Blast Rejected:', errorMsg);
+            return res.status(400).json({ 
+                message: `OneSignal Rejected: ${errorMsg}`, 
+                errors: data.errors 
+            });
         }
 
         res.status(200).json({
