@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetails } from '../slices/productSlice';
 import { addToCart } from '../slices/cartSlice';
 import { toast } from 'react-toastify';
-import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle } from 'lucide-react';
+import { Star, ShoppingBag, ChevronRight, Truck, ShieldCheck, Heart, Info, Loader, User, MessageCircle, Upload, X, ImageIcon } from 'lucide-react';
 import api, { BASE_URL } from '../utils/axiosConfig';
 import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
+import { uploadToCloudinaryDirect } from '../utils/cloudinary';
 import Skeleton from '../components/Skeleton';
 
 const ProductDetailsPage = () => {
@@ -18,6 +19,8 @@ const ProductDetailsPage = () => {
     const [selectedImage, setSelectedImage] = useState(0);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [reviewImage, setReviewImage] = useState('');
+    const [uploading, setUploading] = useState(false);
     const [reviewLoading, setReviewLoading] = useState(false);
 
     const { loading, error, productDetails: product } = useSelector((state) => state.product);
@@ -36,15 +39,44 @@ const ProductDetailsPage = () => {
         }
     };
 
+    const uploadReviewImageHandler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            return toast.error('Please upload an image file');
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            return toast.error('Image size must be less than 5MB');
+        }
+
+        setUploading(true);
+        try {
+            const uploadedUrl = await uploadToCloudinaryDirect(file, 'reviews');
+            setReviewImage(uploadedUrl);
+            toast.success('Review image uploaded!');
+        } catch (err) {
+            toast.error(err.message || 'Failed to upload image');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const submitReviewHandler = async (e) => {
         e.preventDefault();
         if (rating === 0) return toast.error('Please select a rating');
         setReviewLoading(true);
         try {
-            await api.post(`/api/products/${id}/reviews`, { rating, comment });
+            await api.post(`/api/products/${id}/reviews`, { 
+                rating, 
+                comment,
+                image: reviewImage 
+            });
             toast.success('Review submitted successfully');
             setRating(0);
             setComment('');
+            setReviewImage('');
             dispatch(getProductDetails(id)); // Refresh product details to show new review
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to submit review');
@@ -356,9 +388,41 @@ const ProductDetailsPage = () => {
                                             placeholder="What did you like about this product?"
                                         ></textarea>
                                     </div>
+
+                                    {/* Review Image Upload UI */}
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Add Image (Optional)</label>
+                                        <div className="flex items-center gap-4">
+                                            {!reviewImage ? (
+                                                <label className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl p-4 cursor-pointer hover:border-yellow-400 hover:bg-yellow-50/50 transition-all group">
+                                                    <input type="file" onChange={uploadReviewImageHandler} className="hidden" />
+                                                    {uploading ? (
+                                                        <Loader className="animate-spin text-yellow-500" size={24} />
+                                                    ) : (
+                                                        <>
+                                                            <Upload className="text-gray-400 group-hover:text-yellow-500 transition-colors" size={24} />
+                                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Choose Photo</span>
+                                                        </>
+                                                    )}
+                                                </label>
+                                            ) : (
+                                                <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-100 group">
+                                                    <img src={reviewImage} alt="Review Preview" className="w-full h-full object-cover" />
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => setReviewImage('')}
+                                                        className="absolute top-2 right-2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
                                     <button 
                                         type="submit" 
-                                        disabled={reviewLoading}
+                                        disabled={reviewLoading || uploading}
                                         className="w-full bg-gray-900 text-white font-bold py-3 rounded-lg uppercase tracking-wider text-xs hover:bg-yellow-500 hover:text-gray-900 transition-colors disabled:opacity-50"
                                     >
                                         {reviewLoading ? 'Submitting...' : 'Submit Review'}
@@ -404,7 +468,17 @@ const ProductDetailsPage = () => {
                                                     />
                                                 ))}
                                             </div>
-                                            <p className="text-gray-600 text-sm leading-relaxed">{review.comment}</p>
+                                            <p className="text-gray-600 text-sm leading-relaxed mb-4">{review.comment}</p>
+                                            
+                                            {review.image && (
+                                                <div className="mt-4 rounded-xl overflow-hidden border border-gray-50 bg-gray-50 group cursor-pointer" onClick={() => window.open(review.image, '_blank')}>
+                                                    <img 
+                                                        src={toCDN(review.image, 400)} 
+                                                        alt="Review" 
+                                                        className="w-full max-h-[300px] object-cover group-hover:scale-105 transition-transform duration-500" 
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>

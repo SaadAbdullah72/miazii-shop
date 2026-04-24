@@ -59,7 +59,11 @@ const PlaceOrderPage = () => {
         if (distance <= 10) return 50;  // 1-10km: 50 TK
         if (distance <= 20) return 80;  // 10-20km: 80 TK
         if (distance <= 30) return 120; // 20-30km: 120 TK
-        return 150; // >30km or remote areas: 150 TK
+        
+        // Above 30 km logic: 120 + (extra distance * 2.5)
+        const extraKm = distance - 30;
+        const extraCharge = Math.ceil(extraKm * 2.5);
+        return 120 + extraCharge;
     };
 
     // 1. First, calculate the cost of all items in the cart
@@ -438,7 +442,12 @@ const PlaceOrderPage = () => {
                                     <div className="flex flex-col">
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Delivery Charge</span>
                                         {userDistance && (
-                                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">Distance: {userDistance.toFixed(1)} KM</span>
+                                            <div className="flex flex-col mt-1">
+                                                <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Distance: {userDistance.toFixed(1)} KM</span>
+                                                {userDistance > 30 && (
+                                                    <span className="text-[7px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">Base (120) + Extra (৳{Math.ceil((userDistance-30)*2.5)})</span>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
                                     <span className="text-slate-800 font-black text-sm">৳{shippingPrice.toLocaleString()}</span>

@@ -214,6 +214,7 @@ const createProductReview = asyncHandler(async (req, res) => {
             rating: Number(rating),
             comment,
             user: req.user._id,
+            image: req.body.image || '',
         };
 
         product.reviews.push(review);
