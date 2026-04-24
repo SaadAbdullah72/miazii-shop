@@ -127,73 +127,8 @@ self.addEventListener('periodicsync', (event) => {
   }
 });
 
-self.addEventListener('push', function(event) {
-  console.log('🔔 [Radar] Incoming Push Event Detected!');
-  event.waitUntil(
-    (async () => {
-      let data = {};
-      if (event.data) {
-        try { 
-          data = event.data.json(); 
-          console.log('📦 [Radar] Push Payload (JSON):', data);
-        } catch (e) { 
-          data = { body: event.data.text() }; 
-          console.log('📦 [Radar] Push Payload (Text):', data.body);
-        }
-      } else {
-        console.warn('⚠️ [Radar] Push received but NO DATA payload found.');
-      }
-
-
-      // If payload is empty, use a smart fallback
-      const title = data.title || '🛍️ Miazi Shop';
-      const body = data.body || 'New premium tech deals just landed!';
-      
-      const options = {
-        body: body,
-        icon: data.icon || '/logo-192.png',
-        tag: data.tag || 'miazi-notification',
-        renotify: true,
-        requireInteraction: true,
-        vibrate: [100, 50, 100, 50, 200], // Premium pulse
-        timestamp: Date.now(),
-        actions: [
-          { action: 'view', title: '🛒 View Shop' },
-          { action: 'close', title: '✕ Dismiss' }
-        ],
-        data: { 
-          url: data.url || data?.data?.url || '/',
-          launchTimestamp: Date.now()
-        }
-      };
-
-      return self.registration.showNotification(title, options);
-    })()
-  );
-});
-
-self.addEventListener('notificationclick', function(event) {
-  event.notification.close();
-  
-  const targetUrl = event.notification.data?.url || '/';
-  // Ensure the target URL is absolute
-  const fullUrl = new URL(targetUrl, self.location.origin).href;
-  
-  if (event.action === 'close') return;
-
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(clientList => {
-        // Try to find an existing window and focus it
-        for (const client of clientList) {
-          if (client.url === fullUrl && 'focus' in client) {
-            return client.focus();
-          }
-        }
-        // If no existing window, or it's on a different page, open new one
-        if (clients.openWindow) {
-          return clients.openWindow(fullUrl);
-        }
-      })
-  );
-});
+/* 
+[LEGACY] Custom Push Listeners disabled to allow OneSignal SDK to handle notifications natively.
+self.addEventListener('push', function(event) { ... });
+self.addEventListener('notificationclick', function(event) { ... });
+*/
