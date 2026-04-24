@@ -98,7 +98,7 @@ export const createNotification = asyncHandler(async (req, res) => {
 
     const createdNotification = await notification.save();
 
-    safePushDispatch(title, message, link).catch(err => {
+    await safePushDispatch(title, message, link).catch(err => {
         console.error('[Push] Automation Error:', err.message);
     });
 

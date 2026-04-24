@@ -262,7 +262,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
         // AUTOMATION: Push Notification for Payment Success
         // [MODIFICATION] Skip broadcasting to everyone for automated COD system updates
         if (req.body.id !== 'COD_SYSTEM_AUTO') {
-            safePushDispatch(
+            await safePushDispatch(
                 'Payment Received! ✅',
                 `Your order #${order._id.toString().slice(-6).toUpperCase()} has been successfully paid.`,
                 `/order/${order._id}`,
@@ -292,7 +292,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         const updatedOrder = await order.save();
 
         // AUTOMATION: Targeted Push Notification for Status Update
-        safePushDispatch(
+        await safePushDispatch(
             `Order ${updatedOrder.orderStatus}! 📦`,
             `Status for order #${order._id.toString().slice(-6).toUpperCase()} changed to: ${updatedOrder.orderStatus}.`,
             `/order/${order._id}`,
@@ -401,7 +401,7 @@ const approveOrderPayment = asyncHandler(async (req, res) => {
         }
 
         // AUTOMATION: Targeted Push for Payment Approval
-        safePushDispatch(
+        await safePushDispatch(
             'Payment Approved! ✅',
             `Your payment for order #${order._id.toString().slice(-6).toUpperCase()} has been verified. Processing now!`,
             `/order/${order._id}`,
@@ -453,7 +453,7 @@ const rejectOrderPayment = asyncHandler(async (req, res) => {
         }
 
         // AUTOMATION: Targeted Push for Payment Rejection
-        safePushDispatch(
+        await safePushDispatch(
             'Payment Issue ⚠️',
             `Your payment for order #${order._id.toString().slice(-6).toUpperCase()} was rejected. Please contact support or re-upload.`,
             `/order/${order._id}`,
