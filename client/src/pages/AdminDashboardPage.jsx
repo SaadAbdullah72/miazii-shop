@@ -605,14 +605,25 @@ const AdminDashboardPage = () => {
                                                 <Zap size={10} className="text-yellow-500" /> Payment Proof
                                             </div>
                                             <div className="rounded-3xl border border-slate-100 p-2 bg-slate-50 relative group/img overflow-hidden cursor-zoom-in">
-                                                <img 
-                                                    src={order.paymentScreenshot?.startsWith('data:image') ? order.paymentScreenshot : (order.paymentScreenshot?.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`)} 
-                                                    alt="Payment Receipt" 
-                                                    className="w-full rounded-2xl aspect-video xl:aspect-square object-cover shadow-sm group-hover/img:scale-110 transition-transform duration-700" 
-                                                />
-                                                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <span className="text-[10px] font-black text-white uppercase tracking-widest bg-slate-900/60 px-4 py-2 rounded-full backdrop-blur-sm">Expand Image</span>
-                                                </div>
+                                                {(order.paymentMethod === 'Cash on Delivery' || order.paymentMethod === 'COD') ? (
+                                                    <div className="w-full aspect-video xl:aspect-square bg-slate-900 rounded-2xl flex flex-col items-center justify-center p-6 text-center border-4 border-yellow-400 shadow-inner">
+                                                        <Zap size={48} className="text-yellow-400 mb-4 animate-pulse" />
+                                                        <h3 className="text-xl font-black text-white uppercase tracking-tighter">Cash on Delivery</h3>
+                                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">No Receipt Required</p>
+                                                        <div className="mt-6 px-4 py-2 bg-yellow-400 text-slate-900 text-[10px] font-black rounded-lg uppercase">Verify Address Instead</div>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <img 
+                                                            src={order.paymentScreenshot?.startsWith('data:image') ? order.paymentScreenshot : (order.paymentScreenshot?.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`)} 
+                                                            alt="Payment Receipt" 
+                                                            className="w-full rounded-2xl aspect-video xl:aspect-square object-cover shadow-sm group-hover/img:scale-110 transition-transform duration-700" 
+                                                        />
+                                                        <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                                            <span className="text-[10px] font-black text-white uppercase tracking-widest bg-slate-900/60 px-4 py-2 rounded-full backdrop-blur-sm">Expand Image</span>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
 
