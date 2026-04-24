@@ -39,7 +39,7 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             contents: { en: message },
             url: link || "https://miazi-shop.vercel.app/",
             chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
-            chrome_web_badge: "https://miazi-shop.vercel.app/badge-monochrome-v2.png",
+            chrome_web_badge: "https://miazi-shop.vercel.app/badge-monochrome-v3.png",
             // If userId is provided, target that specific user via external_id
             ...(userId ? { include_external_user_ids: [userId.toString()] } : { included_segments: ["All"] })
         };
