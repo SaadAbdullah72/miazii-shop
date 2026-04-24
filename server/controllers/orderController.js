@@ -265,7 +265,8 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
             safePushDispatch(
                 'Payment Received! ✅',
                 `Your order #${order._id.toString().slice(-6).toUpperCase()} has been successfully paid.`,
-                `/order/${order._id}`
+                `/order/${order._id}`,
+                order.user
             ).catch(err => console.error('[Push] Payment Alert Error:', err));
         }
 
@@ -290,11 +291,12 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         }
         const updatedOrder = await order.save();
 
-        // AUTOMATION: Push Notification for Status Update
+        // AUTOMATION: Targeted Push Notification for Status Update
         safePushDispatch(
             `Order ${updatedOrder.orderStatus}! 📦`,
             `Status for order #${order._id.toString().slice(-6).toUpperCase()} changed to: ${updatedOrder.orderStatus}.`,
-            `/order/${order._id}`
+            `/order/${order._id}`,
+            order.user // [TARGETED]: Send only to the owner of this order
         ).catch(err => console.error('[Push] Status Alert Error:', err));
 
         res.json(updatedOrder);
@@ -398,6 +400,14 @@ const approveOrderPayment = asyncHandler(async (req, res) => {
              console.error('Approval email failed:', err.message);
         }
 
+        // AUTOMATION: Targeted Push for Payment Approval
+        safePushDispatch(
+            'Payment Approved! ✅',
+            `Your payment for order #${order._id.toString().slice(-6).toUpperCase()} has been verified. Processing now!`,
+            `/order/${order._id}`,
+            order.user._id
+        ).catch(err => console.error('[Push] Approval Alert Error:', err));
+
         res.json(updatedOrder);
     } else {
         res.status(404);
@@ -441,6 +451,14 @@ const rejectOrderPayment = asyncHandler(async (req, res) => {
         } catch (err) {
              console.error('Rejection email failed:', err.message);
         }
+
+        // AUTOMATION: Targeted Push for Payment Rejection
+        safePushDispatch(
+            'Payment Issue ⚠️',
+            `Your payment for order #${order._id.toString().slice(-6).toUpperCase()} was rejected. Please contact support or re-upload.`,
+            `/order/${order._id}`,
+            order.user._id
+        ).catch(err => console.error('[Push] Rejection Alert Error:', err));
 
         res.json(updatedOrder);
     } else {

@@ -21,7 +21,7 @@ const sendWithRetry = async (webpush, sub, payload, options, retries = 3) => {
     }
 };
 
-export const safePushDispatch = async (title, message, link) => {
+export const safePushDispatch = async (title, message, link, userId = null) => {
     const publicKey = process.env.VAPID_PUBLIC_KEY;
     const privateKey = process.env.VAPID_PRIVATE_KEY;
     const mailEmail = process.env.VAPID_EMAIL || 'mailto:miazistore.bd@gmail.com';
@@ -32,8 +32,10 @@ export const safePushDispatch = async (title, message, link) => {
     }
 
     try {
-        const subscriptions = await Subscription.find({});
-        console.log(`[Push] Found ${subscriptions.length} subscriptions in DB.`);
+        // [TARGETING]: If userId is provided, only send to that user's devices. Otherwise, broadcast to all.
+        const query = userId ? { user: userId } : {};
+        const subscriptions = await Subscription.find(query);
+        console.log(`[Push] Found ${subscriptions.length} subscriptions in DB for target: ${userId || 'BROADCAST'}`);
 
         if (subscriptions.length === 0) {
             console.warn('[Push] Skipping: No devices registered.');
