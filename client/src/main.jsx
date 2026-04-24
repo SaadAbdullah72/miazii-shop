@@ -29,6 +29,16 @@ createRoot(document.getElementById('root')).render(
 // Registering Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // [CRITICAL] Purge stale workers from previous failed migrations
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for(let registration of registrations) {
+        if (!registration.active?.scriptURL.includes('sw.js')) {
+            console.log('Unregistering foreign/stale worker:', registration.active?.scriptURL);
+            registration.unregister();
+        }
+      }
+    });
+
     navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
       .then(reg => {
         console.log('SW Registered', reg);

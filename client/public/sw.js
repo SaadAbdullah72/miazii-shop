@@ -1,5 +1,5 @@
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
-// OneSignal Service Worker Sync v1.0.3
+// OneSignal Service Worker Sync v1.0.4 (Purge Edition)
 const CACHE_NAME = 'miazi-cache-v90';
 const ASSETS_TO_CACHE = [
   '/',
