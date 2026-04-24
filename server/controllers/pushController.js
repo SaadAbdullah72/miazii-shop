@@ -75,11 +75,10 @@ export const blastNotifications = asyncHandler(async (req, res) => {
     }
 
     const notificationPayload = JSON.stringify({
-        title: "🛍️ Miazi Shop",
+        title: title || "🛍️ Miazi Shop",
         body: message,
         url: url || "/",
-        icon: "https://miazi-shop.vercel.app/icons/icon-192x192.png",
-        badge: "https://miazi-shop.vercel.app/badge-monochrome.png",
+        icon: "https://miazi-shop.vercel.app/logo-192.png",
         tag: "miazi-notification",
         renotify: true,
         data: {
