@@ -22,60 +22,46 @@ const sendWithRetry = async (webpush, sub, payload, options, retries = 3) => {
 };
 
 export const safePushDispatch = async (title, message, link, userId = null) => {
-    const publicKey = process.env.VAPID_PUBLIC_KEY;
-    const privateKey = process.env.VAPID_PRIVATE_KEY;
-    const mailEmail = process.env.VAPID_EMAIL || 'mailto:miazistore.bd@gmail.com';
+    const appId = process.env.ONESIGNAL_APP_ID;
+    const apiKey = process.env.ONESIGNAL_API_KEY;
 
-    if (!publicKey || !privateKey) {
-        console.error('[Push] CANNOT SEND: VAPID keys missing from process.env');
+    if (!appId || !apiKey) {
+        console.error('[Push] CANNOT SEND: OneSignal credentials missing from process.env');
         return;
     }
 
     try {
-        // [TARGETING]: If userId is provided, only send to that user's devices. Otherwise, broadcast to all.
-        const query = userId ? { user: userId } : {};
-        const subscriptions = await Subscription.find(query);
-        console.log(`[Push] Found ${subscriptions.length} subscriptions in DB for target: ${userId || 'BROADCAST'}`);
-
-        if (subscriptions.length === 0) {
-            console.warn('[Push] Skipping: No devices registered.');
-            return;
-        }
-
-        const webpushModule = await import('web-push');
-        const webpush = webpushModule.default || webpushModule;
-
-        // [ROBUST]: Set VAPID details immediately before sending to ensure they match current .env
-        webpush.setVapidDetails(mailEmail, publicKey, privateKey);
-
-        const payload = JSON.stringify({
-            title: title || "🛍️ Miazi Shop",
-            body: message,
-            url: link || "/",
-            icon: "https://miazi-shop.vercel.app/logo-192.png",
-            tag: "miazi-notification",
-            renotify: true,
-            data: {
-              url: link || "/"
-            }
-        });
-
-        const options = {
-            TTL: 86400,
-            urgency: 'high',
-            topic: 'miazi-shop'
+        console.log(`[OneSignal] Preparing dispatch for: ${userId || 'ALL USERS'}`);
+        
+        const payload = {
+            app_id: appId,
+            headings: { en: title || "🛍️ Miazi Shop" },
+            contents: { en: message },
+            url: link || "https://miazi-shop.vercel.app/",
+            chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
+            // If userId is provided, target that specific user via external_id
+            ...(userId ? { include_external_user_ids: [userId.toString()] } : { included_segments: ["All"] })
         };
 
-        const pushPromises = subscriptions.map(sub => sendWithRetry(webpush, sub, payload, options));
-        const results = await Promise.allSettled(pushPromises);
+        const response = await fetch('https://onesignal.com/api/v1/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Basic ${apiKey}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
         
-        // [DIAGNOSTIC]: Log results to help debug delivery failures
-        const successCount = results.filter(r => r.status === 'fulfilled' && r.value === true).length;
-        const failedCount = results.length - successCount;
-        console.log(`[Push] Batch Dispatch Results - Success: ${successCount} | Failed: ${failedCount}`);
+        if (data.errors) {
+            console.error('[OneSignal] Dispatch Errors:', data.errors);
+        } else {
+            console.log(`[OneSignal] Success! Notification ID: ${data.id} | Recipients: ${data.recipients || 'Pending'}`);
+        }
 
     } catch (err) {
-        console.error('[Push] Critical Dispatch Crash:', err.message);
+        console.error('[OneSignal] Critical dispatch failure:', err.message);
     }
 };
 

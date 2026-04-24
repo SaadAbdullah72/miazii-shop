@@ -64,48 +64,46 @@ export const blastNotifications = asyncHandler(async (req, res) => {
         throw new Error('Please provide both title and message for the blast.');
     }
 
-    const subscriptions = await Subscription.find({});
+    const appId = process.env.ONESIGNAL_APP_ID;
+    const apiKey = process.env.ONESIGNAL_API_KEY;
 
-    if (subscriptions.length === 0) {
-        return res.status(200).json({ message: 'No active subscriptions found.' });
+    if (!appId || !apiKey) {
+        res.status(500);
+        throw new Error('OneSignal configuration missing on server.');
     }
 
-    const notificationPayload = JSON.stringify({
-        title: title || "🛍️ Miazi Shop",
-        body: message,
-        url: url || "/",
-        icon: "https://miazi-shop.vercel.app/logo-192.png",
-        tag: "miazi-notification",
-        renotify: true,
-        data: {
-          url: url || "/"
+    try {
+        const payload = {
+            app_id: appId,
+            headings: { en: title },
+            contents: { en: message },
+            url: url || "https://miazi-shop.vercel.app/",
+            chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
+            included_segments: ["All"]
+        };
+
+        const response = await fetch('https://onesignal.com/api/v1/notifications', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Basic ${apiKey}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.errors) {
+            return res.status(400).json({ message: 'OneSignal Blast Failed', errors: data.errors });
         }
-    });
 
-    // [ROBUST]: Set VAPID details immediately before sending to ensure they match current .env
-    webpush.setVapidDetails(
-        'mailto:miazistore.bd@gmail.com',
-        process.env.VAPID_PUBLIC_KEY,
-        process.env.VAPID_PRIVATE_KEY
-    );
+        res.status(200).json({
+            message: `OneSignal Blast successful.`,
+            summary: { id: data.id, recipients: data.recipients }
+        });
 
-    const options = {
-        TTL: 86400,
-        urgency: 'high',
-        topic: 'miazi-shop'
-    };
-
-
-    const results = await Promise.allSettled(
-        subscriptions.map((sub) => sendWithRetry(sub, notificationPayload, options))
-    );
-
-
-    const successful = results.filter((r) => r.status === 'fulfilled').length;
-    const failed = results.filter((r) => r.status === 'rejected').length;
-
-    res.status(200).json({
-        message: `Notification blast complete.`,
-        summary: { total: subscriptions.length, successful, failed }
-    });
+    } catch (err) {
+        res.status(500);
+        throw new Error(`OneSignal Blast Crash: ${err.message}`);
+    }
 });

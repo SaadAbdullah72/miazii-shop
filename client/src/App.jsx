@@ -35,7 +35,6 @@ const PageLoader = () => <div className="min-h-screen bg-[#f5f5f5]" />;
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from './slices/authSlice';
-import { subscribeToPush } from './utils/pushService';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 
@@ -53,8 +52,14 @@ function App() {
             hasSyncedProfile.current = true;
         }
 
-        // Initialize Push Notification Subscription
-        subscribeToPush();
+        // --- OneSignal Identity Sync ---
+        if (userInfo && userInfo._id) {
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            window.OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.login(userInfo._id.toString());
+                console.log('✅ [OneSignal] User identity synced:', userInfo._id);
+            });
+        }
 
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.ready.then(reg => {
