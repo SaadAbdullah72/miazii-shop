@@ -45,6 +45,7 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
         const webpushModule = await import('web-push');
         const webpush = webpushModule.default || webpushModule;
 
+        // [ROBUST]: Set VAPID details immediately before sending to ensure they match current .env
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
 
         const payload = JSON.stringify({
@@ -66,10 +67,15 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
         };
 
         const pushPromises = subscriptions.map(sub => sendWithRetry(webpush, sub, payload, options));
-        await Promise.allSettled(pushPromises);
+        const results = await Promise.allSettled(pushPromises);
+        
+        // [DIAGNOSTIC]: Log results to help debug delivery failures
+        const successCount = results.filter(r => r.status === 'fulfilled' && r.value === true).length;
+        const failedCount = results.length - successCount;
+        console.log(`[Push] Batch Dispatch Results - Success: ${successCount} | Failed: ${failedCount}`);
 
     } catch (err) {
-        console.error('[Push] Diagnostic Crash:', err.message);
+        console.error('[Push] Critical Dispatch Crash:', err.message);
     }
 };
 

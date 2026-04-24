@@ -7,11 +7,7 @@ dotenv.config();
 
 const APP_URL = 'https://miazi-shop.vercel.app';
 
-webpush.setVapidDetails(
-    'mailto:miazistore.bd@gmail.com',
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-);
+// Subscriptions and VAPID detail management
 
 
 export const subscribeUser = asyncHandler(async (req, res) => {
@@ -85,6 +81,13 @@ export const blastNotifications = asyncHandler(async (req, res) => {
           url: url || "/"
         }
     });
+
+    // [ROBUST]: Set VAPID details immediately before sending to ensure they match current .env
+    webpush.setVapidDetails(
+        'mailto:miazistore.bd@gmail.com',
+        process.env.VAPID_PUBLIC_KEY,
+        process.env.VAPID_PRIVATE_KEY
+    );
 
     const options = {
         TTL: 86400,
