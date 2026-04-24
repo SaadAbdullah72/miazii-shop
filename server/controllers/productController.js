@@ -244,7 +244,14 @@ const createProductReview = asyncHandler(async (req, res) => {
 const deleteProductReview = asyncHandler(async (req, res) => {
     const { id, reviewId } = req.params;
 
-    const product = await Product.findById(id);
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    let product;
+
+    if (isObjectId) {
+        product = await Product.findById(id);
+    } else {
+        product = await Product.findOne({ slug: id });
+    }
 
     if (product) {
         const review = product.reviews.id(reviewId);
