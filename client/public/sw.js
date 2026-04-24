@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v81';
+const CACHE_NAME = 'miazi-cache-v82';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -129,20 +129,25 @@ self.addEventListener('push', function(event) {
     (async () => {
       let data = {};
       if (event.data) {
-        try { data = event.data.json(); }
-        catch (e) { data = { body: event.data.text() }; }
+        try { 
+          data = event.data.json(); 
+        } catch (e) { 
+          data = { body: event.data.text() }; 
+        }
       }
 
+      // If payload is empty, use a smart fallback
       const title = data.title || '🛍️ Miazi Shop';
+      const body = data.body || 'New premium tech deals just landed!';
+      
       const options = {
-        body: data.body || 'You have a new update!',
+        body: body,
         icon: data.icon || '/icons/icon-192x192.png',
         badge: '/badge-monochrome.png',
         image: data.image || '/logo.png',
         tag: data.tag || 'miazi-notification',
         renotify: true,
         requireInteraction: true,
-        silent: false,
         vibrate: [200, 100, 200, 100, 200],
         timestamp: Date.now(),
         actions: [
@@ -151,12 +156,6 @@ self.addEventListener('push', function(event) {
         ],
         data: { url: data.url || data?.data?.url || '/' }
       };
-
-      // Keep service worker alive
-      const allClients = await clients.matchAll({
-        includeUncontrolled: true,
-        type: 'window'
-      });
 
       return self.registration.showNotification(title, options);
     })()

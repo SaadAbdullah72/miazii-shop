@@ -8,10 +8,11 @@ dotenv.config();
 const APP_URL = 'https://miazi-shop.vercel.app';
 
 webpush.setVapidDetails(
-    process.env.VAPID_SUBJECT || 'mailto:miazi.shop@gmail.com',
+    'mailto:miazistore.bd@gmail.com',
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
 );
+
 
 export const subscribeUser = asyncHandler(async (req, res) => {
     const subscription = req.body;
