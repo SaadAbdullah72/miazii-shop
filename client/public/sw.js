@@ -1,4 +1,4 @@
-const CACHE_NAME = 'miazi-cache-v83';
+const CACHE_NAME = 'miazi-cache-v84';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -36,6 +36,7 @@ self.addEventListener('activate', (event) => {
       self.registration.navigationPreload ? self.registration.navigationPreload.enable() : Promise.resolve()
     ])
   );
+  console.log('💎 [SW v84] Reporting for duty - Active and listening.');
   self.clients.claim();
 });
 
@@ -125,16 +126,22 @@ self.addEventListener('periodicsync', (event) => {
 });
 
 self.addEventListener('push', function(event) {
+  console.log('🔔 [Radar] Incoming Push Event Detected!');
   event.waitUntil(
     (async () => {
       let data = {};
       if (event.data) {
         try { 
           data = event.data.json(); 
+          console.log('📦 [Radar] Push Payload (JSON):', data);
         } catch (e) { 
           data = { body: event.data.text() }; 
+          console.log('📦 [Radar] Push Payload (Text):', data.body);
         }
+      } else {
+        console.warn('⚠️ [Radar] Push received but NO DATA payload found.');
       }
+
 
       // If payload is empty, use a smart fallback
       const title = data.title || '🛍️ Miazi Shop';
