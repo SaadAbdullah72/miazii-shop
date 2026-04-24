@@ -64,8 +64,8 @@ export const blastNotifications = asyncHandler(async (req, res) => {
         throw new Error('Please provide both title and message for the blast.');
     }
 
-    const appId = process.env.ONESIGNAL_APP_ID;
-    const apiKey = process.env.ONESIGNAL_API_KEY;
+    const appId = process.env.ONESIGNAL_APP_ID?.trim();
+    const apiKey = process.env.ONESIGNAL_API_KEY?.trim();
 
     if (!appId || !apiKey) {
         res.status(500);

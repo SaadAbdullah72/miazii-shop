@@ -22,8 +22,8 @@ const sendWithRetry = async (webpush, sub, payload, options, retries = 3) => {
 };
 
 export const safePushDispatch = async (title, message, link, userId = null) => {
-    const appId = process.env.ONESIGNAL_APP_ID;
-    const apiKey = process.env.ONESIGNAL_API_KEY;
+    const appId = process.env.ONESIGNAL_APP_ID?.trim();
+    const apiKey = process.env.ONESIGNAL_API_KEY?.trim();
 
     if (!appId || !apiKey) {
         console.error('[Push] CANNOT SEND: OneSignal credentials missing from process.env');
