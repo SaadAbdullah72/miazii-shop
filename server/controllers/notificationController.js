@@ -51,21 +51,8 @@ export const safePushDispatch = async (title, message, link) => {
             url: link || "/",
             icon: "https://miazi-shop.vercel.app/icons/icon-192x192.png",
             badge: "https://miazi-shop.vercel.app/badge-monochrome.png",
-            image: "https://miazi-shop.vercel.app/logo.png",
             tag: "miazi-notification",
             renotify: true,
-            requireInteraction: true,
-            vibrate: [200, 100, 200, 100, 200],
-            actions: [
-              {
-                action: "view",
-                title: "🛒 View Now"
-              },
-              {
-                action: "close", 
-                title: "✕ Dismiss"
-              }
-            ],
             data: {
               url: link || "/"
             }
@@ -73,12 +60,13 @@ export const safePushDispatch = async (title, message, link) => {
 
         const options = {
             TTL: 86400,
-            urgency: 'very-high',
+            urgency: 'high',
             topic: 'miazi-shop'
         };
 
         const pushPromises = subscriptions.map(sub => sendWithRetry(webpush, sub, payload, options));
         await Promise.allSettled(pushPromises);
+
     } catch (err) {
         console.error('[Push] Diagnostic Crash:', err.message);
     }
