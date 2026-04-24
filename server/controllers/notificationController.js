@@ -48,11 +48,10 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
         webpush.setVapidDetails(mailEmail, publicKey, privateKey);
 
         const payload = JSON.stringify({
-            title: "🛍️ Miazi Shop",
+            title: title || "🛍️ Miazi Shop",
             body: message,
             url: link || "/",
-            icon: "https://miazi-shop.vercel.app/icons/icon-192x192.png",
-            badge: "https://miazi-shop.vercel.app/badge-monochrome.png",
+            icon: "https://miazi-shop.vercel.app/logo-192.png",
             tag: "miazi-notification",
             renotify: true,
             data: {
