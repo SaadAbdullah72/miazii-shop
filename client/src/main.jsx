@@ -32,8 +32,10 @@ if ('serviceWorker' in navigator) {
     // [CRITICAL] Purge stale workers from previous failed migrations
     navigator.serviceWorker.getRegistrations().then(registrations => {
       for(let registration of registrations) {
-        if (!registration.active?.scriptURL.includes('sw.js')) {
-            console.log('Unregistering foreign/stale worker:', registration.active?.scriptURL);
+        // Skip registrations that haven't activated yet
+        if (!registration.active) continue;
+        if (!registration.active.scriptURL.includes('sw.js')) {
+            console.log('Unregistering foreign/stale worker:', registration.active.scriptURL);
             registration.unregister();
         }
       }

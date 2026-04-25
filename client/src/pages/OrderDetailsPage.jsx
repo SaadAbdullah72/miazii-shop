@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import api, { BASE_URL } from '../utils/axiosConfig';
-import { Loader, ChevronRight, Package, Truck, Calendar, User, MapPin, Receipt, CheckCircle2, Clock, AlertCircle, Globe, Zap, Plus, Mail } from 'lucide-react';
+import { toCDN, ERROR_IMAGE } from '../utils/imageUtils';
+import { Loader, ChevronRight, Package, Truck, Calendar, User, MapPin, Receipt, CheckCircle2, Clock, AlertCircle, Globe, Zap, Plus, Mail, Star, MessageCircle } from 'lucide-react';
 
 const OrderDetailsPage = () => {
     const { id } = useParams();
@@ -146,10 +147,15 @@ const OrderDetailsPage = () => {
                                             {order.paymentScreenshot && (
                                                 <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-gray-100">
                                                     <img
-                                                        src={order.paymentScreenshot.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`}
+                                                        src={toCDN(order.paymentScreenshot.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`, 400)}
                                                         alt="Receipt"
                                                         className="max-w-full h-24 object-contain rounded shadow-sm cursor-zoom-in"
-                                                        onClick={() => window.open(order.paymentScreenshot.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`, '_blank')}
+                                                        onClick={() => {
+                                                            if (order.paymentScreenshot.startsWith('http')) {
+                                                                window.open(order.paymentScreenshot, '_blank');
+                                                            }
+                                                        }}
+                                                        onError={(e) => { e.target.src = ERROR_IMAGE; e.target.onerror = null; }}
                                                     />
                                                 </div>
                                             )}
@@ -168,6 +174,7 @@ const OrderDetailsPage = () => {
                                             <th className="py-6 px-6 md:px-10">Product Unit</th>
                                             <th className="py-6 px-4 text-center">Unit Price</th>
                                             <th className="py-6 px-4 text-center">Qty</th>
+                                            <th className="py-6 px-4 text-center">Review</th>
                                             <th className="py-6 px-6 md:px-10 text-right">Subtotal</th>
                                         </tr>
                                     </thead>
@@ -177,9 +184,12 @@ const OrderDetailsPage = () => {
                                                 <td className="py-6 px-6 md:px-10">
                                                     <div className="flex items-center gap-4 md:gap-6">
                                                         <div className="w-12 h-12 md:w-16 md:h-16 bg-white border border-gray-100 rounded-xl p-2 flex items-center justify-center shrink-0">
-                                                            <img src={item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`} alt={item.name} className="max-w-full max-h-full object-contain" />
+                                                            <img src={toCDN(item.image.startsWith('http') ? item.image : `${BASE_URL}${item.image}`, 200)} alt={item.name} className="max-w-full max-h-full object-contain" onError={(e) => { e.target.src = ERROR_IMAGE; e.target.onerror = null; }} />
                                                         </div>
-                                                        <Link to={`/product/${item.slug}`} className="text-xs md:text-sm font-black text-electro-dark hover:text-yellow-500 uppercase tracking-tight leading-tight line-clamp-2">
+                                                        <Link 
+                                                            to={`/product/${item.product?.slug || item.product?._id || item.product}`} 
+                                                            className="text-xs md:text-sm font-black text-electro-dark hover:text-yellow-500 uppercase tracking-tight leading-tight line-clamp-2"
+                                                        >
                                                             {item.name}
                                                         </Link>
                                                     </div>
@@ -187,6 +197,15 @@ const OrderDetailsPage = () => {
                                                 <td className="py-6 px-4 text-center text-[10px] md:text-xs font-black text-gray-400">৳{item.price.toLocaleString()}</td>
                                                 <td className="py-6 px-4 text-center">
                                                     <span className="text-[9px] font-black text-electro-dark bg-electro-yellow/10 px-3 py-1 rounded-full uppercase">x{item.qty}</span>
+                                                </td>
+                                                <td className="py-6 px-4 text-center">
+                                                    <Link
+                                                        to={`/product/${item.product?.slug || item.product?._id || item.product}#reviews`}
+                                                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-yellow-400 hover:text-electro-dark hover:border-yellow-400 transition-all active:scale-95 group/review"
+                                                    >
+                                                        <Star size={12} className="group-hover/review:fill-electro-dark transition-all" />
+                                                        Review
+                                                    </Link>
                                                 </td>
                                                 <td className="py-6 px-6 md:px-10 text-right font-black text-electro-dark text-sm md:text-base font-mono">৳{(item.qty * item.price).toLocaleString()}</td>
                                             </tr>

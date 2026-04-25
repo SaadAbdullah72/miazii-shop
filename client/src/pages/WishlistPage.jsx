@@ -67,7 +67,7 @@ const WishlistPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {wishlistItems.map((item) => (
                             <div key={item._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all">
-                                <Link to={`/product/${item.slug}`} className="block relative aspect-square bg-gray-50 p-6 overflow-hidden">
+                                <Link to={`/product/${item.slug || item._id}`} className="block relative aspect-square bg-gray-50 p-6 overflow-hidden">
                                     <img 
                                         src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : `${BASE_URL}${item.images[0]}`) : ERROR_IMAGE} 
                                         alt={item.name} 
@@ -83,7 +83,7 @@ const WishlistPage = () => {
                                 </Link>
                                 
                                 <div className="p-4 border-t border-gray-100">
-                                    <Link to={`/product/${item.slug}`} className="text-sm font-bold text-gray-800 hover:text-blue-600 truncate block mb-1">
+                                    <Link to={`/product/${item.slug || item._id}`} className="text-sm font-bold text-gray-800 hover:text-blue-600 truncate block mb-1">
                                         {item.name}
                                     </Link>
                                     <p className="text-lg font-bold text-gray-900 mb-4">৳{item.price.toLocaleString()}</p>

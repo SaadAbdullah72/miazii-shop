@@ -5,7 +5,7 @@ import { listCategories, createCategory, deleteCategory } from '../slices/catego
 import { fetchNotifications, createNotification as pushNotification, deleteNotification as removeNotification } from '../slices/notificationSlice';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
 import api, { BASE_URL } from '../utils/axiosConfig';
-import { ERROR_IMAGE } from '../utils/imageUtils';
+import { ERROR_IMAGE, toCDN } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
 import { 
     Package, List, ShoppingCart, 
@@ -615,9 +615,10 @@ const AdminDashboardPage = () => {
                                                 ) : (
                                                     <>
                                                         <img 
-                                                            src={order.paymentScreenshot?.startsWith('data:image') ? order.paymentScreenshot : (order.paymentScreenshot?.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`)} 
+                                                            src={toCDN(order.paymentScreenshot?.startsWith('data:image') ? order.paymentScreenshot : (order.paymentScreenshot?.startsWith('http') ? order.paymentScreenshot : `${BASE_URL}${order.paymentScreenshot}`), 400)} 
                                                             alt="Payment Receipt" 
                                                             className="w-full rounded-2xl aspect-video xl:aspect-square object-cover shadow-sm group-hover/img:scale-110 transition-transform duration-700" 
+                                                            onError={(e) => { e.target.src = ERROR_IMAGE; e.target.onerror = null; }}
                                                         />
                                                         <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                                                             <span className="text-[10px] font-black text-white uppercase tracking-widest bg-slate-900/60 px-4 py-2 rounded-full backdrop-blur-sm">Expand Image</span>

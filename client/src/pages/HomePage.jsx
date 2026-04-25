@@ -276,7 +276,7 @@ const HomePage = () => {
 
                 <div className="p-4 pt-2 text-center">
                   {/* 1. Clickable Image */}
-                  <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'} className="block">
+                  <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug || specialOfferProduct._id}` : '#'} className="block">
                     <div className="relative mb-6 h-56 flex items-center justify-center bg-gray-50 rounded-2xl overflow-hidden group/img">
                       <img
                         src={toCDN(specialOfferProduct?.images?.[0]?.startsWith('http') ? specialOfferProduct.images[0] : `${BASE_URL}${specialOfferProduct?.images?.[0]}`, 600)}
@@ -293,7 +293,7 @@ const HomePage = () => {
                   </Link>
 
                   {/* 2. Clickable Product Name */}
-                  <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'}>
+                  <Link to={specialOfferProduct ? `/product/${specialOfferProduct.slug || specialOfferProduct._id}` : '#'}>
                     <p className="text-[10px] font-black text-yellow-600 uppercase tracking-[0.2em] mb-2">
                       {specialOfferProduct?.category?.name || "Featured"}
                     </p>
@@ -310,7 +310,7 @@ const HomePage = () => {
                   </div>
 
                   <Link 
-                    to={specialOfferProduct ? `/product/${specialOfferProduct.slug}` : '#'}
+                    to={specialOfferProduct ? `/product/${specialOfferProduct.slug || specialOfferProduct._id}` : '#'}
                     className="inline-flex items-center gap-2 text-[10px] font-black text-slate-800 uppercase tracking-widest border-b-2 border-yellow-400 pb-1 hover:text-yellow-600 transition-colors"
                   >
                     View Details <ArrowRight size={14} />
@@ -412,7 +412,7 @@ const HomePage = () => {
                             {p.category?.name || 'Electronics'}
                           </p>
   
-                          <Link to={`/product/${p.slug}`}>
+                          <Link to={`/product/${p.slug || p._id}`}>
                             <h3 className="text-sm font-semibold text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors leading-tight">
                               {p.name}
                             </h3>
@@ -498,7 +498,7 @@ const HomePage = () => {
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
-                  <Link to={`/product/${p.slug}`}>
+                  <Link to={`/product/${p.slug || p._id}`}>
                     <h4 className="text-xs font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-1 transition-colors uppercase tracking-tight leading-tight">{p.name}</h4>
                   </Link>
                   <div className="flex items-center justify-between mt-1">

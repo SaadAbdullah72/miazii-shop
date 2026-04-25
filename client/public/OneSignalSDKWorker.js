@@ -78,8 +78,12 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, responseToCache));
         }
         return networkResponse;
-      }).catch(err => {
-        if (request.destination === 'image') return caches.match('/logo-192.png');
+      }).catch(async (err) => {
+        if (request.destination === 'image') {
+          const fallback = await caches.match('/logo-192.png');
+          return fallback || new Response('', { status: 404, statusText: 'Not Found' });
+        }
+        return new Response('', { status: 404, statusText: 'Not Found' });
       });
       return cachedResponse || fetchPromise;
     })

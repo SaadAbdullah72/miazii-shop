@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductDetails } from '../slices/productSlice';
 import { addToCart } from '../slices/cartSlice';
@@ -26,10 +26,26 @@ const ProductDetailsPage = () => {
     const { loading, error, productDetails: product } = useSelector((state) => state.product);
     const { userInfo } = useSelector((state) => state.auth);
 
+    const location = useLocation();
+
     useEffect(() => {
         dispatch(getProductDetails(id));
-        window.scrollTo(0, 0);
-    }, [dispatch, id]);
+        if (!location.hash) {
+            window.scrollTo(0, 0);
+        }
+    }, [dispatch, id, location.hash]);
+
+    // Auto-scroll to reviews section when coming from order page with #reviews hash
+    useEffect(() => {
+        if (location.hash === '#reviews' && product && !loading) {
+            setTimeout(() => {
+                const el = document.getElementById('reviews');
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 300);
+        }
+    }, [location.hash, product, loading]);
 
     const addToCartHandler = () => {
         if (product && product.countInStock > 0) {
@@ -360,7 +376,7 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* REVIEWS SECTION */}
-            <div className="container-custom py-12 border-t border-gray-200">
+            <div id="reviews" className="container-custom py-12 border-t border-gray-200">
                 <div className="max-w-4xl mx-auto">
                     <h2 className="text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-3 mb-8">
                         <MessageCircle size={28} className="text-yellow-500" />

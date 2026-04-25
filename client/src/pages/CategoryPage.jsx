@@ -100,7 +100,7 @@ const CategoryPage = () => {
                                         </div>
                                         <div className="p-3">
                                             <p className="text-[10px] text-gray-400 uppercase mb-1">{p.category?.name || 'Electronics'}</p>
-                                            <Link to={`/product/${p.slug}`}>
+                                            <Link to={`/product/${p.slug || p._id}`}>
                                                 <h3 className="text-sm font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors">{p.name}</h3>
                                             </Link>
                                             <div className="flex items-center gap-2">
