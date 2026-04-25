@@ -84,6 +84,11 @@ export const blastNotifications = asyncHandler(async (req, res) => {
             url: url || "https://miazi-shop.vercel.app/",
             chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
             chrome_web_badge: "https://miazi-shop.vercel.app/badge-final.png",
+            // Hardening for Background/Sleep Delivery
+            priority: 10,
+            web_push_priority: "high",
+            ttl: 86400,
+            android_visibility: 1,
             included_segments: ["Total Subscriptions"]
         };
 
