@@ -1,6 +1,6 @@
 importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
-// OneSignal Service Worker Sync v1.0.4 (Purge Edition)
-const CACHE_NAME = 'miazi-cache-v90';
+// OneSignal Service Worker Sync v1.0.5 (Aggressive Wakeup Edition)
+const CACHE_NAME = 'miazi-cache-v91';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -34,11 +34,10 @@ self.addEventListener('activate', (event) => {
           cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
         );
       }),
-      // Enable navigation preload if supported
       self.registration.navigationPreload ? self.registration.navigationPreload.enable() : Promise.resolve()
     ])
   );
-  console.log('💎 [SW v84] Reporting for duty - Active and listening.');
+  console.log('💎 [SW v91] Active and listening for Push.');
   self.clients.claim();
 });
 
@@ -46,22 +45,15 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip APIs, /admin routes, and cross-origin requests
-  if (
-    !url.origin.includes(self.location.origin) || 
-    url.pathname.includes('/api/') || 
-    url.pathname.includes('/admin')
-  ) {
+  if (!url.origin.includes(self.location.origin) || url.pathname.includes('/api/') || url.pathname.includes('/admin')) {
     return;
   }
 
   if (request.mode === 'navigate' || url.pathname === '/index.html' || url.pathname === '/') {
     event.respondWith(
       (async () => {
-        // Try the preloaded response first
         const preloadResponse = await event.preloadResponse;
         if (preloadResponse) return preloadResponse;
-
         try {
           const networkResponse = await fetch(request);
           if (request.method === 'GET' && networkResponse.status === 200) {
@@ -71,7 +63,6 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         } catch (e) {
           const cache = await caches.open(CACHE_NAME);
-          // Return the cached root index as a universal fallback
           return (await cache.match('/')) || (await cache.match('/index.html'));
         }
       })()
@@ -79,7 +70,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Assets (Images, scripts, etc.) - Cache first, then network
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request).then((networkResponse) => {
@@ -89,25 +79,11 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(err => {
-        // If an image fails, we just let it fail or return a placeholder
-        if (request.destination === 'image') {
-          return caches.match('/logo-192.png');
-        }
+        if (request.destination === 'image') return caches.match('/logo-192.png');
       });
       return cachedResponse || fetchPromise;
     })
   );
-});
-
-self.addEventListener('sync', (event) => {
-  console.log('📱 [PWA] Sync event fired:', event.tag);
-  if (event.tag === 'sync-orders' || event.tag === 'test-tag-from-devtools') {
-    event.waitUntil(
-      Promise.resolve().then(() => {
-        console.log('✅ [PWA] Background Syncing pending orders/tasks success.');
-      })
-    );
-  }
 });
 
 self.addEventListener('message', (event) => {
@@ -115,20 +91,3 @@ self.addEventListener('message', (event) => {
     console.log('✅ [SW] Keep-Alive Pulse Received');
   }
 });
-
-self.addEventListener('periodicsync', (event) => {
-  console.log('📅 [PWA] Periodic sync event fired:', event.tag);
-  if (event.tag === 'daily-content-update') {
-    event.waitUntil(
-      Promise.resolve().then(() => {
-        console.log('✅ [PWA] Periodic Sync: Successfully refreshed daily offers.');
-      })
-    );
-  }
-});
-
-/* 
-[LEGACY] Custom Push Listeners disabled to allow OneSignal SDK to handle notifications natively.
-self.addEventListener('push', function(event) { ... });
-self.addEventListener('notificationclick', function(event) { ... });
-*/

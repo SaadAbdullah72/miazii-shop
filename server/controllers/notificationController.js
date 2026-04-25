@@ -47,6 +47,11 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             android_visibility: 1, // Public (Show on lock screen)
             android_priority: 5, // OneSignal Android High Priority
             require_interaction: true, // Stickier notification
+            data: { 
+                title: title || "🛍️ Miazi Shop", 
+                message: message, 
+                url: link || "https://miazi-shop.vercel.app/" 
+            },
             // If userId is provided, target that specific user via external_id
             ...(userId ? { include_external_user_ids: [userId.toString()] } : { included_segments: ["All"] })
         };
