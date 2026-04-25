@@ -95,3 +95,10 @@ self.addEventListener('message', (event) => {
     console.log('✅ [SW] Keep-Alive Pulse Received');
   }
 });
+
+// Passive Push Listener: Helps wake up the SW on Android during Doze/Sleep mode
+// OneSignalSDK.sw.js handles the actual display, but this ensures the event loop is active.
+self.addEventListener('push', (event) => {
+    console.log('📬 [SW] Push Event received in background. System Waking Up...');
+    event.waitUntil(Promise.resolve());
+});

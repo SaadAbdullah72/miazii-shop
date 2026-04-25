@@ -40,15 +40,17 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             url: link || "https://miazi-shop.vercel.app/",
             chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
             chrome_web_badge: "https://miazi-shop.vercel.app/badge-final.png",
-            // Hardening for Background/Sleep Delivery
-            priority: 10, // FCM High Priority
+            // Hardening for Deep Background/Sleep Delivery
+            priority: 10, // FCM High Priority (Critical for Android Background)
             web_push_priority: "high", // Web Push High Priority
-            ttl: 86400, // 24 hours
+            ttl: 259200, // 72 hours (increased from 24h)
             android_visibility: 1, // Public (Show on lock screen)
             android_priority: 5, // OneSignal Android High Priority
+            android_channel_id: "miazi_high_importance", // Direct channel mapping
             require_interaction: true, // Stickier notification
             // Branding & Grouping
             android_accent_color: "FFFED700", // Electro Yellow accent
+            android_led_color: "FFFED700", // Flash LED for hardware feedback
             chrome_web_image: "https://miazi-shop.vercel.app/logo-512.png",
             android_group: "miazi-shop",
             android_group_message: { en: "$[notif_count] new updates from Miazi Shop" },
@@ -56,7 +58,9 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             data: { 
                 title: title || "🛍️ Miazi Shop", 
                 message: message, 
-                url: link || "https://miazi-shop.vercel.app/" 
+                url: link || "https://miazi-shop.vercel.app/",
+                priority: "high",
+                timestamp: Date.now()
             },
             // If userId is provided, target that specific user via external_id
             ...(userId ? { include_external_user_ids: [userId.toString()] } : { included_segments: ["All"] })
