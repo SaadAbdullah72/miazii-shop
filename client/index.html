@@ -137,5 +137,17 @@
       <img src="/splash-hand.png" class="splash-image" alt="Splash" />
     </div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // FAIL-SAFE: Forcefully hide splash screen after 5 seconds if React fails to load or hangs
+      setTimeout(() => {
+        const mask = document.getElementById('root-mask');
+        if (mask && !mask.classList.contains('mask-hidden')) {
+          console.warn('[System] Splash Fail-Safe triggered.');
+          mask.classList.add('mask-hidden');
+          document.body.style.overflow = 'auto';
+          document.documentElement.style.overflow = 'auto';
+        }
+      }, 5000);
+    </script>
   </body>
 </html>
