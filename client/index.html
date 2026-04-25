@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <style>
-      /* PREMIUM NATIVE SPLASH: Buttery smooth transition & realistic visuals */
+      /* CINEMATIC NATIVE SPLASH: Ultra-premium staggered animations */
       html, body {
         background-color: #fed700 !important;
         margin: 0; padding: 0;
@@ -21,56 +21,59 @@
         align-items: center;
         justify-content: center;
         z-index: 999999;
-        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: opacity 1.5s cubic-bezier(0.23, 1, 0.32, 1), transform 1.5s cubic-bezier(0.23, 1, 0.32, 1);
         pointer-events: none;
         will-change: opacity, transform;
       }
       .loader-content {
         text-align: center;
         position: relative;
-        z-index: 10;
+        z-index: 20;
       }
       .loader-text {
         color: #000;
         font-family: 'Outfit', sans-serif;
         font-weight: 900;
-        font-size: clamp(2.5rem, 12vw, 6rem);
-        letter-spacing: -4px;
+        font-size: clamp(2.5rem, 14vw, 7rem);
+        letter-spacing: -6px;
         text-transform: uppercase;
-        margin-top: -20vh;
+        margin-top: -25vh;
         opacity: 0;
-        transform: translateY(50px);
-        animation: slideUpFade 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s;
-        text-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        transform: scale(0.8) translateY(40px);
+        animation: cinematicText 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.2s;
+        filter: blur(10px);
+        text-shadow: 0 15px 50px rgba(0,0,0,0.1);
       }
       .splash-image {
         position: absolute;
         bottom: 0;
         right: 0;
-        width: 110%;
-        max-width: 700px;
+        width: 120%;
+        max-width: 800px;
         height: auto;
         opacity: 0;
-        transform: translate(15%, 15%) scale(0.8);
-        animation: handEntry 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        transform: translate(10%, 10%) scale(0.9);
+        /* Cinematic entry: Blur to Sharp + Expo Easing */
+        animation: cinematicHand 2.2s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.4s;
         z-index: 5;
         pointer-events: none;
-        /* THE DISSOLVE MAGIC: Radial mask fades the edges into the yellow */
-        -webkit-mask-image: radial-gradient(circle at 60% 60%, black 50%, transparent 90%);
-        mask-image: radial-gradient(circle at 60% 60%, black 50%, transparent 90%);
-        filter: saturate(1.1) contrast(1.05);
-        will-change: opacity, transform;
+        /* Advanced Blending: Stronger radial mask for perfect dissolve */
+        -webkit-mask-image: radial-gradient(circle at 65% 65%, black 40%, transparent 85%);
+        mask-image: radial-gradient(circle at 65% 65%, black 40%, transparent 85%);
+        filter: saturate(1.1) contrast(1.1) brightness(1.05);
+        will-change: opacity, transform, filter;
       }
-      @keyframes slideUpFade {
-        to { opacity: 1; transform: translateY(0); }
+      @keyframes cinematicText {
+        to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); letter-spacing: -4px; }
       }
-      @keyframes handEntry {
-        0% { opacity: 0; transform: translate(15%, 15%) scale(0.8); }
-        100% { opacity: 1; transform: translate(0, 0) scale(1.1); }
+      @keyframes cinematicHand {
+        0% { opacity: 0; transform: translate(10%, 10%) scale(0.9); filter: blur(15px); }
+        100% { opacity: 1; transform: translate(0, 0) scale(1.15); filter: blur(0); }
       }
       .mask-hidden { 
         opacity: 0 !important; 
-        transform: scale(1.25) !important;
+        transform: scale(1.3) !important;
+        filter: blur(20px);
         visibility: hidden; 
       }
     </style>
