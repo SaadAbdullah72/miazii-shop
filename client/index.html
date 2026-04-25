@@ -28,45 +28,48 @@
       .loader-content {
         text-align: center;
         position: relative;
-        z-index: 2;
+        z-index: 5; /* Above hand */
       }
       .loader-text {
         color: #000;
         font-family: 'Outfit', sans-serif;
         font-weight: 900;
-        font-size: clamp(2.5rem, 8vw, 4rem);
-        letter-spacing: -2px;
+        font-size: clamp(2.5rem, 10vw, 5rem);
+        letter-spacing: -3px;
         text-transform: uppercase;
-        margin-top: -10vh;
+        margin-top: -15vh;
         opacity: 0;
-        transform: translateY(30px);
-        animation: slideUpFade 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.4s;
+        transform: translateY(40px);
+        animation: slideUpFade 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.05);
       }
       .splash-image {
         position: absolute;
-        bottom: -5%;
-        right: -5%;
-        width: 90%;
-        max-width: 550px;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        max-width: 650px;
         height: auto;
         opacity: 0;
-        transform: translate(100px, 100px) scale(0.85);
-        animation: handEntry 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        transform: translate(20%, 20%) scale(0.8);
+        animation: handEntry 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         z-index: 1;
         pointer-events: none;
-        filter: drop-shadow(0 30px 60px rgba(0,0,0,0.15));
+        /* Force color blending to hide any subtle box edges */
+        mix-blend-mode: darken; 
+        filter: saturate(1.2);
         will-change: opacity, transform;
       }
       @keyframes slideUpFade {
         to { opacity: 1; transform: translateY(0); }
       }
       @keyframes handEntry {
-        0% { opacity: 0; transform: translate(100px, 100px) scale(0.85); }
-        100% { opacity: 1; transform: translate(0, 0) scale(1); }
+        0% { opacity: 0; transform: translate(20%, 20%) scale(0.8); }
+        100% { opacity: 1; transform: translate(0, 0) scale(1.05); }
       }
       .mask-hidden { 
         opacity: 0 !important; 
-        transform: scale(1.15) !important;
+        transform: scale(1.2) !important;
         visibility: hidden; 
       }
     </style>
