@@ -41,10 +41,12 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             chrome_web_icon: "https://miazi-shop.vercel.app/logo-192.png",
             chrome_web_badge: "https://miazi-shop.vercel.app/badge-final.png",
             // Hardening for Background/Sleep Delivery
-            priority: 10, // High priority for Android
-            web_push_priority: "high", // High priority for Browsers
-            ttl: 86400, // 24 hours (Ensure delivery if device was offline)
+            priority: 10, // FCM High Priority
+            web_push_priority: "high", // Web Push High Priority
+            ttl: 86400, // 24 hours
             android_visibility: 1, // Public (Show on lock screen)
+            android_priority: 5, // OneSignal Android High Priority
+            require_interaction: true, // Stickier notification
             // If userId is provided, target that specific user via external_id
             ...(userId ? { include_external_user_ids: [userId.toString()] } : { included_segments: ["All"] })
         };

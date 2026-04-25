@@ -89,6 +89,8 @@ export const blastNotifications = asyncHandler(async (req, res) => {
             web_push_priority: "high",
             ttl: 86400,
             android_visibility: 1,
+            android_priority: 5,
+            require_interaction: true,
             included_segments: ["Total Subscriptions"]
         };
 
