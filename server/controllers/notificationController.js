@@ -48,6 +48,8 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             android_priority: 5, // OneSignal Android High Priority
             require_interaction: true, // Stickier notification
             // Branding & Grouping
+            android_accent_color: "FFFED700", // Electro Yellow accent
+            chrome_web_image: "https://miazi-shop.vercel.app/logo-512.png",
             android_group: "miazi-shop",
             android_group_message: { en: "$[notif_count] new updates from Miazi Shop" },
             web_push_topic: "miazi-updates",
