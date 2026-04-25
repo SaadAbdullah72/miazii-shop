@@ -91,6 +91,10 @@ export const blastNotifications = asyncHandler(async (req, res) => {
             android_visibility: 1,
             android_priority: 5,
             require_interaction: true,
+            android_channel_id: "miazi-shop-orders",
+            android_group: "miazi-shop",
+            android_group_message: { en: "$[notif_count] new updates from Miazi Shop" },
+            web_push_topic: "miazi-updates",
             data: { title, message, url: url || "https://miazi-shop.vercel.app/" },
             included_segments: ["Total Subscriptions"]
         };

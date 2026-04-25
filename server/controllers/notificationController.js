@@ -47,6 +47,11 @@ export const safePushDispatch = async (title, message, link, userId = null) => {
             android_visibility: 1, // Public (Show on lock screen)
             android_priority: 5, // OneSignal Android High Priority
             require_interaction: true, // Stickier notification
+            // Branding: Custom channel so notification groups as "Miazi Shop" 
+            android_channel_id: "miazi-shop-orders",
+            android_group: "miazi-shop",
+            android_group_message: { en: "$[notif_count] new updates from Miazi Shop" },
+            web_push_topic: "miazi-updates",
             data: { 
                 title: title || "🛍️ Miazi Shop", 
                 message: message, 
