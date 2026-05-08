@@ -105,7 +105,7 @@ const CategoryPage = () => {
                                             </Link>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-lg font-bold text-gray-800">৳{p.price?.toLocaleString()}</span>
-                                                {p.discountPrice > 0 && (
+                                                {p.discountPrice > p.price && (
                                                     <span className="text-xs text-gray-400 line-through">৳{p.discountPrice?.toLocaleString()}</span>
                                                 )}
                                             </div>

@@ -123,7 +123,7 @@ const HomePage = () => {
     let filtered = [...products];
 
     if (activeTab === 'On Sale') {
-      filtered = filtered.filter(p => p.discountPrice > 0 || p.countInStock > 10).sort((a, b) => b.countInStock - a.countInStock);
+      filtered = filtered.filter(p => p.discountPrice > p.price || p.countInStock > 10).sort((a, b) => b.countInStock - a.countInStock);
     } else if (activeTab === 'Top Rated') {
       // IRON-CLAD AUTHENTICITY: Check the actual reviews array length, ignore the counter
       filtered = filtered.filter(p => p.reviews && p.reviews.length > 0).sort((a, b) => b.rating - a.rating);
@@ -146,7 +146,7 @@ const HomePage = () => {
         const catName = p.category?.name || 'Uncategorized';
         // Only include if authentic (has reviews) for the main dashboard
         if (!p.reviews || p.reviews.length === 0) return;
-        if (p.isDeals || p.discountPrice > 0 || p.rating >= 4) {
+        if (p.isDeals || p.discountPrice > p.price || p.rating >= 4) {
           if (!groupedByCategory[catName]) groupedByCategory[catName] = [];
           groupedByCategory[catName].push(p);
         }
@@ -164,7 +164,7 @@ const HomePage = () => {
       // Second pass: Fill up to 12 with remaining best ones
       const remaining = products
         .filter(p => !balancedList.find(b => b._id === p._id) && (p.reviews?.length > 0))
-        .filter(p => p.isDeals || p.discountPrice > 0 || p.rating >= 4)
+        .filter(p => p.isDeals || p.discountPrice > p.price || p.rating >= 4)
         .sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
 
       return [...balancedList, ...remaining].slice(0, 12);

@@ -550,7 +550,7 @@ const AdminDashboardPage = () => {
                                                     </td>
                                                     <td className="p-6">
                                                         <p className="text-sm font-black text-slate-800">৳{p.price?.toLocaleString()}</p>
-                                                        {p.discountPrice && <p className="text-[10px] text-slate-300 line-through">৳{p.discountPrice.toLocaleString()}</p>}
+                                                        {p.discountPrice > p.price && <p className="text-[10px] text-slate-300 line-through">৳{p.discountPrice.toLocaleString()}</p>}
                                                     </td>
                                                     <td className="p-6">
                                                         <div className="flex items-center gap-2">
