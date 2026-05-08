@@ -71,18 +71,7 @@ function App() {
     }, [dispatch, userInfo]);
 
     React.useEffect(() => {
-        // Premium Fade-out of the Native Mask
-        const mask = document.getElementById('root-mask');
-        if (mask) {
-            setTimeout(() => {
-                mask.classList.add('mask-hidden');
-                document.body.style.overflow = 'auto';
-                document.documentElement.style.overflow = 'auto';
-                // Reset splash yellow background to app bg after mask is hidden
-                document.body.style.backgroundColor = '#f5f5f5';
-                document.documentElement.style.backgroundColor = '#f5f5f5';
-            }, 2500);
-        }
+
 
         // Keep-Alive Ping for Service Worker
         const keepAlive = () => {

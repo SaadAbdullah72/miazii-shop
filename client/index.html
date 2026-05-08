@@ -3,73 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <style>
-      /* ULTIMATE NATIVE SPLASH: Zero-lag & Perfect 'Multiply' Blending */
-      html, body {
-        background-color: #fed700 !important;
-        margin: 0; padding: 0;
-        height: 100vh; width: 100vw;
-        overflow: hidden;
-      }
-      #root-mask {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        background-color: #fed700;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 999999;
-        /* Hardware-accelerated buttery fade */
-        transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-        pointer-events: none;
-        will-change: opacity;
-      }
-      .loader-content {
-        text-align: center;
-        position: relative;
-        z-index: 10;
-      }
-      .loader-text {
-        color: #000;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 900;
-        font-size: clamp(2rem, 8vw, 4rem);
-        letter-spacing: -2px;
-        text-transform: uppercase;
-        margin-top: -15vh;
-        opacity: 0;
-        transform: translateY(20px);
-        animation: logoEntry 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
-        will-change: transform, opacity;
-      }
-      .splash-image {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        max-width: 700px;
-        height: auto;
-        opacity: 0;
-        transform: translate(10%, 10%) scale(0.95);
-        animation: handEntry 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
-        z-index: 5;
-        pointer-events: none;
-        /* THE ULTIMATE DISSOLVE: Multiply mode deletes the white background perfectly */
-        mix-blend-mode: multiply;
-        will-change: transform, opacity;
-      }
-      @keyframes logoEntry {
-        to { opacity: 1; transform: translateY(0); }
-      }
-      @keyframes handEntry {
-        0% { opacity: 0; transform: translate(10%, 10%) scale(0.95); }
-        100% { opacity: 1; transform: translate(0, 0) scale(1.05); }
-      }
-      .mask-hidden { 
-        opacity: 0 !important; 
-        visibility: hidden; 
-      }
     </style>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://vercel.live https://cdn.onesignal.com https://onesignal.com https://api.onesignal.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com https://onesignal.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://lh3.googleusercontent.com https://images.unsplash.com https://vercel.com https://*.tile.openstreetmap.org; connect-src 'self' https://miazi-shop.vercel.app http://localhost:5000 https://accounts.google.com https://vercel.live https://nominatim.openstreetmap.org https://freeipapi.com https://api.cloudinary.com https://onesignal.com https://api.onesignal.com https://cdn.onesignal.com; frame-src https://accounts.google.com https://vercel.live;">
     
@@ -130,24 +63,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <div id="root-mask">
-      <div class="loader-content">
-        <div class="loader-text">MIAZI SHOP</div>
-      </div>
-      <img src="/splash-hand.png" class="splash-image" alt="Splash" />
-    </div>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-      // FAIL-SAFE: Forcefully hide splash screen after 5 seconds if React fails to load or hangs
-      setTimeout(() => {
-        const mask = document.getElementById('root-mask');
-        if (mask && !mask.classList.contains('mask-hidden')) {
-          console.warn('[System] Splash Fail-Safe triggered.');
-          mask.classList.add('mask-hidden');
-          document.body.style.overflow = 'auto';
-          document.documentElement.style.overflow = 'auto';
-        }
-      }, 5000);
-    </script>
+
   </body>
 </html>
