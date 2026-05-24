@@ -503,36 +503,61 @@ const Header = () => {
             {/* MOBILE MENU SYSTEM */}
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 z-[1000] md:hidden">
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setIsMobileMenuOpen(false)} />
+                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
                     <div className="absolute top-0 left-0 h-full w-80 bg-white shadow-2xl flex flex-col transform transition-transform duration-300 overflow-hidden">
-                        <div className="p-6 border-b border-gray-100 bg-yellow-400 flex justify-between items-center text-gray-900">
-                            <span className="text-xs font-black uppercase tracking-[0.2em]">Menu</span>
-                            <button onClick={() => setIsMobileMenuOpen(false)}>
-                                <CloseIcon size={20} />
+                        {/* Elegant Header */}
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white relative shrink-0">
+                            {/* Thin vertical accent line */}
+                            <div className="absolute top-0 left-0 w-1.5 h-full bg-yellow-400" />
+                            <div>
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 leading-none">Departments</h3>
+                                <p className="text-[10px] text-slate-400 font-bold tracking-widest mt-1.5">MIAZI SHOP CATALOG</p>
+                            </div>
+                            <button 
+                                onClick={() => setIsMobileMenuOpen(false)} 
+                                className="p-2.5 hover:bg-slate-50 active:scale-95 rounded-full transition-all text-slate-500 border border-slate-100"
+                            >
+                                <CloseIcon size={16} />
                             </button>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-                            <ul className="space-y-4">
+                        
+                        {/* Navigation Options */}
+                        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar bg-white">
+                            <ul className="divide-y divide-slate-100">
                                 {categories.map(dept => (
-                                    <li key={dept._id || dept.name}>
-                                        <Link onClick={() => setIsMobileMenuOpen(false)} to={`/category/${dept.slug}`} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-500">
-                                            {dept.name}
-                                            <ChevronRight size={14} className="opacity-30" />
+                                    <li key={dept._id || dept.name} className="group">
+                                        <Link 
+                                            onClick={() => setIsMobileMenuOpen(false)} 
+                                            to={`/category/${dept.slug || dept._id}`} 
+                                            className="flex items-center justify-between py-4 text-sm font-semibold text-slate-700 hover:text-yellow-600 hover:pl-2 transition-all duration-300 text-left"
+                                        >
+                                            <span className="tracking-wide uppercase text-[11px] font-black text-slate-700 hover:text-yellow-600">{dept.name}</span>
+                                            <ChevronRight size={14} className="text-slate-300 group-hover:text-yellow-600 transition-colors" />
                                         </Link>
                                     </li>
                                 ))}
-                                {userInfo && userInfo.isAdmin && (
-                                    <li className="pt-4 mt-4 border-t border-gray-100">
-                                        <Link onClick={() => setIsMobileMenuOpen(false)} to="/admin/dashboard" className="flex items-center justify-between p-4 bg-slate-900 rounded-2xl text-xs font-black uppercase tracking-widest text-yellow-400 shadow-lg">
-                                            <div className="flex items-center gap-3">
-                                                <LayoutDashboard size={18} />
-                                                <span>Admin Command Center</span>
-                                            </div>
-                                            <ChevronRight size={14} className="text-yellow-400/50" />
-                                        </Link>
-                                    </li>
-                                )}
                             </ul>
+
+                            {userInfo && userInfo.isAdmin && (
+                                <div className="mt-8 pt-6 border-t border-slate-100">
+                                    <Link 
+                                        onClick={() => setIsMobileMenuOpen(false)} 
+                                        to="/admin/dashboard" 
+                                        className="flex items-center justify-between p-4 bg-slate-900 text-white rounded-xl shadow-lg border border-slate-800 hover:bg-yellow-400 hover:text-slate-900 hover:border-yellow-500 transition-all duration-300 group shadow-yellow-500/5"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <LayoutDashboard size={18} className="text-yellow-400 group-hover:text-slate-900 transition-colors" />
+                                            <span className="text-xs font-black uppercase tracking-wider">Admin Dashboard</span>
+                                        </div>
+                                        <ChevronRight size={14} className="text-yellow-400 group-hover:text-slate-900 transition-colors" />
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="p-6 bg-slate-50 border-t border-slate-100 shrink-0">
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center">Miazi Shop Mobile Console</p>
                         </div>
                     </div>
                 </div>

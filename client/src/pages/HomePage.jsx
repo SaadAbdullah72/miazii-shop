@@ -354,7 +354,7 @@ const HomePage = () => {
                 >
                   {displayProducts.length > 0 ? (
                     displayProducts.map((p) => (
-                      <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
+                      <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300 relative">
                         <div className="relative bg-gray-50 p-4 aspect-square">
   
                           {/* --- DYNAMIC BADGE OVERLAYS --- */}
@@ -388,35 +388,35 @@ const HomePage = () => {
                             )}
                           </div>
   
-                          <img
-                            src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 400)}
-                            alt={p.name}
-                            loading="lazy"
-                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
-                            onError={(e) => {
-                              e.target.src = ERROR_IMAGE;
-                              e.target.onerror = null;
-                            }}
-                          />
+                          <Link to={`/product/${p.slug || p._id}`} className="block w-full h-full">
+                            <img
+                              src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 400)}
+                              alt={p.name}
+                              loading="lazy"
+                              className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                              onError={(e) => {
+                                e.target.src = ERROR_IMAGE;
+                                e.target.onerror = null;
+                              }}
+                            />
+                          </Link>
   
                           <button
-                            onClick={(e) => { e.preventDefault(); addToCartHandler(p); }}
-                            className="absolute bottom-2 right-2 w-9 h-9 bg-yellow-400 rounded-full shadow-lg flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white"
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCartHandler(p); }}
+                            className="absolute bottom-2 right-2 w-9 h-9 bg-yellow-400 rounded-full shadow-lg flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white z-20"
                           >
                             <Plus className="w-5 h-5" />
                           </button>
                         </div>
   
-                        <div className="p-3">
+                        <Link to={`/product/${p.slug || p._id}`} className="block p-3 hover:no-underline">
                           <p className="text-[10px] text-gray-400 uppercase font-bold mb-1 tracking-tight">
                             {p.category?.name || 'Electronics'}
                           </p>
   
-                          <Link to={`/product/${p.slug || p._id}`}>
-                            <h3 className="text-sm font-semibold text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors leading-tight">
-                              {p.name}
-                            </h3>
-                          </Link>
+                          <h3 className="text-sm font-semibold text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors leading-tight">
+                            {p.name}
+                          </h3>
   
                           <div className="flex items-center justify-between">
                             <div className="flex items-baseline gap-2">
@@ -439,7 +439,7 @@ const HomePage = () => {
                               </div>
                             )}
                           </div>
-                        </div>
+                        </Link>
                       </div>
                     ))
                   ) : (
@@ -479,37 +479,39 @@ const HomePage = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pb-25">
             {bestDealsProducts.map((p) => (
-                <div key={p._id} className="group">
+                <div key={p._id} className="group relative">
                   <div className="bg-gray-50 rounded-lg p-3 mb-2 aspect-square overflow-hidden relative">
-                    <img
-                      src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 300)}
-                      alt={p.name}
-                      loading="lazy"
-                      className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
-                      onError={(e) => {
-                        e.target.src = ERROR_IMAGE;
-                        e.target.onerror = null;
-                      }}
-                    />
+                    <Link to={`/product/${p.slug || p._id}`} className="block w-full h-full">
+                      <img
+                        src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 300)}
+                        alt={p.name}
+                        loading="lazy"
+                        className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform"
+                        onError={(e) => {
+                          e.target.src = ERROR_IMAGE;
+                          e.target.onerror = null;
+                        }}
+                      />
+                    </Link>
                     <button
-                      onClick={() => addToCartHandler(p)}
-                      className="absolute bottom-2 right-2 w-7 h-7 bg-yellow-400 rounded-full shadow flex items-center justify-center hover:bg-black hover:text-white transition-colors"
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCartHandler(p); }}
+                      className="absolute bottom-2 right-2 w-7 h-7 bg-yellow-400 rounded-full shadow flex items-center justify-center hover:bg-black hover:text-white transition-colors z-20"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
-                  <Link to={`/product/${p.slug || p._id}`}>
+                  <Link to={`/product/${p.slug || p._id}`} className="block hover:no-underline">
                     <h4 className="text-xs font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-1 transition-colors uppercase tracking-tight leading-tight">{p.name}</h4>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-sm font-bold text-gray-800">৳{p.price?.toLocaleString()}</p>
+                      {p.reviews && p.reviews.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          <Star size={10} fill="#facc15" stroke="none" />
+                          <span className="text-[10px] font-bold text-gray-400">{p.reviews.length}</span>
+                        </div>
+                      )}
+                    </div>
                   </Link>
-                  <div className="flex items-center justify-between mt-1">
-                    <p className="text-sm font-bold text-gray-800">৳{p.price?.toLocaleString()}</p>
-                    {p.reviews && p.reviews.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Star size={10} fill="#facc15" stroke="none" />
-                        <span className="text-[10px] font-bold text-gray-400">{p.reviews.length}</span>
-                      </div>
-                    )}
-                  </div>
                 </div>
               ))}
           </div>

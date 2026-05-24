@@ -210,21 +210,63 @@
 
 /* TOAST OVERRIDE */
 .Toastify__toast {
-  border-radius: 12px !important;
+  border-radius: 16px !important;
   font-family: var(--font-sans) !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12), 0 0 25px rgba(0, 0, 0, 0.03) !important;
+  padding: 16px 20px !important;
+  min-height: 56px !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
-.Toastify__toast--info, .Toastify__toast--success {
-  background-color: #ffffff !important;
-  color: var(--color-electro-text) !important;
-  border-left: 4px solid var(--color-electro-yellow) !important;
+
+.Toastify__toast--success {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important; /* dark slate */
+  border: 1px solid rgba(16, 185, 129, 0.2) !important; /* soft emerald border */
+  border-left: 5px solid #10b981 !important; /* emerald accent line */
 }
+
+.Toastify__toast--info {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(254, 215, 0, 0.3) !important; /* electro yellow border tint */
+  border-left: 5px solid #fed700 !important; /* electro yellow line */
+}
+
 .Toastify__toast--error {
-  background-color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
   color: #dc2626 !important;
-  border-left: 4px solid #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important; /* soft red border */
+  border-left: 5px solid #ef4444 !important; /* red accent line */
 }
+
+.Toastify__close-button {
+  color: #94a3b8 !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.2s !important;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1 !important;
+}
+
+.Toastify__progress-bar--success {
+  background: linear-gradient(to right, #34d399, #10b981) !important;
+}
+
+.Toastify__progress-bar--info {
+  background: linear-gradient(to right, #fef08a, #fed700) !important;
+}
+
+.Toastify__progress-bar--error {
+  background: linear-gradient(to right, #fca5a5, #ef4444) !important;
+}
+
 
 /* SKELETON SHIMMER ANIMATION (Security Hardened - Moved from Inline dangerouslySetInnerHTML) */
 @keyframes shimmer {
@@ -239,3 +281,41 @@
 .animate-shimmer {
   animation: shimmer 2s infinite;
 }
+
+/* TRANSFORM IMMATURE LUCIDE SPOKE LOADER INTO PREMIUM RING SPINNER */
+svg.lucide-loader,
+svg.lucide-loader-2,
+svg.lucide-loader-circle,
+svg.lucide-loader2 {
+  border-radius: 50% !important;
+  border: 2px solid rgba(0, 0, 0, 0.08) !important;
+  border-top-color: currentColor !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: spin-smooth 0.8s linear infinite !important;
+}
+
+svg.lucide-loader *,
+svg.lucide-loader-2 *,
+svg.lucide-loader-circle *,
+svg.lucide-loader2 * {
+  display: none !important;
+}
+
+svg.lucide-loader.text-white,
+svg.lucide-loader-2.text-white,
+svg.lucide-loader-circle.text-white,
+button svg.lucide-loader,
+button svg.lucide-loader-2,
+button svg.lucide-loader-circle,
+.btn svg.lucide-loader,
+.btn svg.lucide-loader-2 {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  border-top-color: currentColor !important;
+}
+
+@keyframes spin-smooth {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import store from './store.js'
 import './index.css'
 import App from './App.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import 'leaflet/dist/leaflet.css';
 
 import { GoogleOAuthProvider } from '@react-oauth/google'
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <App />
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
       </PersistGate>
     </Provider>
   </GoogleOAuthProvider>,

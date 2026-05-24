@@ -67,16 +67,10 @@ const LoginPage = () => {
         <div className="bg-gray-50 min-h-screen pb-20 font-sans relative">
             {/* GOOGLE SYNC OVERLAY */}
             {isGoogleExecuting && (
-                <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
-                    <div className="relative mb-10 scale-150">
-                        <div className="absolute inset-0 bg-yellow-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-                        <Loader size={48} className="text-yellow-500 animate-[spin_1.5s_linear_infinite]" />
+                <div className="fixed inset-0 z-50 bg-white/90 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
+                    <div className="relative">
+                        <Loader size={48} className="text-yellow-500" />
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-3">Social Synchronization</h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] max-w-xs leading-loose">
-                        Verifying Secure Identity Protocol <br/>
-                        with Google Cloud Systems...
-                    </p>
                 </div>
             )}
 

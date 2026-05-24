@@ -81,35 +81,35 @@ const CategoryPage = () => {
                         ) : (products && products.length > 0) ? (
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {(Array.isArray(products) ? products : []).map(p => (
-                                    <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300">
+                                    <div key={p._id} className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg hover:border-yellow-400 transition-all duration-300 relative">
                                         <div className="relative bg-gray-50 p-4 aspect-square">
-                                            <img 
-                                                src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 400)} 
-                                                alt={p.name} 
-                                                loading="lazy"
-                                                className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
-                                                onError={(e) => {
-                                                    e.target.src = ERROR_IMAGE;
-                                                    e.target.onerror = null;
-                                                }}
-                                            />
-                                            <button onClick={() => addToCartHandler(p)}
-                                                className="absolute bottom-2 right-2 w-8 h-8 bg-yellow-400 rounded-full shadow flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white">
+                                            <Link to={`/product/${p.slug || p._id}`} className="block w-full h-full">
+                                                <img 
+                                                    src={toCDN(p.images?.[0] ? (p.images[0].startsWith('http') ? p.images[0] : `${BASE_URL}${p.images[0]}`) : ERROR_IMAGE, 400)} 
+                                                    alt={p.name} 
+                                                    loading="lazy"
+                                                    className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
+                                                    onError={(e) => {
+                                                        e.target.src = ERROR_IMAGE;
+                                                        e.target.onerror = null;
+                                                    }}
+                                                />
+                                            </Link>
+                                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCartHandler(p); }}
+                                                className="absolute bottom-2 right-2 w-8 h-8 bg-yellow-400 rounded-full shadow flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all hover:bg-gray-800 hover:text-white z-20">
                                                 <Plus className="w-5 h-5" />
                                             </button>
                                         </div>
-                                        <div className="p-3">
+                                        <Link to={`/product/${p.slug || p._id}`} className="block p-3 hover:no-underline">
                                             <p className="text-[10px] text-gray-400 uppercase mb-1">{p.category?.name || 'Electronics'}</p>
-                                            <Link to={`/product/${p.slug || p._id}`}>
-                                                <h3 className="text-sm font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors">{p.name}</h3>
-                                            </Link>
+                                            <h3 className="text-sm font-medium text-slate-800 hover:text-yellow-600 line-clamp-2 mb-2 min-h-[2.5rem] transition-colors">{p.name}</h3>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-lg font-bold text-gray-800">৳{p.price?.toLocaleString()}</span>
                                                 {p.discountPrice > p.price && (
                                                     <span className="text-xs text-gray-400 line-through">৳{p.discountPrice?.toLocaleString()}</span>
                                                 )}
                                             </div>
-                                        </div>
+                                        </Link>
                                     </div>
                                 ))}
                             </div>
