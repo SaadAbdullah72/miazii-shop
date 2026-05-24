@@ -18,6 +18,8 @@ import validateRequest from '../middleware/validateMiddleware.js';
 import { 
     registerUserSchema, 
     authUserSchema, 
+    googleAuthSchema,
+    updateProfileSchema,
     forgotPasswordSchema, 
     resetPasswordSchema,
     verifyOTPSchema,
@@ -28,11 +30,11 @@ const router = express.Router();
 
 router.route('/').post(validateRequest(registerUserSchema), registerUser).get(protect, admin, getUsers);
 router.post('/login', validateRequest(authUserSchema), authUser);
-router.post('/google-login', googleAuth);
-router.post('/logout', logoutUser);
+router.post('/google-login', validateRequest(googleAuthSchema), googleAuth);
+router.post('/logout', protect, logoutUser);
 router.route('/profile')
     .get(protect, getUserProfile)
-    .put(protect, updateUserProfile)
+    .put(protect, validateRequest(updateProfileSchema), updateUserProfile)
     .delete(protect, deleteUserAccount);
 
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), forgotPassword);

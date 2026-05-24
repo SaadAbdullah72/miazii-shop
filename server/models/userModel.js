@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
     resetOtpExpire: {
         type: Date,
     },
+    otpVerified: {
+        type: Boolean,
+        default: false,
+    },
     avatar: {
         type: String,
         default: '',

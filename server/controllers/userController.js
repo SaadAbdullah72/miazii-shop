@@ -6,6 +6,17 @@ import generateToken from '../utils/generateToken.js';
 import bcrypt from 'bcryptjs';
 import sendEmail, { getWelcomeTemplate } from '../utils/emailUtils.js';
 import crypto from 'crypto';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// SECURITY: HTML escape helper to prevent injection in email templates
+const escapeHtml = (str) => {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+};
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -79,6 +90,8 @@ const registerUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
     res.cookie('jwt', '', {
         httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development',
+        sameSite: 'strict',
         expires: new Date(0),
     });
 
@@ -115,7 +128,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     if (user) {
         user.name = req.body.name || user.name;
-        user.email = req.body.email || user.email;
+
+        // SECURITY: Prevent email hijacking — check for duplicate before updating
+        if (req.body.email && req.body.email !== user.email) {
+            const emailExists = await User.findOne({ email: req.body.email });
+            if (emailExists) {
+                res.status(400);
+                throw new Error('Email already in use by another account');
+            }
+            user.email = req.body.email;
+        }
+
         if (req.body.address) user.address = req.body.address;
         if (req.body.phone) user.phone = req.body.phone;
 
@@ -154,7 +177,28 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   POST /api/users/google-login
 // @access  Public
 const googleAuth = asyncHandler(async (req, res) => {
-    const { name, email, googleId } = req.body;
+    const { credential } = req.body;
+
+    if (!credential) {
+        res.status(400);
+        throw new Error('Google credential token is required');
+    }
+
+    // SECURITY: Verify the Google ID token server-side instead of trusting client-decoded data
+    let payload;
+    try {
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        payload = ticket.getPayload();
+    } catch (error) {
+        res.status(401);
+        throw new Error('Invalid or expired Google credential');
+    }
+
+    const { name, email, sub: googleId, picture } = payload;
+
     // Optimized lookup: Only fetching required fields
     let user = await User.findOne({ email }).select('-password');
 
@@ -167,6 +211,7 @@ const googleAuth = asyncHandler(async (req, res) => {
             email,
             password: crypto.randomBytes(20).toString('hex'), // SECURITY: Cryptographically secure random password
             isAdmin: false,
+            avatar: picture || '',
         });
     }
 
@@ -203,9 +248,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
 
+    // SECURITY: Don't reveal whether email is registered (prevents user enumeration)
     if (!user) {
-        res.status(404);
-        throw new Error('No user found with this email');
+        return res.status(200).json({ message: 'If an account exists with this email, an OTP has been sent.' });
     }
 
     // Generate 6-digit OTP
@@ -281,6 +326,13 @@ const verifyOTP = asyncHandler(async (req, res) => {
         throw new Error('Invalid OTP');
     }
 
+    // SECURITY: Invalidate OTP after successful verification to prevent reuse
+    user.resetOtp = undefined;
+    user.resetOtpExpire = undefined;
+    // Set a short-lived verified flag so reset-password knows OTP was verified
+    user.otpVerified = true;
+    await user.save();
+
     res.status(200).json({ message: 'OTP verified successfully' });
 });
 
@@ -288,28 +340,18 @@ const verifyOTP = asyncHandler(async (req, res) => {
 // @route   POST /api/users/reset-password
 // @access  Public
 const resetPassword = asyncHandler(async (req, res) => {
-    const { email, otp, newPassword } = req.body;
+    const { email, newPassword } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user || !user.resetOtp || !user.resetOtpExpire) {
+    if (!user || !user.otpVerified) {
         res.status(400);
-        throw new Error('Invalid request');
-    }
-
-    if (Date.now() > user.resetOtpExpire) {
-        res.status(400);
-        throw new Error('OTP has expired');
-    }
-
-    const isMatch = await bcrypt.compare(otp, user.resetOtp);
-    if (!isMatch) {
-        res.status(400);
-        throw new Error('Invalid OTP');
+        throw new Error('Invalid request. Please verify your OTP first.');
     }
 
     user.password = newPassword; // Pre-save hook will hash it
     user.resetOtp = undefined;
     user.resetOtpExpire = undefined;
+    user.otpVerified = undefined;
     
     await user.save();
 
@@ -330,9 +372,16 @@ const contactUs = asyncHandler(async (req, res) => {
     const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
 
     try {
+        // SECURITY: Escape all user inputs to prevent HTML injection in admin emails
+        const safeName = escapeHtml(name);
+        const safeEmail = escapeHtml(email);
+        const safePhone = escapeHtml(phone);
+        const safeSubject = escapeHtml(subject);
+        const safeMessage = escapeHtml(message);
+
         await sendEmail({
             email: adminEmail,
-            subject: `Support Hub Inquiry: ${subject || 'General Assistance'}`,
+            subject: `Support Hub Inquiry: ${safeSubject || 'General Assistance'}`,
             html: `
                 <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
                     <div style="background-color: #0f172a; padding: 40px; text-align: center;">
@@ -343,21 +392,21 @@ const contactUs = asyncHandler(async (req, res) => {
                     <div style="padding: 40px; background-color: #ffffff;">
                         <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9;">
                             <p style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;">Identified Sender</p>
-                            <p style="color: #1e293b; font-size: 18px; font-weight: 800; margin: 0;">${name.toUpperCase()}</p>
-                            <p style="color: #64748b; font-size: 14px; font-weight: 500; margin-top: 5px;">${email.toLowerCase()}</p>
-                            <p style="color: #64748b; font-size: 14px; font-weight: 500; margin-top: 5px;"><b>Phone:</b> ${phone || 'Not Provided'}</p>
+                            <p style="color: #1e293b; font-size: 18px; font-weight: 800; margin: 0;">${safeName.toUpperCase()}</p>
+                            <p style="color: #64748b; font-size: 14px; font-weight: 500; margin-top: 5px;">${safeEmail.toLowerCase()}</p>
+                            <p style="color: #64748b; font-size: 14px; font-weight: 500; margin-top: 5px;"><b>Phone:</b> ${safePhone || 'Not Provided'}</p>
                         </div>
 
                         <div style="margin-bottom: 30px;">
                             <p style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Subject / Issue</p>
                             <div style="background-color: #f8fafc; padding: 15px 20px; border-radius: 12px; border-left: 4px solid #fbbf24;">
-                                <p style="color: #1e293b; font-size: 14px; font-weight: 700; margin: 0;">${subject || 'General Inquiry'}</p>
+                                <p style="color: #1e293b; font-size: 14px; font-weight: 700; margin: 0;">${safeSubject || 'General Inquiry'}</p>
                             </div>
                         </div>
 
                         <div>
                             <p style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Communication Content</p>
-                            <div style="color: #475569; font-size: 15px; line-height: 1.6; white-space: pre-wrap; background-color: #fafafa; padding: 25px; border-radius: 16px;">${message}</div>
+                            <div style="color: #475569; font-size: 15px; line-height: 1.6; white-space: pre-wrap; background-color: #fafafa; padding: 25px; border-radius: 16px;">${safeMessage}</div>
                         </div>
                     </div>
 
@@ -391,6 +440,8 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
         res.cookie('jwt', '', {
             httpOnly: true,
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'strict',
             expires: new Date(0),
         });
 

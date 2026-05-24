@@ -9,7 +9,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import mongoSanitize from 'express-mongo-sanitize';
-import xss from 'xss-clean';
+// xss-clean removed: deprecated and unmaintained package with known bypasses.
+// XSS protection is handled by React (frontend), helmet CSP, and input validation.
 import compression from 'compression';
 import connectDB from './config/db.js';
 import logger from './utils/logger.js';
@@ -44,14 +45,15 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(mongoSanitize()); // Prevent NoSQL Injection
-app.use(xss()); // Filter XSS attacks
+// XSS protection handled by helmet CSP headers and React's built-in escaping
+
+// SECURITY: Only allow localhost origins in development mode
+const allowedOrigins = process.env.NODE_ENV === 'production'
+    ? ['https://miazi-shop.vercel.app', process.env.CLIENT_URL].filter(Boolean)
+    : ['http://localhost:5173', 'http://localhost:5000', 'https://miazi-shop.vercel.app', process.env.CLIENT_URL].filter(Boolean);
 
 app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'https://miazi-shop.vercel.app',
-        process.env.CLIENT_URL
-    ].filter(Boolean),
+    origin: allowedOrigins,
     credentials: true,
 }));
 app.use(helmet({
@@ -71,7 +73,7 @@ app.use(cookieParser());
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 1000,
+    max: 300, // SECURITY: Tightened from 1000 to prevent scraping/DoS
     message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 
@@ -105,7 +107,7 @@ app.use('/api/push', pushRoutes);
 
 // Health check route for diagnostics
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'UP', environment: process.env.NODE_ENV, timestamp: new Date().toISOString() });
+    res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
 });
 
 // Server running check route for Vercel

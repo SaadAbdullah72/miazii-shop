@@ -7,7 +7,6 @@ import api from '../utils/axiosConfig';
 const ResetPasswordPage = () => {
     const [searchParams] = useSearchParams();
     const email = searchParams.get('email');
-    const otp = searchParams.get('otp');
     
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,7 +23,7 @@ const ResetPasswordPage = () => {
 
         setIsLoading(true);
         try {
-            await api.post('/api/users/reset-password', { email, otp, newPassword: password });
+            await api.post('/api/users/reset-password', { email, newPassword: password });
             toast.success('Password reset successfully! Please login.');
             navigate('/login');
         } catch (error) {
@@ -34,7 +33,7 @@ const ResetPasswordPage = () => {
         }
     };
 
-    if (!email || !otp) {
+    if (!email) {
         navigate('/login');
         return null;
     }

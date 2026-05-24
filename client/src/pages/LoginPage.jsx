@@ -5,7 +5,6 @@ import { login, googleLogin } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import { Loader, User, Lock, Mail, ChevronRight, LogIn, Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -46,15 +45,12 @@ const LoginPage = () => {
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
-        const decoded = jwtDecode(credentialResponse.credential);
         setIsGoogleExecuting(true);
         try {
             toast.dismiss(); 
+            // SECURITY: Send raw credential token for server-side verification
             await dispatch(googleLogin({
-                name: decoded.name,
-                email: decoded.email,
-                googleId: decoded.sub,
-                image: decoded.picture
+                credential: credentialResponse.credential
             })).unwrap();
             // Redirect is handled by useEffect
         } catch (err) {

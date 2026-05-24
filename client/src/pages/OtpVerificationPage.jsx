@@ -19,7 +19,7 @@ const OtpVerificationPage = () => {
         try {
             await api.post('/api/users/verify-otp', { email, otp });
             toast.success('OTP Verified!');
-            navigate(`/reset-password?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`);
+            navigate(`/reset-password?email=${encodeURIComponent(email)}`);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Invalid OTP');
         } finally {

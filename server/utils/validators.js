@@ -16,6 +16,29 @@ export const authUserSchema = z.object({
     })
 });
 
+export const googleAuthSchema = z.object({
+    body: z.object({
+        credential: z.string().min(1, 'Google credential token is required'),
+    })
+});
+
+export const updateProfileSchema = z.object({
+    body: z.object({
+        name: z.string().min(2).max(50).optional(),
+        email: z.string().email('Invalid email address').optional(),
+        password: z.string().min(6, 'Password must be at least 6 characters').optional(),
+        phone: z.string().optional().nullable(),
+        avatar: z.string().optional().nullable(),
+        address: z.object({
+            street: z.string().optional(),
+            city: z.string().optional(),
+            state: z.string().optional(),
+            zip: z.string().optional(),
+            country: z.string().optional(),
+        }).optional().nullable(),
+    })
+});
+
 export const forgotPasswordSchema = z.object({
     body: z.object({
         email: z.string().email('Invalid email address'),
@@ -25,7 +48,6 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordSchema = z.object({
     body: z.object({
         email: z.string().email('Invalid email address'),
-        otp: z.string().length(6, 'OTP must be exactly 6 digits'),
         newPassword: z.string().min(6, 'New password must be at least 6 characters'),
     })
 });

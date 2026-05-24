@@ -8,6 +8,11 @@ const router = express.Router();
 router.get('/signature', protect, (req, res) => {
     try {
         const folder = req.query.folder || 'products/images';
+        // SECURITY: Whitelist allowed upload folders to prevent arbitrary file uploads
+        const allowedFolders = ['products/images', 'products/videos', 'avatars', 'manual_payments'];
+        if (!allowedFolders.includes(folder)) {
+            return res.status(400).json({ message: 'Invalid upload folder' });
+        }
         const sigData = generateSignature(folder);
         res.json(sigData);
     } catch (error) {

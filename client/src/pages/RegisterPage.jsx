@@ -5,7 +5,6 @@ import { register, googleLogin } from '../slices/authSlice';
 import { toast } from 'react-toastify';
 import { Loader, User, Lock, Mail, ChevronRight, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
@@ -45,13 +44,10 @@ const RegisterPage = () => {
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
-        const decoded = jwtDecode(credentialResponse.credential);
         try {
+            // SECURITY: Send raw credential token for server-side verification
             await dispatch(googleLogin({
-                name: decoded.name,
-                email: decoded.email,
-                googleId: decoded.sub,
-                image: decoded.picture
+                credential: credentialResponse.credential
             })).unwrap();
             toast.success('Successfully registered via Google.');
         } catch (err) {

@@ -321,10 +321,13 @@ const deleteProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/suggestions
 // @access  Public
 const getProductSuggestions = asyncHandler(async (req, res) => {
-    const keyword = req.query.keyword
+    // ReDoS protection: Limit keyword length and sanitize
+    const rawKeyword = req.query.keyword ? String(req.query.keyword).slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '';
+
+    const keyword = rawKeyword
         ? {
             name: {
-                $regex: req.query.keyword,
+                $regex: rawKeyword,
                 $options: 'i',
             },
         }
