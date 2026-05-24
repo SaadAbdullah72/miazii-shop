@@ -43,6 +43,43 @@ function App() {
     const { userInfo } = useSelector((state) => state.auth);
 
     const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+    const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+    const [showOnlineStatus, setShowOnlineStatus] = React.useState(!navigator.onLine);
+
+    React.useEffect(() => {
+        const handleOnline = () => {
+            setIsOnline(true);
+            setShowOnlineStatus(true);
+            
+            // Clear API cache on reconnect so fresh data is loaded
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('api_cache_')) {
+                    localStorage.removeItem(key);
+                    i--;
+                }
+            }
+            
+            // Auto hide online success notification after 3 seconds
+            const timer = setTimeout(() => {
+                setShowOnlineStatus(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        };
+
+        const handleOffline = () => {
+            setIsOnline(false);
+            setShowOnlineStatus(true);
+        };
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
 
     const hasSyncedProfile = React.useRef(false);
     // Sync profile data and handle PWA installation prompt
@@ -105,7 +142,33 @@ function App() {
 
     return (
         <Router>
-            <div className="flex flex-col min-h-screen bg-[#f5f5f5]">
+            <div className="flex flex-col min-h-screen bg-[#f5f5f5] relative">
+                {/* DYNAMIC OFFLINE / RECONNECT BAR */}
+                {showOnlineStatus && (
+                    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] w-[90%] max-w-xs animate-in slide-in-from-top duration-300">
+                        {isOnline ? (
+                            <div className="bg-emerald-950/95 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-2xl flex items-center justify-between gap-3 shadow-2xl backdrop-blur-md">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                    <span className="text-[9px] font-black uppercase tracking-wider">Back Online — Synced</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="bg-slate-900/95 border border-yellow-500/30 text-yellow-400 px-4 py-3 rounded-2xl flex items-center justify-between gap-3 shadow-2xl backdrop-blur-md">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                                    </span>
+                                    <span className="text-[9px] font-black uppercase tracking-wider">Offline — Serving Cache</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
                 <Header />
                 <main className="flex-grow">
                     <Suspense fallback={<PageLoader />}>

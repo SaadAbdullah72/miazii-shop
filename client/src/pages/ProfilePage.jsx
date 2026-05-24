@@ -164,51 +164,62 @@ const ProfilePage = () => {
                 ) : (
                     <div className="grid grid-cols-1 gap-6">
                         {orders.map((order) => (
-                            <div key={order._id} className="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-xl hover:border-yellow-100 transition-all group overflow-hidden relative">
-                                <div className="flex flex-col md:flex-row justify-between gap-6 relative z-10">
-                                    <div className="space-y-4">
-                                        <div>
-                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Order ID</p>
-                                            <h3 className="font-black text-slate-800 tracking-tighter text-lg uppercase">#{order._id}</h3>
+                            <div key={order._id} className="bg-white border border-slate-100 rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 relative z-10">
+                                    {/* Left Side: Order Meta Info */}
+                                    <div className="space-y-3">
+                                        <div className="flex flex-wrap items-center gap-3">
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Order ID</span>
+                                            <h3 className="font-semibold text-slate-700 tracking-wide text-xs font-mono uppercase bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
+                                                #{order._id.toUpperCase()}
+                                            </h3>
                                         </div>
-                                        <div className="flex flex-wrap gap-4">
-                                            <div className="flex items-center gap-2 text-gray-400 font-bold text-[11px]">
-                                                <Calendar size={14} className="text-yellow-500" />
-                                                {new Date(order.createdAt).toLocaleDateString()}
+                                        <div className="flex items-center flex-wrap gap-3 sm:gap-5 text-xs text-slate-500 font-medium">
+                                            <div className="flex items-center gap-1.5">
+                                                <Calendar size={14} className="text-slate-400" />
+                                                <span>{new Date(order.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-gray-400 font-bold text-[11px]">
-                                                <CreditCard size={14} className="text-yellow-500" />
-                                                ৳{order.totalPrice.toLocaleString()}
+                                            <div className="w-1.5 h-1.5 rounded-full bg-slate-200 hidden sm:block" />
+                                            <div className="flex items-center gap-1.5">
+                                                <CreditCard size={14} className="text-slate-400" />
+                                                <span className="font-semibold text-slate-800">৳{order.totalPrice.toLocaleString()}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                                        <div className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 border ${order.isPaid ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-500 border-red-100'}`}>
-                                            {order.isPaid ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                                            {order.isPaid ? 'Payment Confirmed' : 'Payment Awaiting'}
+                                    {/* Right Side: Status Badges & Action */}
+                                    <div className="flex flex-wrap items-center gap-4 md:gap-6">
+                                        {/* Payment Status Dot */}
+                                        <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                            <span className={`w-2 h-2 rounded-full ${order.isPaid ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                                            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                                                {order.isPaid ? 'Paid' : 'Unpaid'}
+                                            </span>
                                         </div>
-                                        <div className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 border ${order.isDelivered ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
-                                            {order.isDelivered ? <CheckCircle2 size={12} /> : <Truck size={12} />}
-                                            {order.isDelivered ? 'Delivered' : 'Shipping'}
+
+                                        {/* Delivery Status Dot */}
+                                        <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                            <span className={`w-2 h-2 rounded-full ${order.isDelivered ? 'bg-blue-500' : 'bg-amber-500 animate-pulse'}`} />
+                                            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                                                {order.isDelivered ? 'Delivered' : 'Shipping'}
+                                            </span>
                                         </div>
-                                        {/* Estimated Delivery Window */}
+
+                                        {/* Estimated Delivery Date */}
                                         {!order.isDelivered && (
-                                            <div className="px-4 py-2 bg-slate-50 border border-gray-100 rounded-xl text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                                                <Calendar size={12} className="text-yellow-500" />
-                                                Will be delivered before {new Date(new Date(order.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                                            <div className="text-xs text-slate-400 font-medium">
+                                                Est: <span className="text-slate-600 font-semibold">{new Date(new Date(order.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                                             </div>
                                         )}
+
+                                        {/* View Details Button */}
                                         <Link 
                                             to={`/order/${order._id}`}
-                                            className="px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-yellow-500 hover:text-slate-900 transition-all flex items-center gap-2 ml-auto md:ml-0"
+                                            className="px-5 py-2.5 bg-slate-900 text-white hover:bg-yellow-400 hover:text-slate-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm active:scale-95 ml-auto xl:ml-0"
                                         >
                                             View Report <ChevronRight size={14} />
                                         </Link>
                                     </div>
-                                </div>
-                                <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none group-hover:rotate-12 transition-transform duration-700">
-                                    <Package size={120} />
                                 </div>
                             </div>
                         ))}

@@ -181,51 +181,51 @@ const MyOrdersPage = () => {
                         {/* MOBILE CARD VIEW */}
                         <div className="md:hidden space-y-4">
                             {orders.map((order) => (
-                                <div key={order._id} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm active:scale-[0.98] transition-all">
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="space-y-1">
-                                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">Order Registry ID</p>
-                                            <p className="font-black text-slate-800 tracking-tight text-sm">#{order._id.toUpperCase()}</p>
+                                <div key={order._id} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                                    <div className="space-y-4">
+                                        {/* Header ID */}
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">ID</span>
+                                                <h3 className="font-semibold text-slate-700 tracking-wide text-xs font-mono uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+                                                    #{order._id.toUpperCase()}
+                                                </h3>
+                                            </div>
                                         </div>
-                                        {order.isPaid ? (
-                                            <CheckCircle2 size={18} className="text-green-500" />
-                                        ) : (
-                                            <Clock size={18} className="text-amber-500" />
-                                        )}
-                                    </div>
 
-                                    <div className="grid grid-cols-2 gap-4 mb-6">
-                                        <div className="space-y-1">
-                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                <Calendar size={10} /> Date
-                                            </p>
-                                            <p className="text-xs font-bold text-slate-600">
-                                                {new Date(order.createdAt).toLocaleDateString()}
-                                            </p>
+                                        {/* Meta Dates & Price */}
+                                        <div className="flex items-center gap-4 text-xs text-slate-500 font-medium pb-2 border-b border-slate-50">
+                                            <div className="flex items-center gap-1">
+                                                <Calendar size={13} className="text-slate-400" />
+                                                <span>{new Date(order.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                                            </div>
+                                            <div className="w-1 h-1 rounded-full bg-slate-200" />
+                                            <div className="flex items-center gap-1">
+                                                <CreditCard size={13} className="text-slate-400" />
+                                                <span className="font-semibold text-slate-800">৳{order.totalPrice.toLocaleString()}</span>
+                                            </div>
                                         </div>
-                                        <div className="space-y-1">
-                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                                                <CreditCard size={10} /> Value
-                                            </p>
-                                            <p className="text-sm font-black text-slate-900">
-                                                ৳{order.totalPrice.toLocaleString()}
-                                            </p>
-                                        </div>
-                                    </div>
 
-                                    <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                                        <div className="space-y-1">
-                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Tracking Status</p>
-                                            <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${order.isDelivered ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'}`}>
-                                                {order.isDelivered ? 'Arrived' : 'In Transit'}
-                                            </span>
+                                        {/* Status & Actions */}
+                                        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
+                                                    <span className={`w-1.5 h-1.5 rounded-full ${order.isPaid ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+                                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">{order.isPaid ? 'Paid' : 'Unpaid'}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">
+                                                    <span className={`w-1.5 h-1.5 rounded-full ${order.isDelivered ? 'bg-blue-500' : 'bg-amber-500 animate-pulse'}`} />
+                                                    <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">{order.isDelivered ? 'Delivered' : 'Shipping'}</span>
+                                                </div>
+                                            </div>
+
+                                            <Link 
+                                                to={`/order/${order._id}`} 
+                                                className="px-4 py-2 bg-slate-900 text-white hover:bg-yellow-400 hover:text-slate-900 rounded-xl text-[10px] font-bold transition-all flex items-center gap-1 shadow-sm active:scale-95"
+                                            >
+                                                Details <ChevronRight size={12} />
+                                            </Link>
                                         </div>
-                                        <Link 
-                                            to={`/order/${order._id}`} 
-                                            className="h-10 px-6 bg-slate-900 text-white rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-slate-200"
-                                        >
-                                            Logistics <Eye size={12} />
-                                        </Link>
                                     </div>
                                 </div>
                             ))}
