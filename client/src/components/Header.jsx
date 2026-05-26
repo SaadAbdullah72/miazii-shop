@@ -112,6 +112,26 @@ const Header = () => {
         toast.success('Notification removed');
     };
 
+    const formatTime = (dateStr) => {
+        if (!dateStr) return '';
+        try {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffHours < 48) return 'Yesterday';
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        } catch (e) {
+            return '';
+        }
+    };
+
     const categoryItems = Array.isArray(categories)
         ? categories.map(c => ({ name: c.name, id: c._id }))
         : [];
@@ -313,103 +333,116 @@ const Header = () => {
 
             {/* SIDE DRAWERS - PLACED AT ROOT FOR RELIABLE MOBILE VISIBILITY */}
 
-            {/* NOTIFICATION DRAWER - ELECTRO PREMIUM REDESIGN */}
+            {/* NOTIFICATION DRAWER - PREMIUM E-COMMERCE UPGRADE */}
             {isNotifOpen && (
                 <div className="fixed inset-0 z-[1000] bg-slate-900/40 backdrop-blur-[4px] transition-all" onClick={() => setIsNotifOpen(false)} />
             )}
             <div className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-[1001] shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.1)] transform transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex flex-col ${isNotifOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 {/* Header */}
-                <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-slate-900 relative overflow-hidden shrink-0">
-                    {/* Decorative accent */}
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-slate-900 relative overflow-hidden shrink-0">
+                    {/* Golden accent bar */}
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-yellow-400" />
                     <div className="relative z-10">
-                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white leading-none">Notifications Center</h3>
-                        <div className="flex items-center gap-2 mt-2.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{userInfo ? `${notifications.length} Active System Updates` : 'Awaiting Authentication'}</p>
+                        <h3 className="text-base font-bold tracking-wide text-white leading-none font-sans">Notifications</h3>
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            <p className="text-[11px] text-slate-400 font-medium tracking-wide">
+                                {userInfo ? `${notifications.length} active updates` : 'Please sign in to view alerts'}
+                            </p>
                         </div>
                     </div>
                     <button 
                         onClick={() => setIsNotifOpen(false)} 
-                        className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-white border border-white/10 group active:scale-95"
+                        className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl transition-all text-white border border-white/10 group active:scale-95"
                     >
-                        <CloseIcon size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+                        <CloseIcon size={18} className="group-hover:rotate-90 transition-transform duration-300" />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/30">
+                <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30">
                     {!userInfo ? (
                         /* Guest State */
-                        <div className="h-full flex flex-col items-center justify-center p-12 text-center">
-                            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mb-8 shadow-2xl shadow-yellow-500/10 border border-gray-100 relative group">
-                                <div className="absolute inset-0 bg-yellow-400/5 rounded-[2.5rem] scale-110 group-hover:scale-125 transition-transform duration-700" />
-                                <Bell size={40} className="text-gray-300 relative z-10" />
+                        <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+                            <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-6 shadow-sm border border-slate-100 relative group">
+                                <div className="absolute inset-0 bg-yellow-400/5 rounded-[2rem] scale-110 group-hover:scale-125 transition-transform duration-500" />
+                                <Bell size={32} className="text-slate-400 relative z-10" />
                             </div>
-                            <h4 className="text-lg font-black text-slate-800 uppercase tracking-tight">Stay Updated</h4>
-                            <p className="text-xs text-slate-500 mt-4 leading-relaxed font-medium">Please sign in to access your personal notification stream and order updates.</p>
+                            <h4 className="text-base font-bold text-slate-800 tracking-tight">Stay Updated</h4>
+                            <p className="text-xs text-slate-500 mt-2.5 leading-relaxed font-normal max-w-[280px] mx-auto">
+                                Sign in to view personalized order tracking updates, delivery statuses, and exclusive promotional offers.
+                            </p>
                             <Link 
                                 to="/login" 
                                 onClick={() => setIsNotifOpen(false)}
-                                className="mt-10 btn-electro w-full max-w-[240px] shadow-xl shadow-yellow-500/20"
+                                className="mt-8 btn-electro w-full max-w-[200px] shadow-lg shadow-yellow-400/10 text-xs font-bold uppercase tracking-wider py-3 rounded-xl"
                             >
-                                Sign in To View
+                                Sign in to View
                             </Link>
                         </div>
                     ) : notifications.length > 0 ? (
                         /* Notifications List */
-                        <div className="p-4 space-y-4">
+                        <div className="p-4 space-y-3">
                             {notifications.map((n) => (
-                                <div key={n._id} className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group relative overflow-hidden">
-                                     {/* Type indicator */}
-                                     <div className={`absolute top-0 left-0 w-1 h-full ${n.type === 'warning' ? 'bg-amber-400' : n.type === 'success' ? 'bg-emerald-400' : 'bg-blue-400'}`} />
+                                <div key={n._id} className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group relative overflow-hidden text-left">
+                                     {/* Color indicator stripe */}
+                                     <div className={`absolute top-0 left-0 w-1 h-full ${n.type === 'warning' ? 'bg-amber-400' : n.type === 'success' ? 'bg-emerald-400' : 'bg-sky-400'}`} />
                                      
-                                    <div className="flex gap-5 text-left">
-                                        <div className={`w-12 h-12 rounded-2xl shrink-0 flex items-center justify-center shadow-inner ${n.type === 'warning' ? 'bg-amber-50 text-amber-600' : n.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}`}>
-                                            {n.type === 'warning' ? <AlertTriangle size={20} /> : n.type === 'success' ? <Check size={20} /> : <Info size={20} />}
+                                    <div className="flex gap-4">
+                                        <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center ${n.type === 'warning' ? 'bg-amber-50 text-amber-600' : n.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-sky-50 text-sky-600'}`}>
+                                            {n.type === 'warning' ? <AlertTriangle size={18} /> : n.type === 'success' ? <Check size={18} /> : <Info size={18} />}
                                         </div>
-                                        <div className="flex-1 min-w-0 pr-6 pt-1">
-                                            <div className="flex items-center justify-between">
-                                                <p className={`text-[10px] font-black uppercase tracking-widest ${n.type === 'warning' ? 'text-amber-500' : n.type === 'success' ? 'text-emerald-500' : 'text-blue-500'}`}>{n.type} Signal</p>
-                                                <span className="text-[9px] font-bold text-gray-300 uppercase letter-spacing-1">System Node</span>
+                                        <div className="flex-1 min-w-0 pr-4">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <p className={`text-[10px] font-bold uppercase tracking-wider ${n.type === 'warning' ? 'text-amber-600' : n.type === 'success' ? 'text-emerald-600' : 'text-sky-600'}`}>
+                                                    {n.type === 'success' ? 'Update Successful' : n.type === 'warning' ? 'Important Alert' : 'System Update'}
+                                                </p>
+                                                <span className="text-[10px] font-semibold text-slate-400 whitespace-nowrap">
+                                                    {formatTime(n.createdAt)}
+                                                </span>
                                             </div>
-                                            <h4 className="text-base font-black text-slate-800 mt-2 uppercase tracking-tight leading-tight">{n.title}</h4>
-                                            <div className="mt-3 p-3 bg-slate-50 rounded-2xl border border-slate-100/50">
-                                                <p className="text-xs text-slate-600 leading-relaxed font-medium">{n.message}</p>
-                                            </div>
+                                            <h4 className="text-sm font-bold text-slate-800 mt-1 leading-snug">{n.title}</h4>
+                                            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed font-medium">
+                                                {n.message}
+                                            </p>
                                         </div>
                                     </div>
                                     <button
                                         onClick={(e) => handleDeleteNotification(e, n._id)}
-                                        className="absolute top-6 right-6 p-2 text-gray-200 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-90"
+                                        className="absolute top-4 right-4 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
                                     >
-                                        <Trash2 size={16} />
+                                        <Trash2 size={14} />
                                     </button>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        /* All Clear State */
-                        <div className="h-full flex flex-col items-center justify-center p-12 text-center">
-                            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mb-8 border border-gray-100 shadow-sm shadow-slate-200/50 relative">
-                                <div className="absolute inset-0 bg-slate-50 rounded-[2.5rem] animate-pulse" />
-                                <Check size={36} className="text-emerald-500 relative z-10" />
+                        /* All Clear Premium State */
+                        <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+                            <div className="w-20 h-20 bg-emerald-50/50 rounded-[2rem] flex items-center justify-center mb-6 border border-emerald-100/50 shadow-sm relative">
+                                <div className="absolute inset-0 bg-emerald-50 rounded-[2rem] animate-pulse" />
+                                <Check size={28} className="text-emerald-500 relative z-10" />
                             </div>
-                            <h4 className="text-base font-black uppercase tracking-[0.4em] text-slate-800">Operational</h4>
-                            <div className="mt-4 px-6 py-2 bg-emerald-50 rounded-full border border-emerald-100 inline-block">
-                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Protocol: All Clear</p>
+                            <h4 className="text-base font-bold text-slate-800 tracking-tight">You're all caught up!</h4>
+                            <p className="text-xs text-slate-500 mt-2 leading-relaxed max-w-[260px] mx-auto">
+                                No new notifications at the moment. We will notify you when your order status updates or when there are special promotions.
+                            </p>
+                            <div className="mt-6 px-4 py-1.5 bg-emerald-50 rounded-full border border-emerald-100 inline-block">
+                                <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">All messages read</p>
                             </div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-6">System state optimized / 0 New Events</p>
                         </div>
                     )}
                 </div>
                 
                 {/* Footer Status Bar */}
                 {userInfo && (
-                     <div className="p-4 bg-gray-50/80 backdrop-blur-sm border-t border-gray-100 flex items-center justify-center">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Encryption: Active / {notifications.length} Records</p>
+                     <div className="p-4 bg-slate-50 border-t border-gray-100 flex items-center justify-center shrink-0">
+                        <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                            Miazi Shop Customer Alerts Center
+                        </p>
                     </div>
                 )}
             </div>
+
 
             {/* ACCOUNT DRAWER */}
             {isUserDrawerOpen && (
