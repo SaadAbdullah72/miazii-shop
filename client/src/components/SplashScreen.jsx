@@ -48,16 +48,16 @@ const SplashScreen = ({ onComplete }) => {
         <img
           src="/splash-hand.png"
           alt="Miazi Shop"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
           style={{
             // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
             clipPath: 'inset(0 0 22% 0)',
-            // Align the arm exactly to the right edge of the screen
+            // Align the arm exactly to the right edge of the screen inside contain mode
             objectPosition: 'right center',
-            // Shift right by translateX(5%) and scale to 1.08 to perfectly push the internal yellow image margin off-screen
+            // Perfect compromise: object-contain prevents vertical zoom/cut-off of "SHOP", while translateX(6%) pushes right margins to connect arm to edge
             transform: isVisible && imageLoaded 
-              ? 'scale(1.08) translateX(5%) translateY(2%)' 
-              : 'scale(1.05) translateX(5%) translateY(15%)',
+              ? 'scale(1.08) translateX(6%) translateY(3%)' 
+              : 'scale(1.05) translateX(6%) translateY(15%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1.5s ease-out',
             opacity: isVisible && imageLoaded ? 1 : 0
           }}
