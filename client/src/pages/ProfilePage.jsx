@@ -304,7 +304,7 @@ const ProfilePage = () => {
 
                         {/* Facebook */}
                         <a 
-                            href="https://www.facebook.com/miazishop/" 
+                            href="https://www.facebook.com/profile.php?id=61562843136238" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-5 py-3 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md hover:bg-[#1877F2] hover:border-transparent cursor-pointer"
