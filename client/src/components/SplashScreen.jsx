@@ -37,22 +37,22 @@ const SplashScreen = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-white transition-all duration-500 ease-out ${
+      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-[#fed700] transition-all duration-500 ease-out ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
       {/* Full screen centered splash image without surrounding card borders */}
       <div
-        className={`w-full h-full max-w-md md:max-w-lg aspect-[9/16] transition-all duration-1000 ease-out transform flex items-center justify-center ${
+        className={`w-full h-full transition-all duration-1000 ease-out transform flex items-center justify-center ${
           imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}
       >
         <img
           src="/splash-hand.png"
           alt="Miazi Shop"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover md:object-contain bg-[#fed700]"
           style={{
-            transform: isVisible && imageLoaded ? 'scale(1)' : 'scale(1.1)',
+            transform: isVisible && imageLoaded ? 'scale(1)' : 'scale(1.05)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
           }}
         />
