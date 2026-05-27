@@ -48,8 +48,8 @@ const SplashScreen = ({ onComplete }) => {
         }`}
         style={{
           // Container level clipping with Webkit prefix to prevent any Webkit browser rendering conflicts
-          webkitClipPath: 'inset(0 0 25% 0)',
-          clipPath: 'inset(0 0 25% 0)'
+          webkitClipPath: 'inset(0 0 23% 0)',
+          clipPath: 'inset(0 0 23% 0)'
         }}
       >
         <img
