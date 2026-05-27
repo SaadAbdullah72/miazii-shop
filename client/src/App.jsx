@@ -38,10 +38,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getProfile } from './slices/authSlice';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+import SplashScreen from './components/SplashScreen';
 
 function App() {
     const dispatch = useDispatch();
     const { userInfo } = useSelector((state) => state.auth);
+    const [showSplash, setShowSplash] = React.useState(true);
 
     const [deferredPrompt, setDeferredPrompt] = React.useState(null);
     const [isOnline, setIsOnline] = React.useState(navigator.onLine);
@@ -143,6 +145,7 @@ function App() {
 
     return (
         <Router>
+            {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
             <div className="flex flex-col min-h-screen bg-[#f5f5f5] relative">
                 {/* DYNAMIC OFFLINE / RECONNECT BAR */}
                 {showOnlineStatus && (
