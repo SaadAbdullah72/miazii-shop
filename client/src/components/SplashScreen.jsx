@@ -37,13 +37,15 @@ const SplashScreen = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-[#FFDC00] transition-all duration-500 ease-out ${
+      className={`fixed inset-0 z-[99999] flex items-center justify-end bg-[#FFDC00] transition-all duration-500 ease-out ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
-      {/* Full screen wrapper to ensure arm reaches the screen edge perfectly */}
+      {/* Aspect-ratio locked container aligned to the right edge of the screen */}
       <div
-        className="w-full h-full transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00]"
+        className={`h-full aspect-[715/817] transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
+          imageLoaded && isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
       >
         <img
           src="/splash-hand.png"
@@ -52,12 +54,12 @@ const SplashScreen = ({ onComplete }) => {
           style={{
             // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
             clipPath: 'inset(0 0 22% 0)',
-            // Align the arm exactly to the right edge of the screen inside contain mode
+            // Align the arm exactly to the right edge inside the aspect container
             objectPosition: 'right center',
-            // Perfect compromise: object-contain prevents vertical zoom/cut-off of "SHOP", while translateX(6%) pushes right margins to connect arm to edge
+            // Smooth micro-scale and translateY for a premium slide-up entry from bottom
             transform: isVisible && imageLoaded 
-              ? 'scale(1.08) translateX(6%) translateY(3%)' 
-              : 'scale(1.05) translateX(6%) translateY(15%)',
+              ? 'scale(1.05) translateY(0)' 
+              : 'scale(1.05) translateY(12%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1.5s ease-out',
             opacity: isVisible && imageLoaded ? 1 : 0
           }}
