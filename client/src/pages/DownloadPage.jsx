@@ -1,14 +1,74 @@
-import React, { useState } from 'react';
-import { Download, ShieldCheck, Smartphone, Cpu, CheckCircle, AlertTriangle, ArrowRight, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Download, ShieldCheck, Smartphone, Cpu, CheckCircle, AlertTriangle, ArrowRight, ExternalLink, Bell, X, Star } from 'lucide-react';
+import api from '../utils/axiosConfig';
 
 const DownloadPage = () => {
     const [downloading, setDownloading] = useState(false);
     const [selectedTab, setSelectedTab] = useState('apk');
+    const [downloadsCount, setDownloadsCount] = useState(5876); // Beautiful default
+    const [isNoticeOpen, setIsNoticeOpen] = useState(false);
+    
+    // Configurations fetched from backend
+    const [config, setConfig] = useState({
+        notificationTitle: "Notification",
+        notificationMessage: "সেরা পারফরম্যান্স ও নির্ভরযোগ্য সার্ভিসের জন্য X KING V2RAY চালান — আমাদের ভিপিএন সম্পূর্ণ অটো-আপডেট সিস্টেম।",
+        notificationActive: true,
+        slides: [
+            '/electro_slider_watch.png',
+            '/slider-phone.png',
+            '/splash-hand.png'
+        ]
+    });
 
-    const handleInstallClick = () => {
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    // Fetch config and count on mount
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const { data } = await api.get('/api/download-count');
+                if (data) {
+                    setDownloadsCount(data.count);
+                    setConfig({
+                        notificationTitle: data.notificationTitle || "Notification",
+                        notificationMessage: data.notificationMessage || "",
+                        notificationActive: data.notificationActive !== false,
+                        slides: data.slides || []
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to fetch download page configuration", err);
+            }
+        };
+
+        fetchConfig();
+    }, []);
+
+    // Automatic slide transitions every 5 seconds
+    useEffect(() => {
+        if (!config.slides || config.slides.length < 2) return;
+        
+        const slideTimer = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % config.slides.length);
+        }, 5000);
+
+        return () => clearInterval(slideTimer);
+    }, [config.slides]);
+
+    const handleInstallClick = async () => {
         setDownloading(true);
         const fileName = selectedTab === 'apk' ? 'Miazi Shop.apk' : 'Miazi Shop.aab';
         
+        // Trigger download count increment on the server
+        try {
+            const { data } = await api.post('/api/download-count');
+            if (data && data.count !== undefined) {
+                setDownloadsCount(data.count);
+            }
+        } catch (err) {
+            console.error("Error updating download count:", err);
+        }
+
         // Trigger the file download
         const link = document.createElement('a');
         link.href = `/${fileName}`;
@@ -95,13 +155,13 @@ const DownloadPage = () => {
                             <div className="grid grid-cols-2 gap-3 mb-6 bg-slate-50 p-1.5 rounded-2xl">
                                 <button 
                                     onClick={() => setSelectedTab('apk')}
-                                    className={`py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${selectedTab === 'apk' ? 'bg-white text-slate-900 shadow-md shadow-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
+                                    className={`py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${selectedTab === 'apk' ? 'bg-white text-slate-900 shadow-md shadow-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
                                 >
                                     APK File (Direct)
                                 </button>
                                 <button 
                                     onClick={() => setSelectedTab('aab')}
-                                    className={`py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${selectedTab === 'aab' ? 'bg-white text-slate-900 shadow-md shadow-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
+                                    className={`py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${selectedTab === 'aab' ? 'bg-white text-slate-900 shadow-md shadow-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
                                 >
                                     AAB File (Bundle)
                                 </button>
@@ -114,12 +174,12 @@ const DownloadPage = () => {
                                     <p className="text-sm font-black text-slate-800 mt-1">{selectedTab === 'apk' ? '1.4 MB' : '1.5 MB'}</p>
                                 </div>
                                 <div className="text-center border-x border-slate-100">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rating</p>
-                                    <p className="text-sm font-black text-slate-800 mt-1">5.0 ★</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Downloads</p>
+                                    <p className="text-sm font-black text-slate-800 mt-1">{downloadsCount.toLocaleString()}</p>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Format</p>
-                                    <p className="text-sm font-black text-slate-800 mt-1 uppercase">{selectedTab}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rating</p>
+                                    <p className="text-sm font-black text-slate-800 mt-1 flex items-center justify-center gap-0.5">5.0 <Star size={12} className="fill-yellow-400 text-yellow-400" /></p>
                                 </div>
                             </div>
 
@@ -127,7 +187,7 @@ const DownloadPage = () => {
                             <button
                                 onClick={handleInstallClick}
                                 disabled={downloading}
-                                className={`w-full py-4.5 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-yellow-400/10 hover:shadow-slate-900/10 transition-all duration-300 scale-100 active:scale-95 ${downloading ? 'opacity-80 pointer-events-none' : ''}`}
+                                className={`w-full py-4.5 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-yellow-400/10 hover:shadow-slate-900/10 transition-all duration-300 scale-100 active:scale-95 cursor-pointer ${downloading ? 'opacity-80 pointer-events-none' : ''}`}
                             >
                                 {downloading ? (
                                     <>
@@ -155,6 +215,46 @@ const DownloadPage = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* PREMIUM PREVIEW POSTER / SLIDESHOW */}
+                {config.slides && config.slides.length > 0 && (
+                    <div className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-xl shadow-slate-100/50 mb-16 overflow-hidden relative">
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#fed700]" />
+                        <h3 className="text-lg font-black text-slate-800 uppercase tracking-widest mb-6 text-center">App Previews</h3>
+                        <div className="relative aspect-video max-w-2xl mx-auto rounded-3xl overflow-hidden shadow-lg border border-slate-100 bg-[#fed700] group">
+                            {config.slides.map((slide, index) => (
+                                <div
+                                    key={index}
+                                    className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                                        index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                    }`}
+                                >
+                                    <img
+                                        src={slide}
+                                        alt={`Slide ${index + 1}`}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.src = '/splash-hand.png';
+                                            e.target.onerror = null;
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                            {/* Slide indicators */}
+                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+                                {config.slides.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentSlide(index)}
+                                        className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
+                                            index === currentSlide ? 'bg-slate-900 w-6' : 'bg-slate-900/40'
+                                        }`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Features & Specs Section */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
@@ -248,6 +348,86 @@ const DownloadPage = () => {
                     Official App Hub for Miazi Shop
                 </div>
             </div>
+
+            {/* FLOATING NOTIFICATION BELL BUTTON */}
+            {config.notificationActive && (
+                <button
+                    onClick={() => setIsNoticeOpen(true)}
+                    className="fixed bottom-6 right-6 w-14 h-14 bg-yellow-400 text-slate-900 rounded-full flex items-center justify-center shadow-2xl border-4 border-white cursor-pointer z-50 animate-[pulseTheme_2s_infinite_ease-in-out] hover:scale-110 active:scale-95 transition-transform"
+                >
+                    <Bell size={24} className="animate-[wiggleBell_1s_infinite_ease-in-out]" />
+                </button>
+            )}
+
+            {/* FIXED CENTER BEZEL NOTICE MODAL */}
+            {isNoticeOpen && (
+                <div 
+                    className="fixed inset-0 w-screen h-screen bg-slate-950/60 backdrop-blur-md flex items-center justify-center z-[99999] p-4 animate-[fadeIn_0.3s_ease_forwards]"
+                    onClick={() => setIsNoticeOpen(false)}
+                >
+                    <div 
+                        className="bg-white w-full max-w-sm rounded-[2rem] p-6 relative text-center border-l-4 border-r-4 border-b-8 border-t border-[#fed700] border-t-white shadow-2xl animate-[modalEnter_0.4s_cubic-bezier(0.18,0.89,0.32,1.28)_forwards]"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex flex-col items-center">
+                            <div className="w-16 h-16 bg-yellow-400/10 border border-yellow-400/20 text-yellow-500 rounded-3xl flex items-center justify-center mb-4">
+                                <Bell size={32} className="animate-[bounceBell_1.5s_infinite]" />
+                            </div>
+                            <h3 className="font-['Outfit'] text-lg font-black text-slate-900 uppercase tracking-widest mb-3">
+                                {config.notificationTitle}
+                            </h3>
+                        </div>
+                        
+                        <div className="max-h-[50vh] overflow-y-auto mb-6 px-1 py-1 scrollbar-thin">
+                            <p className="text-slate-600 text-sm font-bold leading-relaxed whitespace-pre-line text-center">
+                                {config.notificationMessage}
+                            </p>
+                        </div>
+
+                        <button 
+                            onClick={() => setIsNoticeOpen(false)}
+                            className="w-full py-4.5 bg-yellow-400 text-slate-900 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-lg shadow-yellow-400/10 cursor-pointer animate-[btnBreathing_2s_infinite_ease-in-out] hover:bg-slate-900 hover:text-white transition-all active:scale-95"
+                        >
+                            Got It
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Embedded styles for advanced notice effects */}
+            <style>{`
+                @keyframes pulseTheme {
+                    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254, 215, 0, 0.6); }
+                    70% { transform: scale(1.08); box-shadow: 0 0 0 15px rgba(254, 215, 0, 0); }
+                    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254, 215, 0, 0); }
+                }
+                @keyframes wiggleBell {
+                    0%, 100% { transform: rotate(0deg); }
+                    15% { transform: rotate(12deg); }
+                    30% { transform: rotate(-12deg); }
+                    45% { transform: rotate(8deg); }
+                    60% { transform: rotate(-8deg); }
+                    75% { transform: rotate(4deg); }
+                    90% { transform: rotate(-4deg); }
+                }
+                @keyframes bounceBell {
+                    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                    40% { transform: translateY(-8px); }
+                    60% { transform: translateY(-3px); }
+                }
+                @keyframes modalEnter {
+                    from { transform: scale(0.85); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+                @keyframes btnBreathing {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.02); }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+            `}</style>
         </div>
     );
 };

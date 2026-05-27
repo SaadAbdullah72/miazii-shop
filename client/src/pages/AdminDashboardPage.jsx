@@ -291,6 +291,80 @@ const AdminDashboardPage = () => {
         }
     };
 
+    // App Hub Standalone Page Dynamic Configuration States & Handlers
+    const [appHubConfig, setAppHubConfig] = useState({
+        count: 0,
+        notificationTitle: 'Notification',
+        notificationMessage: '',
+        notificationActive: true,
+        slides: []
+    });
+    const [isSavingAppHub, setIsSavingAppHub] = useState(false);
+    const [uploadingSlide, setUploadingSlide] = useState(false);
+
+    useEffect(() => {
+        const fetchAppHubConfig = async () => {
+            try {
+                const { data } = await api.get('/api/download-count');
+                if (data) {
+                    setAppHubConfig({
+                        count: data.count || 0,
+                        notificationTitle: data.notificationTitle || 'Notification',
+                        notificationMessage: data.notificationMessage || '',
+                        notificationActive: data.notificationActive !== false,
+                        slides: data.slides || []
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load App Hub config:", err);
+            }
+        };
+        if (activeTab === 'app_hub') {
+            fetchAppHubConfig();
+        }
+    }, [activeTab]);
+
+    const handleSaveAppHub = async (e) => {
+        e.preventDefault();
+        try {
+            setIsSavingAppHub(true);
+            const { data } = await api.put('/api/download-count/config', appHubConfig);
+            if (data.success) {
+                toast.success('App Hub configurations updated!');
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.message || err.message || 'Failed to update App Hub');
+        } finally {
+            setIsSavingAppHub(false);
+        }
+    };
+
+    const handleSlideUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setUploadingSlide(true);
+        try {
+            const secureUrl = await uploadToCloudinaryDirect(file, 'app/slides');
+            setAppHubConfig(prev => ({
+                ...prev,
+                slides: [...prev.slides, secureUrl]
+            }));
+            toast.success('Slide image uploaded successfully!');
+        } catch (err) {
+            console.error('Slide upload failed:', err);
+            toast.error('Slide image upload failed');
+        } finally {
+            setUploadingSlide(false);
+        }
+    };
+
+    const removeSlide = (idx) => {
+        setAppHubConfig(prev => ({
+            ...prev,
+            slides: prev.slides.filter((_, i) => i !== idx)
+        }));
+    };
+
     // Derived Data
     const totalRevenue = Array.isArray(orders) ? orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0) : 0;
     const filteredProducts = products.filter(p => {
@@ -308,6 +382,7 @@ const AdminDashboardPage = () => {
         { id: 'paid manifest', name: 'Shipment', icon: TrendingUp },
         { id: 'notifications', name: 'In-App Notif', icon: Bell },
         { id: 'push blast', name: 'Push Blast', icon: Smartphone },
+        { id: 'app_hub', name: 'App Hub', icon: Settings },
         { id: 'categories', name: 'Cats', icon: List },
         { id: 'settings', name: 'Settings', icon: Settings },
     ];
@@ -864,6 +939,132 @@ const AdminDashboardPage = () => {
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                    )}
+
+                    {/* ========== APP HUB (STANDALONE PAGE MANAGER) ========== */}
+                    {activeTab === 'app_hub' && (
+                        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto space-y-8">
+                            <div className="mb-8 flex items-center gap-3">
+                                <div className="p-2.5 bg-slate-900 text-white rounded-xl shadow-md">
+                                    <Smartphone size={22} className="text-yellow-400" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">App Hub Config</h2>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Manage dynamic notices, slideshow posters & download count</p>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleSaveAppHub} className="space-y-8">
+                                {/* Notice Settings Panel */}
+                                <div className="bg-white border border-slate-200 rounded-[2rem] p-6 md:p-8 shadow-sm space-y-6">
+                                    <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+                                        <h3 className="text-xs font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
+                                            <Bell size={16} className="text-yellow-500" /> Floating Notice Settings
+                                        </h3>
+                                        <label className="relative flex items-center cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                className="sr-only peer"
+                                                checked={appHubConfig.notificationActive}
+                                                onChange={(e) => setAppHubConfig({...appHubConfig, notificationActive: e.target.checked})}
+                                            />
+                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-400"></div>
+                                            <span className="ms-3 text-xs font-bold text-slate-500 uppercase tracking-wider">Active</span>
+                                        </label>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Notice Title</label>
+                                            <input 
+                                                type="text"
+                                                className="w-full bg-white border border-slate-200 px-4 py-3 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm"
+                                                placeholder="e.g. Notification"
+                                                value={appHubConfig.notificationTitle}
+                                                onChange={(e) => setAppHubConfig({...appHubConfig, notificationTitle: e.target.value})}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Fake/Override Downloads Count</label>
+                                            <input 
+                                                type="number"
+                                                className="w-full bg-white border border-slate-200 px-4 py-3 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm"
+                                                placeholder="5876"
+                                                value={appHubConfig.count}
+                                                onChange={(e) => setAppHubConfig({...appHubConfig, count: parseInt(e.target.value) || 0})}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Notice Message (Bangla/English)</label>
+                                        <textarea 
+                                            className="w-full bg-white border border-slate-200 px-4 py-3 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm min-h-[120px] resize-none"
+                                            placeholder="Write notice message..."
+                                            value={appHubConfig.notificationMessage}
+                                            onChange={(e) => setAppHubConfig({...appHubConfig, notificationMessage: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Slideshow Posters Management */}
+                                <div className="bg-white border border-slate-200 rounded-[2rem] p-6 md:p-8 shadow-sm space-y-6">
+                                    <h3 className="text-xs font-black text-slate-800 uppercase tracking-tight border-b border-slate-100 pb-4 flex items-center gap-2">
+                                        <Image size={16} className="text-blue-500" /> App Screenshot Slideshow Posters
+                                    </h3>
+
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Upload Slide Image</label>
+                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-[2rem] cursor-pointer hover:border-yellow-400 hover:bg-yellow-50/50 transition-all bg-white relative group">
+                                            <input type="file" accept="image/*" onChange={handleSlideUpload} className="hidden" disabled={uploadingSlide} />
+                                            <div className="flex flex-col items-center justify-center py-5">
+                                                {uploadingSlide ? (
+                                                    <Loader className="w-8 h-8 text-yellow-500 animate-spin mb-2" />
+                                                ) : (
+                                                    <Upload className="w-8 h-8 text-slate-300 mb-2 group-hover:scale-110 transition-transform" />
+                                                )}
+                                                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">
+                                                    {uploadingSlide ? 'Uploading to Cloudinary...' : 'Click to Upload Slide screenshot'}
+                                                </p>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    {appHubConfig.slides && appHubConfig.slides.length > 0 && (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                                            {appHubConfig.slides.map((img, idx) => (
+                                                <div key={idx} className="relative group aspect-video bg-white border border-slate-100 rounded-2xl overflow-hidden p-1 shadow-sm">
+                                                    <img src={img} alt="" className="w-full h-full object-cover rounded-xl" />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => removeSlide(idx)} 
+                                                            className="bg-red-600 text-white p-2.5 rounded-full shadow-lg hover:scale-110 transition-transform"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex justify-end pt-4">
+                                    <button 
+                                        type="submit"
+                                        disabled={isSavingAppHub}
+                                        className="w-full md:w-auto bg-slate-900 hover:bg-yellow-500 hover:text-slate-950 text-white rounded-2xl px-12 py-4.5 text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 disabled:opacity-50 cursor-pointer shadow-xl shadow-slate-100"
+                                    >
+                                        {isSavingAppHub ? (
+                                            <><Loader className="animate-spin text-white" size={14} /> Synchronizing...</>
+                                        ) : (
+                                            'Save Changes'
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     )}
 
