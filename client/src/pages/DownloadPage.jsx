@@ -233,7 +233,10 @@ const DownloadPage = () => {
                                         src={slide}
                                         alt={`Slide ${index + 1}`}
                                         className="w-full h-full object-contain bg-[#fed700]"
-                                        style={{ mixBlendMode: 'multiply' }}
+                                        style={{ 
+                                            mixBlendMode: 'multiply',
+                                            ...(slide.includes('splash-hand') ? { clipPath: 'inset(0 0 12% 0)', transform: 'scale(1.15) translateY(-4%)' } : {})
+                                        }}
                                         onError={(e) => {
                                             e.target.src = '/splash-hand.png';
                                             e.target.onerror = null;
