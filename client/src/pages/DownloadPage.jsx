@@ -232,7 +232,8 @@ const DownloadPage = () => {
                                     <img
                                         src={slide}
                                         alt={`Slide ${index + 1}`}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain bg-[#fed700]"
+                                        style={{ mixBlendMode: 'multiply' }}
                                         onError={(e) => {
                                             e.target.src = '/splash-hand.png';
                                             e.target.onerror = null;
