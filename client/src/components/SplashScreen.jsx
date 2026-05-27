@@ -41,22 +41,23 @@ const SplashScreen = ({ onComplete }) => {
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
-      {/* Aspect-ratio locked container to ensure cropping matches image pixels exactly across all screens */}
+      {/* Full screen wrapper to ensure arm reaches the screen edge perfectly */}
       <div
-        className={`w-full max-w-[480px] aspect-[715/817] px-4 transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
-          imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-98 opacity-0'
-        }`}
+        className="w-full h-full transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00]"
       >
         <img
           src="/splash-hand.png"
           alt="Miazi Shop"
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
           style={{
             // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
             clipPath: 'inset(0 0 22% 0)',
-            // Keep it natural and translate down slightly to perfectly center the handbag on the screen
-            transform: isVisible && imageLoaded ? 'scale(1.02) translateY(3%)' : 'scale(1.05) translateY(3%)',
-            transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            // Align the arm exactly to the right edge of the screen so it's fully connected without floating gaps
+            objectPosition: 'right center',
+            // Entry animation: Slides up from bottom (translateY 15%) and fades in smoothly
+            transform: isVisible && imageLoaded ? 'scale(1.02) translateY(2%)' : 'scale(1.0) translateY(15%)',
+            transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1.5s ease-out',
+            opacity: isVisible && imageLoaded ? 1 : 0
           }}
         />
       </div>
