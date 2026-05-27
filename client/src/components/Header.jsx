@@ -327,6 +327,9 @@ const Header = () => {
                     <nav className="flex-1 flex items-center gap-8 px-8 h-full">
                         <a href="/#shop-section" className="text-sm font-bold text-gray-700 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px]">Products Inventory</a>
                         <a href="/#shop-section" className="text-sm font-bold text-gray-700 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px]">Featured Brands</a>
+                        <Link to="/download" className="text-sm font-bold text-yellow-600 hover:text-yellow-500 font-black uppercase tracking-widest text-[10px] flex items-center gap-1.5 animate-pulse">
+                            ⚡ Download Android App
+                        </Link>
                     </nav>
                 </div>
             </div>

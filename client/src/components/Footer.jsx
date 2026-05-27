@@ -138,6 +138,7 @@ const Footer = () => {
                                 </li>
                             ))}
                              <li><Link to="/about-us" className="hover:text-[#1e1c13]">About Us</Link></li>
+                             <li><Link to="/download" className="hover:text-[#1e1c13] font-bold text-yellow-600">Download Mobile App</Link></li>
                         </ul>
                     </div>
                 </div>

@@ -29,6 +29,7 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsConditionsPage = lazy(() => import('./pages/TermsConditionsPage'));
 const RefundPolicyPage = lazy(() => import('./pages/RefundPolicyPage'));
 const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
+const DownloadPage = lazy(() => import('./pages/DownloadPage'));
 
 // High-performance loading fallback
 const PageLoader = () => <div className="min-h-screen bg-[#f5f5f5]" />;
@@ -187,6 +188,7 @@ function App() {
                             <Route path="/terms-conditions" element={<TermsConditionsPage />} />
                             <Route path="/refund-policy" element={<RefundPolicyPage />} />
                             <Route path="/about-us" element={<AboutUsPage />} />
+                            <Route path="/download" element={<DownloadPage />} />
 
                             {/* Registered User Protected Routes */}
                             <Route path="" element={<PrivateRoute />}>
