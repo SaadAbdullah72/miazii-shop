@@ -52,10 +52,10 @@ const SplashScreen = ({ onComplete }) => {
           alt="Miazi Shop"
           className="w-full h-full object-contain"
           style={{
-            // Crop out the bottom 35% of the image to completely remove the embedded navigation icons
-            clipPath: 'inset(0 0 35% 0)',
+            // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
+            clipPath: 'inset(0 0 22% 0)',
             // Keep it natural and translate down slightly to perfectly center the handbag on the screen
-            transform: isVisible && imageLoaded ? 'scale(1.02) translateY(8%)' : 'scale(1.05) translateY(8%)',
+            transform: isVisible && imageLoaded ? 'scale(1.02) translateY(3%)' : 'scale(1.05) translateY(3%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
           }}
         />
