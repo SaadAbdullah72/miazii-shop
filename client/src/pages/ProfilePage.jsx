@@ -7,7 +7,8 @@ import {
     Loader, Package, Mail, Calendar, 
     CreditCard, ChevronRight, Eye, Info, 
     Clock, CheckCircle2, User, Truck,
-    LogOut, RefreshCw, Camera, Trash2, Shield
+    LogOut, RefreshCw, Camera, Trash2, Shield,
+    Instagram, Facebook
 } from 'lucide-react';
 import { updateProfile } from '../slices/authSlice';
 import { uploadToCloudinaryDirect } from '../utils/cloudinary';
@@ -118,28 +119,63 @@ const ProfilePage = () => {
                             <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-2">
                                 User Profile
                             </h1>
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-2">
-                                <div className="flex items-center gap-2 text-gray-500">
-                                    <Mail size={14} className="text-yellow-500" />
-                                    <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email || 'Sign In Required'}</span>
+                            <div className="flex flex-col gap-4 mt-3">
+                                <div className="flex flex-wrap items-center gap-4">
+                                    <div className="flex items-center gap-2 text-gray-500 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-100">
+                                        <Mail size={14} className="text-yellow-500" />
+                                        <span className="text-xs font-bold tracking-tight uppercase">{userInfo?.email || 'Sign In Required'}</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => {
+                                            dispatch(logout());
+                                            navigate('/');
+                                        }}
+                                        className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all w-fit cursor-pointer"
+                                    >
+                                        <LogOut size={12} /> Sign Out Session
+                                    </button>
                                 </div>
-                                <a 
-                                    href="https://vm.tiktok.com/ZS9Y3cE74yKHv-8XYf6/" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 text-white hover:bg-[#fed700] hover:text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all w-fit shadow-sm"
-                                >
-                                    <span>Follow on TikTok</span>
-                                </a>
-                                <button 
-                                    onClick={() => {
-                                        dispatch(logout());
-                                        navigate('/');
-                                    }}
-                                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all w-fit"
-                                >
-                                    <LogOut size={12} /> Sign Out Session
-                                </button>
+
+                                {/* Official Social Accounts Row */}
+                                <div className="flex flex-col gap-2 mt-1">
+                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Official Socials</span>
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        {/* Instagram */}
+                                        <a 
+                                            href="https://www.instagram.com/miazi.shop/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 px-3.5 py-2 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-xl text-[11px] font-bold transition-all shadow-sm hover:shadow-md hover:bg-gradient-to-tr hover:from-[#fdf497] hover:via-[#fd5949] hover:to-[#d6249f] hover:border-transparent cursor-pointer"
+                                        >
+                                            <Instagram size={14} />
+                                            <span>Instagram</span>
+                                        </a>
+
+                                        {/* TikTok */}
+                                        <a 
+                                            href="https://vm.tiktok.com/ZS9Y3cE74yKHv-8XYf6/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 px-3.5 py-2 bg-slate-950 text-white hover:bg-slate-900 rounded-xl text-[11px] font-bold transition-all shadow-sm hover:shadow-md cursor-pointer border border-transparent"
+                                        >
+                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23 1.02.82 2.26 1.34 3.58 1.52.01 1.25.01 2.5.01 3.75-.92-.09-1.83-.43-2.62-.97-.86-.61-1.54-1.46-1.97-2.44-.02 2.99.01 5.98-.02 8.97-.08 1.64-.67 3.23-1.68 4.51-1.28 1.66-3.23 2.76-5.32 3.02-2.3.33-4.73-.28-6.61-1.69-1.92-1.41-3.1-3.69-3.11-6.11.02-2.41 1.2-4.68 3.12-6.09 1.76-1.33 4.02-1.94 6.22-1.67v3.8c-.89-.25-1.85-.16-2.67.28-.9.49-1.56 1.37-1.78 2.38-.28 1.15-.03 2.4.67 3.34.69.96 1.83 1.55 3.02 1.56 1.31.02 2.58-.64 3.28-1.75.46-.71.66-1.56.63-2.39.02-4.04.01-8.08.02-12.12z"/>
+                                            </svg>
+                                            <span>TikTok</span>
+                                        </a>
+
+                                        {/* Facebook */}
+                                        <a 
+                                            href="https://www.facebook.com/miazishop/" 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 px-3.5 py-2 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-xl text-[11px] font-bold transition-all shadow-sm hover:shadow-md hover:bg-[#1877F2] hover:border-transparent cursor-pointer"
+                                        >
+                                            <Facebook size={14} />
+                                            <span>Facebook</span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
