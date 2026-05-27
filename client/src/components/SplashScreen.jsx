@@ -46,14 +46,16 @@ const SplashScreen = ({ onComplete }) => {
         className={`h-full aspect-[715/817] transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
           imageLoaded && isVisible ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{
+          // Crop the container itself to be 100% sure everything at the bottom 22% is chopped off
+          clipPath: 'inset(0 0 22% 0)'
+        }}
       >
         <img
           src="/splash-hand.png"
           alt="Miazi Shop"
           className="w-full h-full object-contain"
           style={{
-            // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
-            clipPath: 'inset(0 0 22% 0)',
             // Align the arm exactly to the right edge inside the aspect container
             objectPosition: 'right center',
             // Smooth micro-scale and translateY for a premium slide-up entry from bottom
