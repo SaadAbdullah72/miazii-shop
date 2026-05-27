@@ -41,7 +41,7 @@ const SplashScreen = ({ onComplete }) => {
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
-      {/* Full screen centered splash image without surrounding card borders */}
+      {/* Full screen centered splash image with multiply mix-blend to dissolve the white square background */}
       <div
         className={`w-full h-full transition-all duration-1000 ease-out transform flex items-center justify-center ${
           imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
@@ -50,8 +50,9 @@ const SplashScreen = ({ onComplete }) => {
         <img
           src="/splash-hand.png"
           alt="Miazi Shop"
-          className="w-full h-full object-cover md:object-contain bg-[#fed700]"
+          className="w-full h-full object-cover md:object-contain"
           style={{
+            mixBlendMode: 'multiply',
             transform: isVisible && imageLoaded ? 'scale(1)' : 'scale(1.05)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
           }}
