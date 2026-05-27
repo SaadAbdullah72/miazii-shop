@@ -22,6 +22,7 @@ import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import pushRoutes from './routes/pushRoutes.js';
+import downloadRoutes from './routes/downloadRoutes.js';
 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
@@ -104,6 +105,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/push', pushRoutes);
+app.use('/api/download-count', downloadRoutes);
 
 // Health check route for diagnostics
 app.get('/api/health', (req, res) => {
