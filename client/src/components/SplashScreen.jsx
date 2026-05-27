@@ -37,14 +37,14 @@ const SplashScreen = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[99999] flex items-center justify-end bg-[#FFDC00] transition-all duration-500 ease-out ${
+      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-[#FFDC00] transition-all duration-500 ease-out ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
-      {/* Aspect-ratio locked container aligned to the right edge of the screen */}
+      {/* Centered aspect-ratio locked container matching mobile screen boundaries */}
       <div
-        className={`h-full aspect-[715/817] transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
-          imageLoaded && isVisible ? 'opacity-100' : 'opacity-0'
+        className={`w-full max-w-[480px] aspect-[715/817] px-4 transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
+          imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-98 opacity-0'
         }`}
       >
         <img
@@ -52,16 +52,14 @@ const SplashScreen = ({ onComplete }) => {
           alt="Miazi Shop"
           className="w-full h-full object-contain"
           style={{
-            // Align the arm exactly to the right edge inside the aspect container
-            objectPosition: 'right center',
-            // transformOrigin 'top right' ensures scaling extends downwards, pushing the bottom keys below the container
-            transformOrigin: 'top right',
-            // Scale up by 1.25 to naturally push the bottom 25% (navigation keys) below the container boundary where overflow-hidden cuts it off.
-            // translateX(1%) pushes it slightly right to close any minor pixel margins.
-            // Entry animation slides up smoothly from translateY(10%) to translateY(0)
+            // Crop out exactly the bottom 25% of the image to keep the full handbag while removing navigation keys
+            clipPath: 'inset(0 0 25% 0)',
+            // Align the image centrally
+            objectPosition: 'center center',
+            // Smooth micro-scale and translateY for a premium slide-up entry from bottom
             transform: isVisible && imageLoaded 
-              ? 'scale(1.25) translateX(1%) translateY(0)' 
-              : 'scale(1.25) translateX(1%) translateY(10%)',
+              ? 'scale(1.02) translateY(3%)' 
+              : 'scale(1.02) translateY(12%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1.5s ease-out',
             opacity: isVisible && imageLoaded ? 1 : 0
           }}
