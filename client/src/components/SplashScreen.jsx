@@ -46,10 +46,6 @@ const SplashScreen = ({ onComplete }) => {
         className={`h-full aspect-[715/817] transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
           imageLoaded && isVisible ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{
-          // Crop the container itself to be 100% sure everything at the bottom 22% is chopped off
-          clipPath: 'inset(0 0 22% 0)'
-        }}
       >
         <img
           src="/splash-hand.png"
@@ -58,10 +54,14 @@ const SplashScreen = ({ onComplete }) => {
           style={{
             // Align the arm exactly to the right edge inside the aspect container
             objectPosition: 'right center',
-            // Smooth micro-scale and translateY for a premium slide-up entry from bottom
+            // transformOrigin 'top right' ensures scaling extends downwards, pushing the bottom keys below the container
+            transformOrigin: 'top right',
+            // Scale up by 1.25 to naturally push the bottom 25% (navigation keys) below the container boundary where overflow-hidden cuts it off.
+            // translateX(1%) pushes it slightly right to close any minor pixel margins.
+            // Entry animation slides up smoothly from translateY(10%) to translateY(0)
             transform: isVisible && imageLoaded 
-              ? 'scale(1.05) translateY(0)' 
-              : 'scale(1.05) translateY(12%)',
+              ? 'scale(1.25) translateX(1%) translateY(0)' 
+              : 'scale(1.25) translateX(1%) translateY(10%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1.5s ease-out',
             opacity: isVisible && imageLoaded ? 1 : 0
           }}

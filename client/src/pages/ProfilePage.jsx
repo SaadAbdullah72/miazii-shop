@@ -135,50 +135,7 @@ const ProfilePage = () => {
                                     </button>
                                 </div>
 
-                                {/* Official Social Accounts Row */}
-                                <div className="flex flex-col gap-2 mt-1">
-                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Official Socials</span>
-                                    <div className="flex flex-wrap items-center gap-3">
-                                        {/* Instagram */}
-                                        <a 
-                                            href="https://www.instagram.com/miazi.shop/" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-xl text-[11px] font-bold transition-all shadow-sm hover:shadow-md hover:bg-gradient-to-tr hover:from-[#fdf497] hover:via-[#fd5949] hover:to-[#d6249f] hover:border-transparent cursor-pointer"
-                                        >
-                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
-                                            </svg>
-                                            <span>Instagram</span>
-                                        </a>
 
-                                        {/* TikTok */}
-                                        <a 
-                                            href="https://vm.tiktok.com/ZS9Y3cE74yKHv-8XYf6/" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-slate-950 text-white hover:bg-slate-900 rounded-xl text-[11px] font-bold transition-all shadow-sm hover:shadow-md cursor-pointer border border-transparent"
-                                        >
-                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                                                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23 1.02.82 2.26 1.34 3.58 1.52.01 1.25.01 2.5.01 3.75-.92-.09-1.83-.43-2.62-.97-.86-.61-1.54-1.46-1.97-2.44-.02 2.99.01 5.98-.02 8.97-.08 1.64-.67 3.23-1.68 4.51-1.28 1.66-3.23 2.76-5.32 3.02-2.3.33-4.73-.28-6.61-1.69-1.92-1.41-3.1-3.69-3.11-6.11.02-2.41 1.2-4.68 3.12-6.09 1.76-1.33 4.02-1.94 6.22-1.67v3.8c-.89-.25-1.85-.16-2.67.28-.9.49-1.56 1.37-1.78 2.38-.28 1.15-.03 2.4.67 3.34.69.96 1.83 1.55 3.02 1.56 1.31.02 2.58-.64 3.28-1.75.46-.71.66-1.56.63-2.39.02-4.04.01-8.08.02-12.12z"/>
-                                            </svg>
-                                            <span>TikTok</span>
-                                        </a>
-
-                                        {/* Facebook */}
-                                        <a 
-                                            href="https://www.facebook.com/miazishop/" 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-xl text-[11px] font-bold transition-all shadow-sm hover:shadow-md hover:bg-[#1877F2] hover:border-transparent cursor-pointer"
-                                        >
-                                            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                                            </svg>
-                                            <span>Facebook</span>
-                                        </a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -312,6 +269,51 @@ const ProfilePage = () => {
                                 Review our global data protection standards and how we keep your identity secure and private.
                             </p>
                         </Link>
+                    </div>
+                </div>
+
+                {/* Official Social Accounts Section */}
+                <div className="flex flex-col items-center gap-3 mt-12 pb-8 border-t border-gray-200 pt-10 text-center">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Official Socials</span>
+                    <div className="flex items-center justify-center flex-wrap gap-4">
+                        {/* Instagram */}
+                        <a 
+                            href="https://www.instagram.com/miazi.shop/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-5 py-3 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md hover:bg-gradient-to-tr hover:from-[#fdf497] hover:via-[#fd5949] hover:to-[#d6249f] hover:border-transparent cursor-pointer"
+                        >
+                            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                            </svg>
+                            <span>Instagram</span>
+                        </a>
+
+                        {/* TikTok */}
+                        <a 
+                            href="https://vm.tiktok.com/ZS9Y3cE74yKHv-8XYf6/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-5 py-3 bg-slate-950 text-white hover:bg-slate-900 rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md cursor-pointer border border-transparent"
+                        >
+                            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23 1.02.82 2.26 1.34 3.58 1.52.01 1.25.01 2.5.01 3.75-.92-.09-1.83-.43-2.62-.97-.86-.61-1.54-1.46-1.97-2.44-.02 2.99.01 5.98-.02 8.97-.08 1.64-.67 3.23-1.68 4.51-1.28 1.66-3.23 2.76-5.32 3.02-2.3.33-4.73-.28-6.61-1.69-1.92-1.41-3.1-3.69-3.11-6.11.02-2.41 1.2-4.68 3.12-6.09 1.76-1.33 4.02-1.94 6.22-1.67v3.8c-.89-.25-1.85-.16-2.67.28-.9.49-1.56 1.37-1.78 2.38-.28 1.15-.03 2.4.67 3.34.69.96 1.83 1.55 3.02 1.56 1.31.02 2.58-.64 3.28-1.75.46-.71.66-1.56.63-2.39.02-4.04.01-8.08.02-12.12z"/>
+                            </svg>
+                            <span>TikTok</span>
+                        </a>
+
+                        {/* Facebook */}
+                        <a 
+                            href="https://www.facebook.com/miazishop/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-5 py-3 bg-white text-slate-700 hover:text-white border border-slate-100 rounded-2xl text-xs font-bold transition-all shadow-sm hover:shadow-md hover:bg-[#1877F2] hover:border-transparent cursor-pointer"
+                        >
+                            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            <span>Facebook</span>
+                        </a>
                     </div>
                 </div>
             </div>
