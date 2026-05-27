@@ -221,7 +221,7 @@ const DownloadPage = () => {
                     <div className="bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-xl shadow-slate-100/50 mb-16 overflow-hidden relative">
                         <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#fed700]" />
                         <h3 className="text-lg font-black text-slate-800 uppercase tracking-widest mb-6 text-center">App Previews</h3>
-                        <div className="relative aspect-video max-w-2xl mx-auto rounded-3xl overflow-hidden shadow-lg border border-slate-100 bg-[#fed700] group">
+                        <div className="relative aspect-video max-w-2xl mx-auto rounded-3xl overflow-hidden shadow-lg border border-slate-100 bg-[#FFDC00] group">
                             {config.slides.map((slide, index) => (
                                 <div
                                     key={index}
@@ -232,10 +232,11 @@ const DownloadPage = () => {
                                     <img
                                         src={slide}
                                         alt={`Slide ${index + 1}`}
-                                        className="w-full h-full object-contain bg-[#fed700]"
+                                        className="w-full h-full object-contain"
                                         style={{ 
-                                            mixBlendMode: 'multiply',
-                                            ...(slide.includes('splash-hand') ? { clipPath: 'inset(0 0 22% 0)', transform: 'scale(1.02) translateY(3%)' } : {})
+                                            ...(slide.includes('splash-hand') 
+                                                ? { clipPath: 'inset(0 0 22% 0)', transform: 'scale(1.02) translateY(3%)', backgroundColor: '#FFDC00' } 
+                                                : { mixBlendMode: 'multiply', backgroundColor: '#FFDC00' })
                                         }}
                                         onError={(e) => {
                                             e.target.src = '/splash-hand.png';

@@ -37,13 +37,13 @@ const SplashScreen = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-[#fed700] transition-all duration-500 ease-out ${
+      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-[#FFDC00] transition-all duration-500 ease-out ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
       {/* Aspect-ratio locked container to ensure cropping matches image pixels exactly across all screens */}
       <div
-        className={`w-full max-w-[480px] aspect-[715/817] px-4 transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#fed700] ${
+        className={`w-full max-w-[480px] aspect-[715/817] px-4 transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
           imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-98 opacity-0'
         }`}
       >
@@ -52,8 +52,6 @@ const SplashScreen = ({ onComplete }) => {
           alt="Miazi Shop"
           className="w-full h-full object-contain"
           style={{
-            // Perfect dissolve: merges the image's yellow background with the container background, removing any box outline
-            mixBlendMode: 'multiply',
             // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
             clipPath: 'inset(0 0 22% 0)',
             // Keep it natural and translate down slightly to perfectly center the handbag on the screen
