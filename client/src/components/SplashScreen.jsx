@@ -41,21 +41,22 @@ const SplashScreen = ({ onComplete }) => {
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
-      {/* Centered aspect-ratio locked container matching mobile screen boundaries */}
+      {/* Dynamic container that matches width exactly on mobile to ensure zero side-gaps */}
       <div
-        className={`w-full max-w-[480px] aspect-[715/817] px-4 transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#FFDC00] ${
-          imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-98 opacity-0'
+        className={`w-full max-w-[480px] h-auto relative overflow-hidden bg-[#FFDC00] ${
+          imageLoaded && isVisible ? 'opacity-100' : 'opacity-0'
         }`}
+        style={{
+          // Container level clipping with Webkit prefix to prevent any Webkit browser rendering conflicts
+          webkitClipPath: 'inset(0 0 25% 0)',
+          clipPath: 'inset(0 0 25% 0)'
+        }}
       >
         <img
           src="/splash-hand.png"
           alt="Miazi Shop"
-          className="w-full h-full object-contain"
+          className="w-full h-auto object-contain"
           style={{
-            // Crop out exactly the bottom 25% of the image to keep the full handbag while removing navigation keys
-            clipPath: 'inset(0 0 25% 0)',
-            // Align the image centrally
-            objectPosition: 'center center',
             // Smooth micro-scale and translateY for a premium slide-up entry from bottom
             transform: isVisible && imageLoaded 
               ? 'scale(1.02) translateY(3%)' 
