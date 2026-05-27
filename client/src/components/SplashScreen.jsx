@@ -52,10 +52,12 @@ const SplashScreen = ({ onComplete }) => {
           style={{
             // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
             clipPath: 'inset(0 0 22% 0)',
-            // Align the arm exactly to the right edge of the screen so it's fully connected without floating gaps
+            // Align the arm exactly to the right edge of the screen
             objectPosition: 'right center',
-            // Entry animation: Slides up from bottom (translateY 15%) and fades in smoothly
-            transform: isVisible && imageLoaded ? 'scale(1.02) translateY(2%)' : 'scale(1.0) translateY(15%)',
+            // Shift right by translateX(5%) and scale to 1.08 to perfectly push the internal yellow image margin off-screen
+            transform: isVisible && imageLoaded 
+              ? 'scale(1.08) translateX(5%) translateY(2%)' 
+              : 'scale(1.05) translateX(5%) translateY(15%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 1.5s ease-out',
             opacity: isVisible && imageLoaded ? 1 : 0
           }}
