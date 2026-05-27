@@ -8,7 +8,7 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchShowDuration: 1800,
       launchAutoHide: true,
-      backgroundColor: "#0b0f17",
+      backgroundColor: "#fed700",
       androidScaleType: "CENTER_CROP",
       showSpinner: false
     }
