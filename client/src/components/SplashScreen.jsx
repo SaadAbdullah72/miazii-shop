@@ -52,6 +52,8 @@ const SplashScreen = ({ onComplete }) => {
           alt="Miazi Shop"
           className="w-full h-full object-contain"
           style={{
+            // Perfect dissolve: merges the image's yellow background with the container background, removing any box outline
+            mixBlendMode: 'multiply',
             // Crop out exactly the bottom 22% of the image to keep the full handbag while removing navigation keys
             clipPath: 'inset(0 0 22% 0)',
             // Keep it natural and translate down slightly to perfectly center the handbag on the screen
