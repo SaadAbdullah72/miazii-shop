@@ -41,10 +41,10 @@ const SplashScreen = ({ onComplete }) => {
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none scale-105 blur-sm'
       }`}
     >
-      {/* Full screen centered splash image with virtual button cropping and custom layout */}
+      {/* Aspect-ratio locked container to ensure cropping matches image pixels exactly across all screens */}
       <div
-        className={`w-full h-full transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#fed700] ${
-          imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+        className={`w-full max-w-[480px] aspect-[715/817] px-4 transition-all duration-1000 ease-out transform flex items-center justify-center overflow-hidden bg-[#fed700] ${
+          imageLoaded && isVisible ? 'scale-100 opacity-100' : 'scale-98 opacity-0'
         }`}
       >
         <img
@@ -52,10 +52,10 @@ const SplashScreen = ({ onComplete }) => {
           alt="Miazi Shop"
           className="w-full h-full object-contain"
           style={{
-            // Crop out the bottom 12% of the image to completely remove the Android virtual buttons (lines, circle, back)
-            clipPath: 'inset(0 0 12% 0)',
-            // Align the remaining hand & bag centrally and scale beautifully
-            transform: isVisible && imageLoaded ? 'scale(1.15) translateY(-4%)' : 'scale(1.22) translateY(-4%)',
+            // Crop out the bottom 35% of the image to completely remove the embedded navigation icons
+            clipPath: 'inset(0 0 35% 0)',
+            // Keep it natural and translate down slightly to perfectly center the handbag on the screen
+            transform: isVisible && imageLoaded ? 'scale(1.02) translateY(8%)' : 'scale(1.05) translateY(8%)',
             transition: 'transform 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
           }}
         />
