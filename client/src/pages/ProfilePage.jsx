@@ -123,6 +123,14 @@ const ProfilePage = () => {
                                     <Mail size={14} className="text-yellow-500" />
                                     <span className="text-sm font-bold tracking-tight uppercase">{userInfo?.email || 'Sign In Required'}</span>
                                 </div>
+                                <a 
+                                    href="https://vm.tiktok.com/ZS9Y3cE74yKHv-8XYf6/" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 text-white hover:bg-[#fed700] hover:text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all w-fit shadow-sm"
+                                >
+                                    <span>Follow on TikTok</span>
+                                </a>
                                 <button 
                                     onClick={() => {
                                         dispatch(logout());

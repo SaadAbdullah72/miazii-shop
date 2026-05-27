@@ -8,7 +8,7 @@ import {
     FiGithub,
     FiChevronUp
 } from 'react-icons/fi';
-import { FaGoogle, FaCcVisa, FaCcMastercard, FaCcDiscover, FaCcStripe, FaCcPaypal } from 'react-icons/fa6';
+import { FaGoogle, FaCcVisa, FaCcMastercard, FaCcDiscover, FaCcStripe, FaCcPaypal, FaInstagram, FaTiktok } from 'react-icons/fa6';
 
 const Footer = () => {
     const scrollToTop = () => {
@@ -74,10 +74,9 @@ const Footer = () => {
                         </div>
 
                         <div className="flex gap-6 text-gray-500">
-                            <a href="#" className="hover:text-[#fed700] transition-colors"><FiFacebook size={20} /></a>
-                            <a href="#" className="hover:text-[#fed700] transition-colors"><FaGoogle size={18} /></a>
-                            <a href="#" className="hover:text-[#fed700] transition-colors"><FiTwitter size={20} /></a>
-                            <a href="#" className="hover:text-[#fed700] transition-colors"><FiGithub size={20} /></a>
+                            <a href="https://www.facebook.com/profile.php?id=61562843136238" target="_blank" rel="noopener noreferrer" className="hover:text-[#fed700] transition-colors"><FiFacebook size={20} /></a>
+                            <a href="https://www.instagram.com/miazi.shop?igsh=MWM3OGE3ZnNld3FvMg==" target="_blank" rel="noopener noreferrer" className="hover:text-[#fed700] transition-colors"><FaInstagram size={20} /></a>
+                            <a href="https://vm.tiktok.com/ZS9Y3cE74yKHv-8XYf6/" target="_blank" rel="noopener noreferrer" className="hover:text-[#fed700] transition-colors"><FaTiktok size={18} /></a>
                         </div>
                     </div>
 
