@@ -55,9 +55,9 @@ const DownloadPage = () => {
         return () => clearInterval(slideTimer);
     }, [config.slides]);
 
-    const handleInstallClick = async () => {
+    const handleInstallClick = async (type) => {
         setDownloading(true);
-        const fileName = selectedTab === 'apk' ? 'Miazi Shop.apk' : 'Miazi Shop.aab';
+        const fileName = type === 'apk' ? 'Miazi Shop.apk' : 'Miazi Shop.aab';
         
         // Trigger download count increment on the server
         try {
@@ -151,56 +151,43 @@ const DownloadPage = () => {
                             
                             <h3 className="text-lg font-black text-slate-800 uppercase tracking-widest mb-6">Download Package</h3>
 
-                            {/* Package selector tabs */}
-                            <div className="grid grid-cols-2 gap-3 mb-6 bg-slate-50 p-1.5 rounded-2xl">
-                                <button 
-                                    onClick={() => setSelectedTab('apk')}
-                                    className={`py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${selectedTab === 'apk' ? 'bg-white text-slate-900 shadow-md shadow-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
+                            <div className="flex flex-col gap-4">
+                                <button
+                                    onClick={() => handleInstallClick('apk')}
+                                    disabled={downloading}
+                                    className={`w-full py-4.5 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-yellow-400/10 hover:shadow-slate-900/10 transition-all duration-300 scale-100 active:scale-95 cursor-pointer ${downloading ? 'opacity-80 pointer-events-none' : ''}`}
                                 >
-                                    APK File (Direct)
+                                    {downloading ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
+                                            Preparing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={18} />
+                                            Download APK File
+                                        </>
+                                    )}
                                 </button>
-                                <button 
-                                    onClick={() => setSelectedTab('aab')}
-                                    className={`py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${selectedTab === 'aab' ? 'bg-white text-slate-900 shadow-md shadow-slate-100' : 'text-slate-500 hover:text-slate-800'}`}
+                                
+                                <button
+                                    onClick={() => handleInstallClick('aab')}
+                                    disabled={downloading}
+                                    className={`w-full py-4.5 bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-lg hover:shadow-slate-900/10 transition-all duration-300 scale-100 active:scale-95 cursor-pointer ${downloading ? 'opacity-80 pointer-events-none' : ''}`}
                                 >
-                                    AAB File (Bundle)
+                                    {downloading ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
+                                            Preparing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={18} />
+                                            Download AAB File
+                                        </>
+                                    )}
                                 </button>
                             </div>
-
-                            {/* Download Specs */}
-                            <div className="grid grid-cols-3 gap-4 py-4 px-5 bg-slate-50/50 rounded-2xl mb-8 border border-slate-100/30">
-                                <div className="text-center">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Size</p>
-                                    <p className="text-sm font-black text-slate-800 mt-1">{selectedTab === 'apk' ? '1.4 MB' : '1.5 MB'}</p>
-                                </div>
-                                <div className="text-center border-x border-slate-100">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Downloads</p>
-                                    <p className="text-sm font-black text-slate-800 mt-1">{downloadsCount.toLocaleString()}</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rating</p>
-                                    <p className="text-sm font-black text-slate-800 mt-1 flex items-center justify-center gap-0.5">5.0 <Star size={12} className="fill-yellow-400 text-yellow-400" /></p>
-                                </div>
-                            </div>
-
-                            {/* Main CTA */}
-                            <button
-                                onClick={handleInstallClick}
-                                disabled={downloading}
-                                className={`w-full py-4.5 bg-yellow-400 hover:bg-slate-900 hover:text-white text-slate-900 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3 shadow-lg shadow-yellow-400/10 hover:shadow-slate-900/10 transition-all duration-300 scale-100 active:scale-95 cursor-pointer ${downloading ? 'opacity-80 pointer-events-none' : ''}`}
-                            >
-                                {downloading ? (
-                                    <>
-                                        <div className="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin" />
-                                        Preparing Download...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Download size={18} />
-                                        Install Now
-                                    </>
-                                )}
-                            </button>
 
                             {/* Security Notice */}
                             <div className="flex items-start gap-3 mt-6 p-4 bg-emerald-50/50 rounded-2xl border border-emerald-500/10">
@@ -236,7 +223,7 @@ const DownloadPage = () => {
                                         style={{ 
                                             ...(slide.includes('splash-hand') 
                                                 ? { clipPath: 'inset(0 0 22% 0)', transform: 'scale(1.02) translateY(3%)', backgroundColor: '#FFDC00' } 
-                                                : { mixBlendMode: 'multiply', backgroundColor: '#FFDC00' })
+                                                : { backgroundColor: '#FFDC00' })
                                         }}
                                         onError={(e) => {
                                             e.target.src = '/splash-hand.png';
