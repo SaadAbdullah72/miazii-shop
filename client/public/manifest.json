@@ -6,60 +6,59 @@
   "description": "Premium electronics and tech store offering high-quality gadgets at best prices in Bangladesh.",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
+      "src": "/icons/icon-48x48.png",
+      "sizes": "48x48",
       "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/logo-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/badge-miazi-v50.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "monochrome any"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "monochrome any"
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-48x48.png",
-      "sizes": "48x48",
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
       "type": "image/png",
-      "purpose": "monochrome any"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/badge-miazi-v50.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ],
   "start_url": "/",
   "scope": "/",
-  "display": "fullscreen",
-  "display_override": ["fullscreen", "standalone"],
+  "display": "standalone",
+  "display_override": ["standalone"],
   "orientation": "portrait",
   "theme_color": "#fed700",
   "background_color": "#fed700",
   "categories": ["shopping", "electronics", "technology"],
   "lang": "en-US",
   "dir": "ltr",
-  "prefer_related_applications": true,
-  "related_applications": [
-    {
-      "platform": "play",
-      "id": "app.vercel.miazi_shop.twa",
-      "url": "https://play.google.com/store/apps/details?id=app.vercel.miazi_shop.twa"
-    }
-  ],
+  "prefer_related_applications": false,
   "screenshots": [
     {
       "src": "/screenshot-mobile.png",
