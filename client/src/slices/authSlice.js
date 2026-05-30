@@ -53,9 +53,11 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (googleDat
 export const updateProfile = createAsyncThunk('auth/updateProfile', async (userData, { rejectWithValue }) => {
     try {
         const response = await api.put('/api/users/profile', userData);
-        localStorage.setItem('userInfo', JSON.stringify(response.data));
+        const existingUserInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : {};
+        const updatedUserInfo = { ...existingUserInfo, ...response.data };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
       
-        return response.data;
+        return updatedUserInfo;
     } catch (error) {
        
         return rejectWithValue(error.response?.data?.message || error.message);
@@ -65,8 +67,10 @@ export const updateProfile = createAsyncThunk('auth/updateProfile', async (userD
 export const getProfile = createAsyncThunk('auth/getProfile', async (_, { rejectWithValue }) => {
     try {
         const response = await api.get('/api/users/profile');
-        localStorage.setItem('userInfo', JSON.stringify(response.data));
-        return response.data;
+        const existingUserInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : {};
+        const updatedUserInfo = { ...existingUserInfo, ...response.data };
+        localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+        return updatedUserInfo;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || error.message);
     }
