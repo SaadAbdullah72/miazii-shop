@@ -7,8 +7,8 @@ const generateToken = (res, userId) => {
 
     res.cookie('jwt', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
-        sameSite: 'strict', // Prevent CSRF attacks
+        secure: process.env.NODE_ENV !== 'development',
+        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none', // 'none' needed for Vercel serverless + mobile WebView
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

@@ -48,13 +48,20 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(mongoSanitize()); // Prevent NoSQL Injection
 // XSS protection handled by helmet CSP headers and React's built-in escaping
 
-// SECURITY: Only allow localhost origins in development mode
+// SECURITY: Allow required origins (including Capacitor mobile origins)
 const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? ['https://miazi-shop.vercel.app', process.env.CLIENT_URL].filter(Boolean)
-    : ['http://localhost:5173', 'http://localhost:5000', 'https://miazi-shop.vercel.app', process.env.CLIENT_URL].filter(Boolean);
+    ? ['https://miazi-shop.vercel.app', 'capacitor://localhost', 'http://localhost', process.env.CLIENT_URL].filter(Boolean)
+    : ['http://localhost:5173', 'http://localhost:5000', 'http://localhost', 'capacitor://localhost', 'https://miazi-shop.vercel.app', process.env.CLIENT_URL].filter(Boolean);
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function(origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
 }));
 app.use(helmet({

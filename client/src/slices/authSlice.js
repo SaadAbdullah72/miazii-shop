@@ -26,17 +26,23 @@ export const register = createAsyncThunk('auth/register', async (userData, { rej
     }
 });
 
-export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
+export const logout = createAsyncThunk('auth/logout', async () => {
     try {
         await api.post('/api/users/logout');
-        localStorage.removeItem('userInfo');
-        localStorage.removeItem('cartItems'); // clear cart on logout
-        
-        return null; // Return null so payload acts to clear state
     } catch (error) {
-         
-         return rejectWithValue(error.response?.data?.message || error.message);
+        // Ignore server errors — we always want to clear local state
+        console.warn('[Logout] Server-side logout failed, clearing local state anyway:', error.message);
     }
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems');
+    // Clear all cached API responses
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('api_cache_')) {
+            localStorage.removeItem(key);
+        }
+    }
+    return null;
 });
 
 export const googleLogin = createAsyncThunk('auth/googleLogin', async (googleData, { rejectWithValue }) => {

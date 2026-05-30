@@ -31,7 +31,7 @@ const router = express.Router();
 router.route('/').post(validateRequest(registerUserSchema), registerUser).get(protect, admin, getUsers);
 router.post('/login', validateRequest(authUserSchema), authUser);
 router.post('/google-login', validateRequest(googleAuthSchema), googleAuth);
-router.post('/logout', protect, logoutUser);
+router.post('/logout', logoutUser);
 router.route('/profile')
     .get(protect, getUserProfile)
     .put(protect, validateRequest(updateProfileSchema), updateUserProfile)
