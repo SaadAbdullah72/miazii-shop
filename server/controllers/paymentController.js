@@ -216,7 +216,7 @@ const paymentSuccess = asyncHandler(async (req, res) => {
                 `;
 
                 await sendEmail({
-                    email: process.env.ADMIN_EMAIL || 'saad489254@gmail.com',
+                    email: process.env.ADMIN_EMAIL || 'nizamittop@gmail.com',
                     subject: `🚨 NEW PAID ORDER: #${createdOrder._id.toString().slice(-8).toUpperCase()} - ৳${order.totalPrice}`,
                     html: adminEmailHtml,
                 });

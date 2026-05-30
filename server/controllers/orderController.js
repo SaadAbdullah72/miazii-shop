@@ -173,7 +173,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
             // Send to admin
             await sendEmail({
-                email: process.env.ADMIN_EMAIL || 'saad489254@gmail.com',
+                email: process.env.ADMIN_EMAIL || 'nizamittop@gmail.com',
                 subject: `⚠️ ACTION REQUIRED: New Order Pending Approval #${createdOrder._id.toString().slice(-8).toUpperCase()} — ৳${totalPrice}`,
                 html: emailHtml.replace('🛒 New Order Received!', '🕵️ New Order Pending Approval'),
             });

@@ -20,8 +20,8 @@ const seedData = async () => {
         let admin = await User.findOne({ isAdmin: true });
         if (!admin) {
              admin = await User.create({
-                name: 'Admin Saad',
-                email: 'saad489254@gmail.com',
+                name: 'Admin Nizam',
+                email: 'nizamittop@gmail.com',
                 password: 'admin123',
                 isAdmin: true,
             });
