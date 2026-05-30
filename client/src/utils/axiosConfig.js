@@ -1,11 +1,32 @@
 import axios from 'axios';
 
-export const BASE_URL = ''; // Use relative path for Vercel rewrites and Vite proxy
+export const BASE_URL = (
+    (typeof window !== 'undefined' && window.Capacitor) || 
+    (typeof window !== 'undefined' && window.location.origin.includes('capacitor://'))
+)
+  ? 'https://miazi-shop.vercel.app' // Native mobile Capacitor points to remote production server
+  : ''; // Web app uses relative paths/Vite proxy
 
 const api = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true, // Important for cookies (JWT)
+    withCredentials: true, // Important for cookies (JWT) on web
 });
+
+// AUTOMATIC JWT HEADER INJECTION FOR MOBILE AUTHORIZATION
+api.interceptors.request.use((config) => {
+    try {
+        const userInfo = localStorage.getItem('userInfo') 
+            ? JSON.parse(localStorage.getItem('userInfo')) 
+            : null;
+        const token = userInfo?.token;
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+    } catch (e) {
+        console.error('[AxiosConfig] Error reading token from localStorage', e);
+    }
+    return config;
+}, (error) => Promise.reject(error));
 
 // ROBUST INTERCEPTOR CACHE MANAGER
 const CACHE_TTL = 60 * 1000; // 1 minute cache lifetime for snappy navigation
