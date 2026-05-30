@@ -27,7 +27,7 @@ const authUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
 
         res.status(200).json({
             _id: user._id,
@@ -35,6 +35,7 @@ const authUser = asyncHandler(async (req, res) => {
             email: user.email,
             isAdmin: user.isAdmin,
             avatar: user.avatar,
+            token,
         });
     } else {
         res.status(401);
@@ -62,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 
     if (user) {
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
 
         res.status(201).json({
             _id: user._id,
@@ -70,6 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
             email: user.email,
             isAdmin: user.isAdmin,
             avatar: user.avatar,
+            token,
         });
 
         // ASYNC: Send Welcome Email
@@ -216,7 +218,7 @@ const googleAuth = asyncHandler(async (req, res) => {
     }
 
     if (user) {
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
 
         // Send Welcome Email if it's a new user creation
         if (isNewUser) {
@@ -233,6 +235,7 @@ const googleAuth = asyncHandler(async (req, res) => {
             email: user.email,
             isAdmin: user.isAdmin,
             avatar: user.avatar,
+            token,
         });
     } else {
         res.status(400);
