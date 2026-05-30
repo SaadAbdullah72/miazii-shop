@@ -6,8 +6,13 @@ import asyncHandler from 'express-async-handler';
 const protect = asyncHandler(async (req, res, next) => {
     let token;
 
-    // Read the JWT from the 'jwt' cookie
+    // 1. Read the JWT from the 'jwt' cookie (standard browser web flow)
     token = req.cookies.jwt;
+    
+    // 2. Fallback: Read from Authorization header (important for mobile Capacitor apps where cookies are blocked)
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
 
     if (token) {
         try {
