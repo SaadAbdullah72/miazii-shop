@@ -184,6 +184,7 @@ const AdminDashboardPage = () => {
             countInStock: product.countInStock || 0,
             description: product.description,
             images: product.images?.join(', ') || '',
+            videoUrl: product.videoUrl || '',
             isFeatured: product.isFeatured || false,
             isTrending: product.isTrending || false,
         });
