@@ -19,8 +19,9 @@ export const uploadToCloudinaryDirect = async (file, folder) => {
         throw new Error('Cloudinary is not configured. Please add CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY to environment variables.');
     }
 
-    // Determine resource type based on file type (image or video)
-    const resourceType = file.type.startsWith('video') ? 'video' : 'image';
+    // Let Cloudinary automatically determine the resource type (image vs video)
+    // This fixes issues where some browsers don't provide a correct file.type for certain video formats
+    const resourceType = 'auto';
 
     // Step 2: Push directly to Cloudinary
     const formData = new FormData();
