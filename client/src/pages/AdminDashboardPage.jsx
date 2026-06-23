@@ -366,6 +366,49 @@ const AdminDashboardPage = () => {
         }));
     };
 
+    // ── Payment Settings States ──────────────────────────────────────
+    const [paySettings, setPaySettings] = useState({
+        paymentPersonalNumber: '',
+        paymentAgentNumber: '',
+        paymentAgentLabel: '',
+        paymentAgentNote: '',
+        paymentVerificationTime: '',
+        supportPhone: '',
+    });
+    const [isSavingPaySettings, setIsSavingPaySettings] = useState(false);
+
+    useEffect(() => {
+        const fetchPaySettings = async () => {
+            try {
+                const { data } = await api.get('/api/settings');
+                setPaySettings({
+                    paymentPersonalNumber: data.paymentPersonalNumber || '',
+                    paymentAgentNumber: data.paymentAgentNumber || '',
+                    paymentAgentLabel: data.paymentAgentLabel || '',
+                    paymentAgentNote: data.paymentAgentNote || '',
+                    paymentVerificationTime: data.paymentVerificationTime || '',
+                    supportPhone: data.supportPhone || '',
+                });
+            } catch (err) {
+                console.error('Failed to load payment settings:', err);
+            }
+        };
+        if (activeTab === 'settings') fetchPaySettings();
+    }, [activeTab]);
+
+    const handleSavePaySettings = async (e) => {
+        e.preventDefault();
+        try {
+            setIsSavingPaySettings(true);
+            await api.put('/api/settings', paySettings);
+            toast.success('✅ Payment settings updated successfully!');
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to save settings');
+        } finally {
+            setIsSavingPaySettings(false);
+        }
+    };
+
     // Derived Data
     const totalRevenue = Array.isArray(orders) ? orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0) : 0;
     const filteredProducts = products.filter(p => {
@@ -1064,6 +1107,151 @@ const AdminDashboardPage = () => {
                                             'Save Changes'
                                         )}
                                     </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
+
+                    {/* ========== SETTINGS TAB — PAYMENT NUMBERS ========== */}
+                    {activeTab === 'settings' && (
+                        <div className="space-y-8 animate-in fade-in duration-500">
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Store Settings</h2>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Configure Payment Numbers Shown to Customers</p>
+                            </div>
+
+                            <form onSubmit={handleSavePaySettings}>
+                                <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
+                                    {/* Header */}
+                                    <div className="p-8 border-b border-slate-100 flex items-center gap-3 bg-slate-50/50">
+                                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                                            <Zap size={20} />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">Manual Payment Numbers</h4>
+                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Shown on Checkout Page to Customers</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Personal Number */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Personal Number (bKash / Nagad)</label>
+                                            <input
+                                                type="text"
+                                                value={paySettings.paymentPersonalNumber}
+                                                onChange={e => setPaySettings({...paySettings, paymentPersonalNumber: e.target.value})}
+                                                placeholder="+880 1612-893871"
+                                                className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm text-slate-800"
+                                            />
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase">Shown as "Personal" label in checkout</p>
+                                        </div>
+
+                                        {/* Agent Number */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Agent Number (Rocket etc.)</label>
+                                            <input
+                                                type="text"
+                                                value={paySettings.paymentAgentNumber}
+                                                onChange={e => setPaySettings({...paySettings, paymentAgentNumber: e.target.value})}
+                                                placeholder="+880 1905-507895"
+                                                className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm text-slate-800"
+                                            />
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase">Shown as "Agent" label in checkout</p>
+                                        </div>
+
+                                        {/* Agent Label */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Agent Label Text</label>
+                                            <input
+                                                type="text"
+                                                value={paySettings.paymentAgentLabel}
+                                                onChange={e => setPaySettings({...paySettings, paymentAgentLabel: e.target.value})}
+                                                placeholder="Agent (Rocket Available Here)"
+                                                className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm text-slate-800"
+                                            />
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase">Small text above the agent number</p>
+                                        </div>
+
+                                        {/* Agent Note */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Agent Note (Bold Warning Text)</label>
+                                            <input
+                                                type="text"
+                                                value={paySettings.paymentAgentNote}
+                                                onChange={e => setPaySettings({...paySettings, paymentAgentNote: e.target.value})}
+                                                placeholder="Rocket: Use this number only"
+                                                className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm text-slate-800"
+                                            />
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase">Shown in indigo bold below agent number</p>
+                                        </div>
+
+                                        {/* Verification Time */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Payment Verification Time</label>
+                                            <input
+                                                type="text"
+                                                value={paySettings.paymentVerificationTime}
+                                                onChange={e => setPaySettings({...paySettings, paymentVerificationTime: e.target.value})}
+                                                placeholder="15–30 minutes"
+                                                className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm text-slate-800"
+                                            />
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase">Shown at bottom of manual payment section</p>
+                                        </div>
+
+                                        {/* Support Phone */}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Support Phone</label>
+                                            <input
+                                                type="text"
+                                                value={paySettings.supportPhone}
+                                                onChange={e => setPaySettings({...paySettings, supportPhone: e.target.value})}
+                                                placeholder="+880 1612-893871"
+                                                className="w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl outline-none focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 transition-all font-semibold text-sm text-slate-800"
+                                            />
+                                            <p className="text-[9px] text-slate-400 font-bold uppercase">Used in order emails &amp; support</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Live Preview */}
+                                    <div className="mx-8 mb-8 bg-slate-900 rounded-3xl p-6 text-white">
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse inline-block"></span>
+                                            Live Preview — Checkout Page
+                                        </p>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                                                <p className="text-[10px] text-slate-400 mb-1">Personal</p>
+                                                <p className="font-semibold text-white">{paySettings.paymentPersonalNumber || '+880 ----'}</p>
+                                            </div>
+                                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                                                <p className="text-[10px] text-slate-400 mb-1">{paySettings.paymentAgentLabel || 'Agent'}</p>
+                                                <p className="font-semibold text-white">{paySettings.paymentAgentNumber || '+880 ----'}</p>
+                                                {paySettings.paymentAgentNote && (
+                                                    <p className="text-[9px] font-black text-indigo-400 uppercase mt-1">{paySettings.paymentAgentNote}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="mt-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-center gap-2">
+                                            <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
+                                            <p className="text-xs text-yellow-300 font-medium">Payments are verified manually within {paySettings.paymentVerificationTime || '15–30'} minutes</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Save Button */}
+                                    <div className="px-8 pb-8 flex justify-end">
+                                        <button
+                                            type="submit"
+                                            disabled={isSavingPaySettings}
+                                            className="bg-slate-900 hover:bg-yellow-500 hover:text-slate-900 text-white rounded-2xl px-12 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3 disabled:opacity-50 shadow-xl shadow-slate-100"
+                                        >
+                                            {isSavingPaySettings ? (
+                                                <><Loader className="animate-spin" size={14} /> Saving...</>
+                                            ) : (
+                                                'Save Payment Settings'
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

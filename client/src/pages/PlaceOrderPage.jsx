@@ -12,13 +12,37 @@ const PlaceOrderPage = () => {
     const [isPlacing, setIsPlacing] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [orderId, setOrderId] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('COD'); // Default to COD
+    const [paymentMethod, setPaymentMethod] = useState('COD');
     const [image, setImage] = useState('');
     const [uploading, setUploading] = useState(false);
+    const [storeSettings, setStoreSettings] = useState(null);
+    const [settingsLoading, setSettingsLoading] = useState(true);
 
     const cart = useSelector((state) => state.cart || {});
     const { userInfo } = useSelector((state) => state.auth);
     const { cartItems = [], shippingAddress = {} } = cart;
+
+    // Fetch payment settings from server (admin-configurable)
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const { data } = await api.get('/api/settings');
+                setStoreSettings(data);
+            } catch (err) {
+                // Use default fallback values if fetch fails
+                setStoreSettings({
+                    paymentPersonalNumber: '+880 1612-893871',
+                    paymentAgentNumber: '+880 1905-507895',
+                    paymentAgentLabel: 'Agent (Rocket Available Here)',
+                    paymentAgentNote: 'Rocket: Use this number only',
+                    paymentVerificationTime: '15–30 minutes',
+                });
+            } finally {
+                setSettingsLoading(false);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     useEffect(() => {
         if (!userInfo) {
@@ -325,22 +349,32 @@ const PlaceOrderPage = () => {
       <div className="bg-slate-50 rounded-2xl p-6 hover:shadow-md transition">
         <p className="text-xs text-slate-400 mb-4">Send To</p>
 
-        <div className="space-y-3">
+      <div className="space-y-3">
           <div>
             <p className="text-[11px] text-slate-400">Personal</p>
             <p className="font-semibold text-slate-800">
-              +880 1612-893871
+              {settingsLoading
+                ? <span className="animate-pulse bg-slate-200 rounded h-4 w-36 inline-block" />
+                : storeSettings?.paymentPersonalNumber}
             </p>
           </div>
 
           <div>
-            <p className="text-[11px] text-slate-400">Agent (Rocket Available Here)</p>
+            <p className="text-[11px] text-slate-400">
+              {settingsLoading
+                ? <span className="animate-pulse bg-slate-200 rounded h-3 w-44 inline-block" />
+                : storeSettings?.paymentAgentLabel}
+            </p>
             <p className="font-semibold text-slate-800">
-              +880 1905-507895
+              {settingsLoading
+                ? <span className="animate-pulse bg-slate-200 rounded h-4 w-36 inline-block" />
+                : storeSettings?.paymentAgentNumber}
             </p>
-            <p className="text-[9px] font-black text-indigo-600 uppercase mt-1">
-              Rocket: Use this number only
-            </p>
+            {!settingsLoading && storeSettings?.paymentAgentNote && (
+              <p className="text-[9px] font-black text-indigo-600 uppercase mt-1">
+                {storeSettings.paymentAgentNote}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -383,7 +417,11 @@ const PlaceOrderPage = () => {
     <div className="mt-8 bg-yellow-50 border border-yellow-100 rounded-xl p-4 flex items-center gap-2">
       <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
       <p className="text-xs text-yellow-700 font-medium">
-        Payments are verified manually within 15–30 minutes
+        Payments are verified manually within{' '}
+        {settingsLoading
+          ? '15–30'
+          : storeSettings?.paymentVerificationTime || '15–30'}{' '}
+        minutes
       </p>
     </div>
   </div>
