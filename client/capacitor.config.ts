@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.miazishop.app',
+  appId: 'com.miazishop.ecommerce',
   appName: 'miazi shop',
   webDir: 'dist',
   plugins: {

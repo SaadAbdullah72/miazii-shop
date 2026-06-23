@@ -1,4 +1,4 @@
-package com.miazishop.app;
+package com.miazishop.ecommerce;
 
 import com.getcapacitor.BridgeActivity;
 
