@@ -60,12 +60,16 @@ export const updateProfile = createAsyncThunk('auth/updateProfile', async (userD
     try {
         const response = await api.put('/api/users/profile', userData);
         const existingUserInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : {};
-        const updatedUserInfo = { ...existingUserInfo, ...response.data };
+        // ✅ FIX: Server profile update response doesn't include token.
+        // Always preserve the existing token so auth never breaks.
+        const updatedUserInfo = {
+            ...existingUserInfo,
+            ...response.data,
+            token: response.data.token || existingUserInfo.token,
+        };
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
-      
         return updatedUserInfo;
     } catch (error) {
-       
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });
@@ -74,10 +78,18 @@ export const getProfile = createAsyncThunk('auth/getProfile', async (_, { reject
     try {
         const response = await api.get('/api/users/profile');
         const existingUserInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : {};
-        const updatedUserInfo = { ...existingUserInfo, ...response.data };
+        // ✅ FIX: Server profile GET response doesn't return token.
+        // Always preserve the existing token so auth never breaks after background sync.
+        const updatedUserInfo = {
+            ...existingUserInfo,
+            ...response.data,
+            token: existingUserInfo.token,
+        };
         localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
         return updatedUserInfo;
     } catch (error) {
+        // ✅ FIX: Silently ignore getProfile failures — don't log out user
+        // if background sync fails (e.g. offline or server error)
         return rejectWithValue(error.response?.data?.message || error.message);
     }
 });

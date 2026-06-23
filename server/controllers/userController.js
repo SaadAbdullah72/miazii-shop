@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import Product from '../models/productModel.js';
 import Category from '../models/categoryModel.js';
@@ -107,6 +108,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (user) {
+        // ✅ FIX: Re-issue token in profile response so frontend never loses it during background sync
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.status(200).json({
             _id: user._id,
             name: user.name,
@@ -115,6 +118,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
             address: user.address,
             phone: user.phone,
             avatar: user.avatar,
+            token,
         });
     } else {
         res.status(404);
@@ -152,6 +156,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
         const updatedUser = await user.save();
 
+        // ✅ FIX: Re-issue token in update response so frontend never loses auth
+        const token = jwt.sign({ userId: updatedUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.status(200).json({
             _id: updatedUser._id,
             name: updatedUser.name,
@@ -160,6 +166,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             address: updatedUser.address,
             phone: updatedUser.phone,
             avatar: updatedUser.avatar,
+            token,
         });
     } else {
         res.status(404);
