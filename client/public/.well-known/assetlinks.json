@@ -1,29 +1,9 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.miazishop.ecommerce",
-      "sha256_cert_fingerprints": [
-        "CA:05:79:13:4F:2B:B2:B0:26:B0:ED:79:1F:86:8B:D5:AA:1A:14:19:A0:DC:00:B8:9A:03:81:54:9B:B0:F1:D1",
-        "F8:B2:8F:4A:6B:E7:F6:09:B6:AD:37:19:E5:AD:94:A7:D5:E6:36:0B:9F:19:AA:AA:1C:B7:1E:CA:56:7A:AC:66",
-        "0F:06:40:E9:90:5B:02:31:4A:D5:16:54:79:B6:E1:A4:47:D5:1D:36:70:1B:F8:C9:D9:5E:65:F5:5A:AA:E4:2A",
-        "AA:56:06:17:6B:C0:DC:41:16:54:49:B5:06:1D:7E:35:B3:79:4B:FE:EB:B0:92:93:F0:1B:3C:F0:9A:4E:4D:D7"
-      ]
-    }
-  },
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "app.vercel.miazi_shop.twa",
-      "sha256_cert_fingerprints": [
-        "CA:05:79:13:4F:2B:B2:B0:26:B0:ED:79:1F:86:8B:D5:AA:1A:14:19:A0:DC:00:B8:9A:03:81:54:9B:B0:F1:D1",
-        "F8:B2:8F:4A:6B:E7:F6:09:B6:AD:37:19:E5:AD:94:A7:D5:E6:36:0B:9F:19:AA:AA:1C:B7:1E:CA:56:7A:AC:66",
-        "0F:06:40:E9:90:5B:02:31:4A:D5:16:54:79:B6:E1:A4:47:D5:1D:36:70:1B:F8:C9:D9:5E:65:F5:5A:AA:E4:2A",
-        "AA:56:06:17:6B:C0:DC:41:16:54:49:B5:06:1D:7E:35:B3:79:4B:FE:EB:B0:92:93:F0:1B:3C:F0:9A:4E:4D:D7"
-      ]
-    }
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.miazishop.ecommerce",
+    "sha256_cert_fingerprints": ["F0:CB:BE:B8:77:5A:EC:AA:93:CC:C8:76:06:63:2F:AD:69:4A:E9:1F:58:A6:F5:DD:DA:A9:0E:E0:65:69:7A:C3"]
   }
-]
+}]
 
