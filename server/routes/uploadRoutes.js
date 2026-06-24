@@ -9,7 +9,15 @@ router.get('/signature', protect, (req, res) => {
     try {
         const folder = req.query.folder || 'products/images';
         // SECURITY: Whitelist allowed upload folders to prevent arbitrary file uploads
-        const allowedFolders = ['products/images', 'products/videos', 'avatars', 'manual_payments'];
+        const allowedFolders = [
+            'products/images',
+            'products/videos',
+            'avatars',
+            'profile/avatars',  // Header + ProfilePage avatar uploads
+            'manual_payments',
+            'reviews',          // Product review image uploads
+            'app/slides',       // Admin App Hub slides
+        ];
         if (!allowedFolders.includes(folder)) {
             return res.status(400).json({ message: 'Invalid upload folder' });
         }
