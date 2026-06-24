@@ -17,10 +17,6 @@
 
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">#fed700</item>
-        <item name="android:windowBackground">#fed700</item>
-        <item name="postSplashScreenBackground">#fed700</item>
-        <item name="android:statusBarColor">#fed700</item>
-        <item name="android:navigationBarColor">#fed700</item>
+        <item name="android:background">@drawable/splash</item>
     </style>
 </resources>
