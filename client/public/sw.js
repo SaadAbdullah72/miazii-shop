@@ -45,7 +45,12 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  if (!url.origin.includes(self.location.origin) || url.pathname.includes('/api/') || url.pathname.includes('/admin')) {
+  if (
+    !url.origin.includes(self.location.origin) || 
+    url.pathname.includes('/api/') || 
+    url.pathname.includes('/admin') ||
+    url.pathname.includes('/.well-known/')
+  ) {
     return;
   }
 
