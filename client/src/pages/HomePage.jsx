@@ -32,7 +32,7 @@ const HomePage = () => {
   const { data: productsData, isLoading: loading, error: productsError } = useGetProductsQuery({ 
     keyword, 
     category,
-    limit: 50
+    limit: 0
   });
   const { data: categoriesData } = useGetCategoriesQuery();
   
