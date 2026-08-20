@@ -137,19 +137,15 @@ const HomePage = () => {
 
   const bestDealsProducts = useMemo(() => {
     if (!products) return [];
-    const activeLabel = activeDealCategory.toLowerCase();
+    const activeLabel = activeDealCategory.toLowerCase().trim();
 
     if (activeLabel === 'best deals') {
       // BALANCED GALLERY LOGIC: Ensure every category gets representation
       const groupedByCategory = {};
       products.forEach(p => {
         const catName = p.category?.name || 'Uncategorized';
-        // Only include if authentic (has reviews) for the main dashboard
-        if (!p.reviews || p.reviews.length === 0) return;
-        if (p.isDeals || p.discountPrice > p.price || p.rating >= 4) {
-          if (!groupedByCategory[catName]) groupedByCategory[catName] = [];
-          groupedByCategory[catName].push(p);
-        }
+        if (!groupedByCategory[catName]) groupedByCategory[catName] = [];
+        groupedByCategory[catName].push(p);
       });
 
       const balancedList = [];
@@ -161,19 +157,18 @@ const HomePage = () => {
         balancedList.push(sorted[0]);
       });
 
-      // Second pass: Fill up to 12 with remaining best ones
+      // Second pass: Fill up to 12 with remaining ones
       const remaining = products
-        .filter(p => !balancedList.find(b => b._id === p._id) && (p.reviews?.length > 0))
-        .filter(p => p.isDeals || p.discountPrice > p.price || p.rating >= 4)
+        .filter(p => !balancedList.find(b => b._id === p._id))
         .sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
 
       return [...balancedList, ...remaining].slice(0, 12);
     }
 
-    // Specific Category Tab: Relaxed filtering so tab feels "active"
+    // Specific Category Tab: Exact case-insensitive match on category name
     return products.filter(p => {
-      const productCatName = p.category?.name?.toLowerCase() || "";
-      return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
+      const productCatName = p.category?.name?.toLowerCase().trim() || "";
+      return productCatName === activeLabel;
     }).sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
 
   }, [products, activeDealCategory]);
@@ -517,12 +512,7 @@ const HomePage = () => {
           </div>
 
           {/* PREMIUM EMPTY STATE: Shown when no products match a category tab */}
-          {products?.filter(p => {
-            const productCatName = p.category?.name?.toLowerCase() || "";
-            const activeLabel = activeDealCategory.toLowerCase();
-            if (activeLabel === 'best deals') return true;
-            return productCatName.includes(activeLabel) || activeLabel.includes(productCatName);
-          }).length === 0 && (
+          {bestDealsProducts.length === 0 && (
               <div className="text-center py-12 bg-white border-2 border-dashed border-gray-100 rounded-2xl mt-4">
                 <Clock size={40} className="mx-auto text-yellow-400 mb-4 opacity-50" />
                 <h3 className="text-gray-800 font-bold mb-1">Restocking Soon</h3>
