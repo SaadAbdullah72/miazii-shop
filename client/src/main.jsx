@@ -10,6 +10,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { initializeMobileApp } from './utils/mobileFixes.js'
 
 // Initializing Mobile Optimizations
+// App initialized for mobile & web
 initializeMobileApp();
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
